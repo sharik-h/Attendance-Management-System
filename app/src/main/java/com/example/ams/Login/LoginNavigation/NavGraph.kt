@@ -17,5 +17,8 @@ fun NavGraph(navHostController: NavHostController) {
         composable(route = Screen.LoginPage.route) {
             LoginPage(navHostController = navHostController)
         }
+        composable(route = Screen.NewAccountPage.route) {
+            NewAccountPage(navHostController = navHostController)
+        }
     }
 }

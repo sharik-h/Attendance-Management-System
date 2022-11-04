@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.ams.Login.LoginNavigation.Screen
 import com.example.ams.R
 
 
@@ -45,13 +46,27 @@ fun LoginPage(navHostController: NavHostController) {
             onValueChange = { name = it },
             placeholder = { Text(text = "Name")},
             modifier = Modifier.fillMaxWidth().height(50.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                unfocusedIndicatorColor = Color.Black,
+                focusedIndicatorColor = Color.Black,
+                cursorColor = Color.Black,
+                textColor = Color.Black,
+                placeholderColor = Color.Black
+            )
         )
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             placeholder = { Text(text = "Password") },
-            modifier = Modifier.fillMaxWidth().height(50.dp)
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                unfocusedIndicatorColor = Color.Black,
+                focusedIndicatorColor = Color.Black,
+                cursorColor = Color.Black,
+                textColor = Color.Black,
+                placeholderColor = Color.Black
+            )
         )
         Spacer(modifier = Modifier.height(5.dp))
         TextButton(
@@ -79,7 +94,7 @@ fun LoginPage(navHostController: NavHostController) {
         }
         Spacer(modifier = Modifier.height(10.dp))
         Button(
-            onClick = { navHostController.navigate("mainPage") },
+            onClick = { navHostController.navigate(Screen.NewAccountPage.route) },
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors( backgroundColor = Color.White ),
         ) {
