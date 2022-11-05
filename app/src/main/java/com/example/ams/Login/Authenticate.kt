@@ -23,12 +23,12 @@ import java.util.concurrent.TimeUnit
 
 class Authenticate: ComponentActivity() {
 
-    lateinit var sentOtp: String
-    lateinit var name: String
-    lateinit var phone: String
-    lateinit var password: String
-    lateinit var image: Uri
-    val firebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var sentOtp: String
+    private lateinit var name: String
+    private lateinit var phone: String
+    private lateinit var password: String
+    private lateinit var image: Uri
+    private val firebaseAuth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
