@@ -61,11 +61,12 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
-    // Import the Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:31.0.2')
+    //firebase
+    implementation platform('com.google.firebase:firebase-bom:30.0.2')
+    implementation 'com.google.firebase:firebase-analytics'
 
-    // When using the BoM, don't specify versions in Firebase dependencies
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+    //firebase authentication dependency library
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     //navigation
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")

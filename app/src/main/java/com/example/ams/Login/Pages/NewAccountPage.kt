@@ -1,6 +1,6 @@
 package com.example.ams.Login.Pages
 
-import android.graphics.Bitmap
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -8,28 +8,30 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.ams.Login.Authenticate
 import com.example.ams.R
 
 @Composable
 fun NewAccountPage(navHostController: NavHostController) {
 
+    val context = LocalContext.current
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password1 by remember { mutableStateOf("") }
@@ -89,8 +91,9 @@ fun NewAccountPage(navHostController: NavHostController) {
                 focusedIndicatorColor = Color.Black,
                 cursorColor = Color.Black,
                 textColor = Color.Black,
-                placeholderColor = Color.Black
-            )
+                placeholderColor = Color.Black),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
         Text(
             text = "Phone",
@@ -110,8 +113,9 @@ fun NewAccountPage(navHostController: NavHostController) {
                 focusedIndicatorColor = Color.Black,
                 cursorColor = Color.Black,
                 textColor = Color.Black,
-                placeholderColor = Color.Black
-            )
+                placeholderColor = Color.Black),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
         Text(
             text = "Create a Password",
@@ -131,8 +135,9 @@ fun NewAccountPage(navHostController: NavHostController) {
                 focusedIndicatorColor = Color.Black,
                 cursorColor = Color.Black,
                 textColor = Color.Black,
-                placeholderColor = Color.Black
-            )
+                placeholderColor = Color.Black),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
         Text(
             text = "Confirm your password",
@@ -152,12 +157,22 @@ fun NewAccountPage(navHostController: NavHostController) {
                 focusedIndicatorColor = Color.Black,
                 cursorColor = Color.Black,
                 textColor = Color.Black,
-                placeholderColor = Color.Black
-            )
+                placeholderColor = Color.Black),
+            singleLine = true
         )
         Spacer(modifier = Modifier.weight(1f))
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                if (name.isNotEmpty() && phone.isNotEmpty() && password1.isNotEmpty() && password1 == password2 ) {
+                    context.startActivity(
+                        Intent(context, Authenticate::class.java)
+                            .putExtra("name", name)
+                            .putExtra("phone", phone)
+                            .putExtra("password", password2)
+                            .putExtra("image", image)
+                    )
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
