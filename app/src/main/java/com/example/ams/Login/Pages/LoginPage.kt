@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.ams.Login.LoginNavigation.Screen
+import com.example.ams.Navigation.Screen
 import com.example.ams.R
 
 

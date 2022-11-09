@@ -17,6 +17,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.ams.Navigation.LOGIN_ROUTE
+import com.example.ams.Navigation.Screen
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import com.example.ams.R
@@ -34,9 +36,9 @@ fun SplashScreen(navHostController: NavHostController) {
         delay(1000)
         navHostController.popBackStack()
         if (user?.uid != null) {
-
+            navHostController.navigate(Screen.ListOfCoursesPage.route)
         }else{
-
+            navHostController.navigate(LOGIN_ROUTE)
         }
     }
         Splash(floatAsState.value)

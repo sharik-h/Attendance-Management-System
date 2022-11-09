@@ -1,18 +1,16 @@
-package com.example.ams.Login.LoginNavigation
+package com.example.ams.Navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navigation
 import com.example.ams.Login.Pages.LoginPage
 import com.example.ams.Login.Pages.NewAccountPage
 
-@Composable
-fun NavGraph(navHostController: NavHostController) {
-    NavHost(
-        navController = navHostController,
-        startDestination = Screen.LoginPage.route
+fun NavGraphBuilder.AuthNavGraph(navHostController: NavHostController) {
+    navigation(
+        startDestination = Screen.LoginPage.route,
+        route = LOGIN_ROUTE
     ){
         composable(route = Screen.LoginPage.route) {
             LoginPage(navHostController = navHostController)
