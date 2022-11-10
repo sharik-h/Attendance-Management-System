@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.ams.Navigation.NEW_COURSE
 import com.example.ams.R
 
 
@@ -53,7 +54,7 @@ fun ListOfCoursePage(navHostController: NavHostController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { navHostController.navigate(NEW_COURSE) }) {
                     Icon(painter = addIcon, contentDescription = "", modifier = Modifier.size(80.dp))
                 }
                 Text(text = "Create a new class", fontFamily = bungeeStyle)

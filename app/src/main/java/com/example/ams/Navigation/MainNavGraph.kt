@@ -14,5 +14,6 @@ fun MainNavgraph(navHostController: NavHostController) {
     ) {
         AuthNavGraph(navHostController = navHostController)
         HomeNavGraph(navHostController = navHostController)
+        NewCourseNavGraph(navHostController = navHostController)
     }
 }
