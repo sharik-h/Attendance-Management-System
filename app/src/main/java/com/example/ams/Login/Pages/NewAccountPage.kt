@@ -118,7 +118,7 @@ fun NewAccountPage(navHostController: NavHostController) {
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
         Text(
-            text = "Create a Password",
+            text = "Enter your email address",
             fontFamily = bungeeFont,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left
@@ -126,7 +126,7 @@ fun NewAccountPage(navHostController: NavHostController) {
         OutlinedTextField(
             value = password1,
             onValueChange = { password1 = it },
-            placeholder = { Text(text = "Password") },
+            placeholder = { Text(text = "Email Address") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -140,7 +140,7 @@ fun NewAccountPage(navHostController: NavHostController) {
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
         Text(
-            text = "Confirm your password",
+            text = "Create a password",
             fontFamily = bungeeFont,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left
@@ -163,11 +163,13 @@ fun NewAccountPage(navHostController: NavHostController) {
         Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = {
-                if (name.isNotEmpty() && phone.isNotEmpty() && password1.isNotEmpty() && password1 == password2 ) {
+                if (name.isNotEmpty() && phone.isNotEmpty() && password1.isNotEmpty() && password2.isNotEmpty() && password1.isNotEmpty() ) {
                     context.startActivity(
                         Intent(context, Authenticate::class.java)
+                            .putExtra("method", "newAccount")
                             .putExtra("name", name)
                             .putExtra("phone", phone)
+                            .putExtra("email", password1)
                             .putExtra("password", password2)
                             .putExtra("image", image)
                     )

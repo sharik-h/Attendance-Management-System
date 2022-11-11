@@ -1,11 +1,13 @@
 package com.example.ams.Login.Pages
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -13,8 +15,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.ams.Login.Authenticate
 import com.example.ams.Navigation.Screen
 import com.example.ams.R
 
@@ -24,8 +28,9 @@ import com.example.ams.R
 fun LoginPage(navHostController: NavHostController) {
 
     var name by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
     val bungeeFont = FontFamily(Font(R.font.bungee))
+    val context = LocalContext.current
+    var method = "error"
 
     Column(
         modifier = Modifier.fillMaxSize().padding(20.dp),
@@ -44,7 +49,7 @@ fun LoginPage(navHostController: NavHostController) {
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            placeholder = { Text(text = "Name")},
+            placeholder = { Text(text = "Email or Phone")},
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = TextFieldDefaults.textFieldColors(
                 unfocusedIndicatorColor = Color.Black,
@@ -54,21 +59,6 @@ fun LoginPage(navHostController: NavHostController) {
                 placeholderColor = Color.Black
             )
         )
-        Spacer(modifier = Modifier.height(10.dp))
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            placeholder = { Text(text = "Password") },
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                unfocusedIndicatorColor = Color.Black,
-                focusedIndicatorColor = Color.Black,
-                cursorColor = Color.Black,
-                textColor = Color.Black,
-                placeholderColor = Color.Black
-            )
-        )
-        Spacer(modifier = Modifier.height(5.dp))
         TextButton(
             onClick = { /*TODO*/ },
             modifier = Modifier.fillMaxWidth()) {
@@ -79,9 +69,18 @@ fun LoginPage(navHostController: NavHostController) {
                 textAlign = TextAlign.End
             )
         }
-        Spacer(modifier = Modifier.height(5.dp))
         Button(
-            onClick = { navHostController.navigate("mainPage") },
+            onClick = {
+
+                if(name.length == 10 && name.isDigitsOnly()) { method = "phone" }
+                else if( name.split("@").contains("gmail.com")){ method = "email" }
+                if (method != "error") {
+                    context.startActivity(
+                        Intent(context, Authenticate::class.java)
+                            .putExtra("method", method)
+                            .putExtra("email", name))
+                }
+                      },
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors( backgroundColor = Color.Black )  ) {
             Text(
