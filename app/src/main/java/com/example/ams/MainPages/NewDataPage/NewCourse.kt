@@ -1,8 +1,6 @@
 package com.example.ams.MainPages
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,25 +12,23 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.ams.Navigation.Screen
 import com.example.ams.R
+import com.example.ams.ViewModel.FirebaseViewModel
 
 @Composable
-fun NewCourse(navHostController: NavHostController) {
+fun NewCourse(
+    navHostController: NavHostController,
+    viewModel: FirebaseViewModel = viewModel()
+) {
     val bungeeStyle = FontFamily(Font(R.font.bungee))
-    var className by remember { mutableStateOf("") }
-    var deptName by remember{ mutableStateOf("")}
-    var yearFrom by remember { mutableStateOf("2022") }
-    var yearTo by remember { mutableStateOf("2020")}
-    var attdPerDay by remember { mutableStateOf("")}
-    val tchrData  = mutableListOf("shairkh", "sharikh")
-    val stdData = mutableListOf("sharikh", "sharikh")
+    val newCourseData = viewModel.newCourseData.value
 
     Column(
         Modifier
             .fillMaxSize()
-            .padding(20.dp)) {
+            .padding(horizontal = 20.dp)) {
         Text(
             text = "Create New course",
             fontFamily = bungeeStyle,
@@ -40,10 +36,11 @@ fun NewCourse(navHostController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+        Text( text = "Name", fontFamily = bungeeStyle, fontSize = 15.sp)
         OutlinedTextField(
-            value = className,
-            onValueChange = { className = it },
-            textStyle = TextStyle(fontFamily = bungeeStyle, fontSize = 30.sp),
+            value = newCourseData.name,
+            onValueChange = { viewModel.updateData("name", it) },
+            textStyle = TextStyle(fontFamily = bungeeStyle, fontSize = 10.sp),
             singleLine = true,
             colors = TextFieldDefaults.textFieldColors(
                 unfocusedIndicatorColor = Color.Black,
@@ -53,15 +50,12 @@ fun NewCourse(navHostController: NavHostController) {
                 placeholderColor = Color.Black
             )
         )
-        Divider(Modifier.width(300.dp))
-        Text(text = "Department name", fontFamily = bungeeStyle, fontSize = 15.sp)
+        Text(text = "Course name", fontFamily = bungeeStyle, fontSize = 15.sp)
         OutlinedTextField(
-            value = deptName,
-            onValueChange = { deptName = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp),
-            textStyle = TextStyle(fontFamily = bungeeStyle),
+            value = newCourseData.courseName,
+            onValueChange = { viewModel.updateData("courseName", it) },
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = TextStyle(fontFamily = bungeeStyle, fontSize = 10.sp),
             colors = TextFieldDefaults.textFieldColors(
                 unfocusedIndicatorColor = Color.Black,
                 focusedIndicatorColor = Color.Black,
@@ -73,9 +67,9 @@ fun NewCourse(navHostController: NavHostController) {
         Text(text = "Batch year", fontFamily = bungeeStyle, fontSize = 15.sp)
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
-                value = yearFrom,
-                onValueChange = { yearFrom = it },
-                modifier = Modifier.width(100.dp),
+                value = newCourseData.bactchFrom,
+                onValueChange = { viewModel.updateData("batchFrom", it)},
+                modifier = Modifier.width(100.dp).height(60.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     unfocusedIndicatorColor = Color.Black,
                     focusedIndicatorColor = Color.Black,
@@ -88,9 +82,9 @@ fun NewCourse(navHostController: NavHostController) {
             Text(text = "TO", fontFamily = bungeeStyle)
             Spacer(modifier = Modifier.width(20.dp))
             OutlinedTextField(
-                value = yearTo,
-                onValueChange = { yearTo = it },
-                modifier = Modifier.width(100.dp),
+                value = newCourseData.batchTo,
+                onValueChange = { viewModel.updateData("batchTo", it) },
+                modifier = Modifier.width(100.dp).height(60.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     unfocusedIndicatorColor = Color.Black,
                     focusedIndicatorColor = Color.Black,
@@ -105,9 +99,9 @@ fun NewCourse(navHostController: NavHostController) {
             Text(text = "No. of attendace per day", fontFamily = bungeeStyle)
             Spacer(modifier = Modifier.width(20.dp))
             OutlinedTextField(
-                value = attdPerDay,
-                onValueChange = { attdPerDay = it },
-                modifier = Modifier.width(50.dp),
+                value = newCourseData.noAttendace,
+                onValueChange = { viewModel.updateData("noAttendance", it) },
+                modifier = Modifier.width(50.dp).height(60.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     unfocusedIndicatorColor = Color.Black,
                     focusedIndicatorColor = Color.Black,
@@ -117,57 +111,20 @@ fun NewCourse(navHostController: NavHostController) {
                 )
             )
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.weight(0.9f))
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                viewModel.createNewClass()
+                navHostController.popBackStack()
+                      },
             modifier = Modifier
                 .height(40.dp)
-                .width(155.dp),
-            contentPadding = PaddingValues(0.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
-        ) {
-            Text(text = "Select poster", fontFamily = bungeeStyle, fontSize = 15.sp, color = Color.White)
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(text = "Teachers", fontFamily = bungeeStyle, fontSize = 15.sp)
-        Divider(thickness = 1.dp)
-        LazyColumn() {
-            items(items = tchrData) {
-                Text(text = it, fontFamily = bungeeStyle, fontSize = 15.sp)
-                Divider()
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Button(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .height(40.dp)
-                .width(140.dp),
+                .fillMaxWidth(),
             contentPadding = PaddingValues(2.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
         ) {
-            Text(text = "Add Teacher", fontFamily = bungeeStyle, color = Color.White)
+            Text(text = "Save Course", fontFamily = bungeeStyle, color = Color.White)
         }
-        Text(text = "Students", fontFamily = bungeeStyle, fontSize = 15.sp)
-        Divider(thickness = 1.dp)
-        LazyColumn() {
-            items(items = stdData) {
-                Text(text = it, fontFamily = bungeeStyle, fontSize = 15.sp)
-
-                Divider()
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Button(
-            onClick = { navHostController.navigate(Screen.NewStudent.route) },
-            modifier = Modifier
-                .height(40.dp)
-                .width(140.dp),
-            contentPadding = PaddingValues(2.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
-        ) {
-            Text(text = "Add student", fontFamily = bungeeStyle, color = Color.White)
-        }
+        Spacer(modifier = Modifier.weight(0.1f))
     }
 }
