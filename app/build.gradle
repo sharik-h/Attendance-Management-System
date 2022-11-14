@@ -77,4 +77,7 @@ dependencies {
 
     //coil
     implementation("io.coil-kt:coil-compose:2.2.1")
+
+    //livedata
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 }

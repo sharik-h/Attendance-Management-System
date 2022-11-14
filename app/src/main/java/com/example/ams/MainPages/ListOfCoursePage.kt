@@ -11,6 +11,8 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,18 +22,24 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.ams.Navigation.NEW_COURSE
 import com.example.ams.R
+import com.example.ams.ViewModel.FirebaseViewModel
+import com.example.ams.data.NewCoureModel
 
 
 @Composable
-fun ListOfCoursePage(navHostController: NavHostController) {
+fun ListOfCoursePage(
+    navHostController: NavHostController,
+    viewModel: FirebaseViewModel = viewModel()
+) {
 
+    val listOfClasses by viewModel.course.observeAsState(initial = emptyList())
     val bungeeStyle = FontFamily(Font(R.font.bungee))
     val addIcon = painterResource(id = R.drawable.add_icon)
     val importIcon = painterResource(id = R.drawable.import_icon)
-    val data = mutableListOf<String>()
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
@@ -48,7 +56,7 @@ fun ListOfCoursePage(navHostController: NavHostController) {
             )
 
         }
-        if (data.isEmpty()) {
+        if (listOfClasses.isEmpty()) {
             Column(
                 Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -75,7 +83,7 @@ fun ListOfCoursePage(navHostController: NavHostController) {
             }
         }else {
             LazyColumn() {
-               items(items = data) {
+               items(items = listOfClasses) {
                    ClassItemModel(it)
                }
             }
@@ -85,7 +93,7 @@ fun ListOfCoursePage(navHostController: NavHostController) {
 
 
 @Composable
-fun ClassItemModel(data: String) {
+fun ClassItemModel(course: NewCoureModel) {
     val bungeeStyle = FontFamily(Font(R.font.bungee))
 
     Column(
@@ -93,10 +101,16 @@ fun ClassItemModel(data: String) {
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10))
-            .size(100.dp)
+            .size(130.dp)
             .padding(10.dp)
+            .clip(RoundedCornerShape(20))
+            .background(Color.Black)
     ) {
-        Text(text = data, fontFamily = bungeeStyle)
+        Text(
+            text = course.courseName,
+            fontFamily = bungeeStyle,
+            color = Color.White,
+            modifier = Modifier.padding(start = 20.dp, bottom = 10.dp)
+        )
     }
 }
