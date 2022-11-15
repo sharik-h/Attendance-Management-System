@@ -13,4 +13,5 @@ sealed class Screen(val route: String) {
     object ListOfCoursesPage: Screen(route = "ListOfCoursesPage")
     object NewCourse: Screen(route = "NewCourse")
     object NewStudent: Screen(route = "NewStudent")
+    object ViewCourse: Screen(route = "ViewCourse")
 }

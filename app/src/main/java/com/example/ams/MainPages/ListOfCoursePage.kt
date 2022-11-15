@@ -2,6 +2,7 @@ package com.example.ams.MainPages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.ams.Navigation.NEW_COURSE
+import com.example.ams.Navigation.Screen
 import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
 import com.example.ams.data.NewCoureModel
@@ -84,7 +86,7 @@ fun ListOfCoursePage(
         }else {
             LazyColumn() {
                items(items = listOfClasses) {
-                   ClassItemModel(it)
+                   ClassItemModel(it, onClick = { navHostController.navigate(Screen.ViewCourse.route)})
                }
             }
         }
@@ -93,7 +95,7 @@ fun ListOfCoursePage(
 
 
 @Composable
-fun ClassItemModel(course: NewCoureModel) {
+fun ClassItemModel(course: NewCoureModel, onClick: () -> Unit) {
     val bungeeStyle = FontFamily(Font(R.font.bungee))
 
     Column(
@@ -105,6 +107,7 @@ fun ClassItemModel(course: NewCoureModel) {
             .padding(10.dp)
             .clip(RoundedCornerShape(20))
             .background(Color.Black)
+            .clickable { onClick }
     ) {
         Text(
             text = course.courseName,
