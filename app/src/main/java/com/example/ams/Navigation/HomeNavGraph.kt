@@ -22,7 +22,7 @@ fun NavGraphBuilder.HomeNavGraph(
             ListOfCoursePage(navHostController = navHostController)
         }
         composable(route = Screen.ViewCourse.route) {
-            ViewCourse()
+            ViewCourse(navHostController = navHostController)
         }
     }
 }

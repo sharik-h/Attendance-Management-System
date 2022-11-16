@@ -107,7 +107,7 @@ fun ClassItemModel(course: NewCoureModel, onClick: () -> Unit) {
             .padding(10.dp)
             .clip(RoundedCornerShape(20))
             .background(Color.Black)
-            .clickable { onClick }
+            .clickable { onClick() }
     ) {
         Text(
             text = course.courseName,

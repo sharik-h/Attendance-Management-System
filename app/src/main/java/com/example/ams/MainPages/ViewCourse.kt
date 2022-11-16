@@ -12,10 +12,12 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.ams.Navigation.Screen
 import com.example.ams.R
 
 @Composable
-fun ViewCourse() {
+fun ViewCourse(navHostController: NavHostController) {
 
     val arrowBackIcon = painterResource(id = R.drawable.arrow_back)
     val moreOptionIcon = painterResource(id = R.drawable.option_icon)
@@ -40,7 +42,7 @@ fun ViewCourse() {
              .padding(horizontal = 10.dp, vertical = 5.dp)
      ) {
          Button(
-             onClick = { /*TODO*/ },
+             onClick = { navHostController.navigate(Screen.NewStudent.route) },
              modifier = Modifier.weight(0.5f)
          ) {
              Text(text = "add std", fontFamily = bungee)
