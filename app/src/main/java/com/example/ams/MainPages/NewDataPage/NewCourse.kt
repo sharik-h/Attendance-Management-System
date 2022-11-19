@@ -67,7 +67,7 @@ fun NewCourse(
         Text(text = "Batch year", fontFamily = bungeeStyle, fontSize = 15.sp)
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
-                value = newCourseData.bactchFrom,
+                value = newCourseData.batchFrom,
                 onValueChange = { viewModel.updateData("batchFrom", it)},
                 modifier = Modifier.width(100.dp).height(60.dp),
                 colors = TextFieldDefaults.textFieldColors(

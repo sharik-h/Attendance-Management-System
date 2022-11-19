@@ -3,6 +3,7 @@ package com.example.ams.ViewModel
 import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.ams.data.AttendceDetail
 import com.example.ams.data.NewCoureModel
 import com.example.ams.data.StudentDetail
 import com.google.firebase.auth.FirebaseAuth
@@ -14,11 +15,11 @@ class FirebaseViewModel: ViewModel() {
 
     val newStudent = mutableStateOf(StudentDetail())
     val newCourseData = mutableStateOf(NewCoureModel())
-    val course: MutableLiveData<List<NewCoureModel>> = MutableLiveData<List<NewCoureModel>>()
-
+    val courseNames: MutableLiveData<List<String>> = MutableLiveData()
+    val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
     private val firestore = Firebase.firestore
     private val storageRef = Firebase.storage.reference
-    private val currentUser = FirebaseAuth.getInstance().currentUser!!
+    private val currentUserUid = FirebaseAuth.getInstance().currentUser!!.uid
 
     init {
         fetchClasses()
@@ -26,20 +27,17 @@ class FirebaseViewModel: ViewModel() {
 
     fun createNewClass() {
         firestore
-            .document("${currentUser.uid}/${newCourseData.value.name}")
+            .document("$currentUserUid/${newCourseData.value.name}")
             .set(newCourseData.value)
     }
 
-    fun addStudent() {
+    fun addStudent(courseName: String) {
         var i = 0
-        val studentDetails = hashMapOf(
-            "name" to newStudent.value.name,
-            "phone" to newStudent.value.phone,
-            "registerNo" to newStudent.value.registerNo
-        )
-        firestore.document("${currentUser.uid}/${newStudent.value.name}")
-            .update("studentsList", studentDetails)
-        newStudent.value.images.forEach {
+        val images = newStudent.value.images
+        newStudent.value.images.clear()
+        firestore.document("$currentUserUid/$courseName/studentDetails/${newStudent.value.registerNo}")
+            .set(newStudent.value)
+        images.forEach {
             storageRef
                 .child("faces/${newStudent.value.registerNo}/${newStudent.value.name+i}")
                 .putFile(it!!)
@@ -52,7 +50,7 @@ class FirebaseViewModel: ViewModel() {
             when (name) {
                 "name" ->  it.value = it.value.copy(name = value)
                 "courseName" -> it.value = it.value.copy(courseName = value)
-                "batchFrom" -> it.value = it.value.copy(bactchFrom = value)
+                "batchFrom" -> it.value = it.value.copy(batchFrom = value)
                 "batchTo" -> it.value = it.value.copy(batchTo = value)
                 "noAttendance" -> it.value = it.value.copy(noAttendace = value)
             }
@@ -67,20 +65,36 @@ class FirebaseViewModel: ViewModel() {
 
     }
 
-    fun fetchClasses() {
-        firestore.collection(currentUser.uid)
+    private fun fetchClasses() {
+        val listOfClasses = mutableListOf<String>()
+        firestore.collection(currentUserUid)
             .get()
-            .addOnSuccessListener {  it->
-                it?.let {  it1 ->
-                    val documents = it1.documents
-                    val listOfClasses = mutableListOf<NewCoureModel>()
-                    documents.forEach {
-                        val data = it.toObject(NewCoureModel::class.java)
-                        if (data!!.courseName != "") {
-                            listOfClasses.add(data)
-                        }
+            .addOnSuccessListener {  result->
+                result?.let {  it1 ->
+                    it1.documents.forEach {
+                        listOfClasses.add(it.id)
                     }
-                    course.value = listOfClasses
+                    courseNames.value = listOfClasses
+                }
+            }
+    }
+
+    fun getStudentAtdDetails(courseName: String) {
+        val atdDetails = mutableListOf<AttendceDetail>()
+        firestore.collection("$currentUserUid/$courseName/tempAttendance")
+            .get()
+            .addOnSuccessListener { snapShot ->
+                val data = snapShot.documents
+                data?.let { it ->
+                    it.forEach { it1->
+                        val eachSTd = mutableListOf<Pair<Int, Boolean>>()
+                       it1.data?.forEach { it2->
+                           eachSTd.add(Pair(it2.key, it2.value) as Pair<Int, Boolean>)
+                       }
+                        val atd = AttendceDetail(registerNo = it1.id, attendance = eachSTd)
+                        atdDetails.add(atd)
+                        attendanceDetail.value = atdDetails
+                    }
                 }
             }
     }

@@ -29,7 +29,6 @@ import com.example.ams.Navigation.NEW_COURSE
 import com.example.ams.Navigation.Screen
 import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
-import com.example.ams.data.NewCoureModel
 
 
 @Composable
@@ -38,7 +37,7 @@ fun ListOfCoursePage(
     viewModel: FirebaseViewModel = viewModel()
 ) {
 
-    val listOfClasses by viewModel.course.observeAsState(initial = emptyList())
+    val listOfClasses by viewModel.courseNames.observeAsState(initial = emptyList())
     val bungeeStyle = FontFamily(Font(R.font.bungee))
     val addIcon = painterResource(id = R.drawable.add_icon)
     val importIcon = painterResource(id = R.drawable.import_icon)
@@ -85,8 +84,8 @@ fun ListOfCoursePage(
             }
         }else {
             LazyColumn() {
-               items(items = listOfClasses) {
-                   ClassItemModel(it, onClick = { navHostController.navigate(Screen.ViewCourse.route)})
+               items(items = listOfClasses) { name ->
+                   ClassItemModel(name, onClick = { navHostController.navigate(Screen.ViewCourse.passCourseName(name))})
                }
             }
         }
@@ -95,7 +94,7 @@ fun ListOfCoursePage(
 
 
 @Composable
-fun ClassItemModel(course: NewCoureModel, onClick: () -> Unit) {
+fun ClassItemModel(name: String, onClick: () -> Unit) {
     val bungeeStyle = FontFamily(Font(R.font.bungee))
 
     Column(
@@ -110,7 +109,7 @@ fun ClassItemModel(course: NewCoureModel, onClick: () -> Unit) {
             .clickable { onClick() }
     ) {
         Text(
-            text = course.courseName,
+            text = name,
             fontFamily = bungeeStyle,
             color = Color.White,
             modifier = Modifier.padding(start = 20.dp, bottom = 10.dp)
