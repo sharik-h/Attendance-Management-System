@@ -78,7 +78,8 @@ fun LoginPage(navHostController: NavHostController) {
                     context.startActivity(
                         Intent(context, Authenticate::class.java)
                             .putExtra("method", method)
-                            .putExtra("email", name))
+                            .putExtra("email", name)
+                            .putExtra("phone", name))
                 }
                       },
             modifier = Modifier.fillMaxWidth().height(50.dp),

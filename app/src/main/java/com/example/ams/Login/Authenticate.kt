@@ -1,7 +1,6 @@
 package com.example.ams.Login
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.activity.ComponentActivity
@@ -99,16 +98,14 @@ class Authenticate: ComponentActivity() {
          firebaseAuth.signInWithCredential(credentials)
              .addOnSuccessListener {
                  val currentUser = FirebaseAuth.getInstance().currentUser!!
-                 firebaseAuth.createUserWithEmailAndPassword(email, password)
-                     .addOnSuccessListener {
-                         Log.d("signing", "email is a success")
                          val credential12 = EmailAuthProvider.getCredential(email, password)
                          currentUser.linkWithCredential(credential12)
                              .addOnSuccessListener {
-                                 UserProfileChangeRequest.Builder().displayName = name
+                                 val profileUpdates = UserProfileChangeRequest.Builder()
+                                     .setDisplayName(name).build()
+                                 currentUser.updateProfile(profileUpdates)
                                  finishAffinity()
                              }
-                     }
              }
      }
 
