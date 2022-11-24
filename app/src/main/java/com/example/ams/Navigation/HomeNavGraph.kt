@@ -21,9 +21,16 @@ fun NavGraphBuilder.HomeNavGraph(
         }
         composable(
             route = Screen.ViewCourse.route,
-            arguments = listOf( navArgument(name = "courseName"){type = NavType.StringType} )
+            arguments = listOf(
+                navArgument(name = "courseName") { type = NavType.StringType },
+                navArgument(name = "adminId") { type = NavType.StringType }
+            )
         ) {
-            ViewCourse(navHostController = navHostController, courseName = it.arguments?.getString("courseName").toString())
+            ViewCourse(
+                navHostController = navHostController,
+                courseName = it.arguments?.getString("courseName").toString(),
+                adminId = it.arguments?.getString("adminId").toString()
+            )
         }
     }
 }

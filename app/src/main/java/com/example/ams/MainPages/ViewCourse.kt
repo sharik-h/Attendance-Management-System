@@ -27,9 +27,10 @@ import com.example.ams.data.AttendceDetail
 fun ViewCourse(
     navHostController: NavHostController,
     courseName: String,
+    adminId: String,
     viewModel: FirebaseViewModel = viewModel()
 ) {
-    viewModel.getStudentAtdDetails(courseName)
+    viewModel.getStudentAtdDetails(courseName, adminId)
     val attendanceDetail by viewModel.attendanceDetail.observeAsState(initial = emptyList())
 
     val arrowBackIcon = painterResource(id = R.drawable.arrow_back)

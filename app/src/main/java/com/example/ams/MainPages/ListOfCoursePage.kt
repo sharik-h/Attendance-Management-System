@@ -85,7 +85,7 @@ fun ListOfCoursePage(
         }else {
             LazyColumn() {
                items(items = listOfClasses) { name ->
-                   ClassItemModel(name, onClick = { navHostController.navigate(Screen.ViewCourse.passCourseName(name))})
+                   ClassItemModel(name.first, onClick = { navHostController.navigate(Screen.ViewCourse.passCourseName(name.first, name.second))})
                }
             }
         }
