@@ -4,6 +4,7 @@ import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.example.ams.MainPages.NewCourse
 import com.example.ams.MainPages.NewDataPage.AddNewStudent
+import com.example.ams.MainPages.NewDataPage.ImportCourse
 
 fun NavGraphBuilder.NewCourseNavGraph(
     navHostController: NavHostController
@@ -20,6 +21,9 @@ fun NavGraphBuilder.NewCourseNavGraph(
             arguments = listOf( navArgument(name = "courseName"){type = NavType.StringType} )
         ) {
             AddNewStudent(navHostController = navHostController, courseName = it.arguments?.getString("courseName").toString())
+        }
+        composable(route =  Screen.ImportCourse.route){
+            ImportCourse(navHostController = navHostController)
         }
     }
 }

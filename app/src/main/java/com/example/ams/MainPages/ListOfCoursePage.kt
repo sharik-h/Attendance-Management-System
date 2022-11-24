@@ -69,7 +69,7 @@ fun ListOfCoursePage(
                 Text(text = "Create a new class", fontFamily = bungeeStyle)
                 Text(text = "or", fontFamily = bungeeStyle)
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { navHostController.navigate(Screen.ImportCourse.route) },
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
                         .background(Color.Black)

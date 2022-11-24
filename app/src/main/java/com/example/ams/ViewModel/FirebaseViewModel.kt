@@ -14,6 +14,7 @@ import com.google.firebase.storage.ktx.storage
 class FirebaseViewModel: ViewModel() {
 
     val newStudent = mutableStateOf(StudentDetail())
+    val requestData = mutableStateOf(RequestCourseModel())
     val newCourseData = mutableStateOf(NewCoureModel())
     val courseNames: MutableLiveData<List<String>> = MutableLiveData()
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
@@ -97,5 +98,21 @@ class FirebaseViewModel: ViewModel() {
                     }
                 }
             }
+    }
+
+    fun requestAdmin() {
+        requestData.let {
+            if (it.value.ClassName != "" && it.value.AdminPhone != "") {
+                it.value = it.value.copy(
+                    TeacherName = getuser?.displayName.toString(),
+                    TeacherPhone = getuser?.phoneNumber.toString(),
+                    TeacherUid = currentUserUid
+                )
+                firestore
+                    .collection("Requests/${it.value.AdminPhone}/RequestToImport")
+                    .add(it.value)
+            }
+        }
+
     }
 }
