@@ -3,9 +3,7 @@ package com.example.ams.ViewModel
 import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.ams.data.AttendceDetail
-import com.example.ams.data.NewCoureModel
-import com.example.ams.data.StudentDetail
+import com.example.ams.data.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -13,13 +11,16 @@ import com.google.firebase.storage.ktx.storage
 
 class FirebaseViewModel: ViewModel() {
 
+    val allNotification: MutableLiveData<MutableList<RequestCourseModel>> = MutableLiveData()
     val newStudent = mutableStateOf(StudentDetail())
-    val requestData = mutableStateOf(RequestCourseModel())
     val newCourseData = mutableStateOf(NewCoureModel())
+    val requestData = mutableStateOf(RequestCourseModel())
     val courseNames: MutableLiveData<List<Pair<String, String>>> = MutableLiveData()
+    val courseData: MutableLiveData<NewCoureModel> = MutableLiveData()
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
     private val firestore = Firebase.firestore
     private val storageRef = Firebase.storage.reference
+    private val getuser = FirebaseAuth.getInstance().currentUser
     private val currentUserUid = FirebaseAuth.getInstance().currentUser!!.uid
 
     init {
@@ -27,6 +28,7 @@ class FirebaseViewModel: ViewModel() {
     }
 
     fun createNewClass() {
+        newCourseData.value.adminId = currentUserUid
         firestore
             .document("$currentUserUid/${newCourseData.value.name}")
             .set(newCourseData.value)
@@ -63,7 +65,12 @@ class FirebaseViewModel: ViewModel() {
                 "studentPhone" -> it.value = it.value.copy(phone = value)
             }
         }
-
+        (requestData).let {
+            when(name) {
+                "importClassName" -> it.value = it.value.copy(ClassName = value)
+                "creatorPhoneNo" -> it.value = it.value.copy(AdminPhone = value)
+            }
+        }
     }
 
     private fun fetchClasses() {
@@ -77,6 +84,15 @@ class FirebaseViewModel: ViewModel() {
                     }
                     courseNames.value = listOfClasses
                 }
+            }
+    }
+
+    private fun getCourseDetails(id: String, name: String) {
+        firestore.document("$id/$name")
+            .get()
+            .addOnSuccessListener {
+                val data = it.toObject(NewCoureModel::class.java)
+                if (data != null) { courseData.value = data }
             }
     }
 
@@ -114,5 +130,45 @@ class FirebaseViewModel: ViewModel() {
             }
         }
 
+    }
+
+    fun getAllNotifications() {
+        val requests = mutableListOf<RequestCourseModel>()
+        firestore.collection("Requests/${getuser?.phoneNumber}/RequestToImport")
+            .get()
+            .addOnSuccessListener { SnapShot ->
+                val documents = SnapShot.documents
+                documents?.let {
+                    documents.forEach { data ->
+                        val doc = data.toObject(RequestCourseModel::class.java)
+                        doc?.requestId = data.id
+                        requests.add(doc!!)
+                    }
+                    allNotification.value = requests
+                }
+            }
+    }
+
+    fun acceptTeacher(data: RequestCourseModel) {
+        val teacherDetails = TeachersList(
+            name = data.TeacherName,
+            phone = data.TeacherPhone,
+            email = data.TeacherEmail,
+            uid = data.TeacherUid
+        )
+        newStudent.value.images.clear()
+        firestore.document("$currentUserUid/${data.ClassName}/teacherDetails/sushu")
+            .set(teacherDetails)
+        getCourseDetails(currentUserUid, data.ClassName)
+        firestore
+            .document("${data.TeacherUid}/${data.ClassName}")
+            .set(courseData)
+        firestore.document("Requests/8129697750/RequestToImport/${data.requestId}").delete()
+    }
+
+    fun ignoreTeacher(id: String) {
+        firestore
+            .document("Requests/${getuser?.phoneNumber}/RequestToImport/$id")
+            .delete()
     }
 }

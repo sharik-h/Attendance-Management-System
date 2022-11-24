@@ -44,7 +44,7 @@ fun ViewCourse(
          }
          Text(text = courseName, fontFamily = bungee, color = Color.White)
          Spacer(modifier = Modifier.weight(0.5f))
-         IconButton(onClick = { /*TODO*/ }) {
+         IconButton(onClick = { navHostController.navigate(Screen.Notifications.route) }) {
              Icon(painter = moreOptionIcon, contentDescription = "")
          }
      }

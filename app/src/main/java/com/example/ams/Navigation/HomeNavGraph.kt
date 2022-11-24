@@ -3,6 +3,7 @@ package com.example.ams.Navigation
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.example.ams.MainPages.ListOfCoursePage
+import com.example.ams.MainPages.Notifications
 import com.example.ams.MainPages.ViewCourse
 import com.example.ams.SplashScreen.SplashScreen
 
@@ -18,6 +19,9 @@ fun NavGraphBuilder.HomeNavGraph(
         }
         composable(route = Screen.ListOfCoursesPage.route) {
             ListOfCoursePage(navHostController = navHostController)
+        }
+        composable(route = Screen.Notifications.route){
+            Notifications(navHostController = navHostController)
         }
         composable(
             route = Screen.ViewCourse.route,
