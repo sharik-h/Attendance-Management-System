@@ -35,6 +35,7 @@ import java.io.ByteArrayOutputStream
 fun AddNewStudent(
     navHostController: NavHostController,
     courseName: String,
+    adminId: String,
     viewModel: FirebaseViewModel = viewModel()
 ) {
     var i = 0
@@ -102,7 +103,7 @@ fun AddNewStudent(
         Spacer(modifier = Modifier.weight(0.5f))
         Button(
             onClick = {
-                viewModel.addStudent(courseName)
+                viewModel.addStudent(courseName = courseName, adminId =  adminId)
                 navHostController.navigateUp()
                       },
             modifier = Modifier

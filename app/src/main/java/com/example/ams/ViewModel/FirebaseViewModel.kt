@@ -34,11 +34,11 @@ class FirebaseViewModel: ViewModel() {
             .set(newCourseData.value)
     }
 
-    fun addStudent(courseName: String) {
+    fun addStudent(courseName: String, adminId: String) {
         var i = 0
         val images = newStudent.value.images
         newStudent.value.images.clear()
-        firestore.document("$currentUserUid/$courseName/studentDetails/${newStudent.value.registerNo}")
+        firestore.document("$adminId/$courseName/studentDetails/${newStudent.value.registerNo}")
             .set(newStudent.value)
         images.forEach {
             storageRef

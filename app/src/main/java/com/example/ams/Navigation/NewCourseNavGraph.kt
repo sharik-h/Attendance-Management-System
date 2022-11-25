@@ -18,9 +18,16 @@ fun NavGraphBuilder.NewCourseNavGraph(
         }
         composable(
             route = Screen.NewStudent.route,
-            arguments = listOf( navArgument(name = "courseName"){type = NavType.StringType} )
+            arguments = listOf(
+                navArgument(name = "courseName"){type = NavType.StringType},
+                navArgument(name = "adminId"){type = NavType.StringType}
+            )
         ) {
-            AddNewStudent(navHostController = navHostController, courseName = it.arguments?.getString("courseName").toString())
+            AddNewStudent(
+                navHostController = navHostController,
+                courseName = it.arguments?.getString("courseName").toString(),
+                adminId = it.arguments?.getString("adminId").toString()
+            )
         }
         composable(route =  Screen.ImportCourse.route){
             ImportCourse(navHostController = navHostController)
