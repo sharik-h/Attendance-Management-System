@@ -7,12 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +34,7 @@ fun ListOfCoursePage(
 ) {
 
     val listOfClasses by viewModel.courseNames.observeAsState(initial = emptyList())
+    var isDropDownVisible by remember { mutableStateOf(false) }
     val bungeeStyle = FontFamily(Font(R.font.bungee))
     val addIcon = painterResource(id = R.drawable.add_icon)
     val importIcon = painterResource(id = R.drawable.import_icon)
@@ -55,6 +52,18 @@ fun ListOfCoursePage(
                 color = Color.White,
                 modifier = Modifier.padding(start = 20.dp)
             )
+            Spacer(modifier = Modifier.weight(0.5f))
+            TextButton(onClick = { isDropDownVisible = !isDropDownVisible }) {
+                Text(text = "+New Class", color = Color.White, fontFamily = bungeeStyle)
+                DropdownMenu(expanded = isDropDownVisible, onDismissRequest = { isDropDownVisible = false }) {
+                    TextButton(onClick = { navHostController.navigate(Screen.NewCourse.route )}) {
+                        Text(text = "Create", color = Color.White, fontFamily = bungeeStyle)
+                    }
+                    TextButton(onClick = { navHostController.navigate(Screen.ImportCourse.route) }) {
+                        Text(text = "Import", color = Color.White, fontFamily = bungeeStyle)
+                    }
+                }
+            }
 
         }
         if (listOfClasses.isEmpty()) {
