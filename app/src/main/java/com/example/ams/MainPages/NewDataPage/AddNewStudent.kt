@@ -10,7 +10,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -55,7 +57,8 @@ fun AddNewStudent(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp) ) {
+            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+            .verticalScroll(rememberScrollState()) ) {
         Text(
             text = "Student details",
             fontFamily = bungeeStyle,
