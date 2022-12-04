@@ -87,7 +87,7 @@ class FirebaseViewModel: ViewModel() {
             }
     }
 
-    private fun getCourseDetails(id: String, name: String) {
+    fun getCourseDetails(id: String, name: String) {
         firestore.document("$id/$name")
             .get()
             .addOnSuccessListener {

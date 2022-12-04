@@ -75,7 +75,11 @@ fun ViewCourse(
              .padding(horizontal = 10.dp, vertical = 5.dp)
      ) {
          Button(
-             onClick = { /*TODO*/ },
+             onClick = {
+                 navHostController.navigate(
+                     Screen.ViewDetails.passCourseName(courseName = courseName, adminId = adminId)
+                 )
+             },
              modifier = Modifier.weight(0.5f),
              colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
          ) {

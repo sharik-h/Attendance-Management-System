@@ -20,4 +20,7 @@ sealed class Screen(val route: String) {
     }
     object ImportCourse: Screen(route = "ImportCourse")
     object Notifications: Screen(route = "Notifications")
+    object ViewDetails: Screen(route = "ViewDetails/{courseName}/{adminId}"){
+        fun passCourseName(courseName: String, adminId: String) = "ViewDetails/$courseName/$adminId"
+    }
 }
