@@ -24,8 +24,10 @@ fun ViewDetails(
     adminId: String,
     viewModel: FirebaseViewModel = viewModel()
 ) {
-    viewModel.getCourseDetails(id = adminId, name = courseName)
-    val newCourseData = viewModel.courseData.value
+    val newCourseData = viewModel.newCourseData.value
+    if (newCourseData.name.isNullOrBlank()){
+        viewModel.getCourseDetails(id = adminId, name = courseName)
+    }
 
     val bungee = FontFamily(Font(R.font.bungee))
     var isEditEnabled by remember { mutableStateOf(false) }
@@ -105,7 +107,7 @@ fun ViewDetails(
                 if (isEditEnabled) {
                     Button(
                         onClick = {
-                            viewModel.createNewClass()
+                            viewModel.updateCourseDetails(courseName)
                             navHostController.popBackStack()
                         },
                         modifier = Modifier

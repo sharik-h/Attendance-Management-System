@@ -92,7 +92,7 @@ class FirebaseViewModel: ViewModel() {
             .get()
             .addOnSuccessListener {
                 val data = it.toObject(NewCoureModel::class.java)
-                if (data != null) { courseData.value = data }
+                if (data != null) { newCourseData.value = data }
             }
     }
 
@@ -170,5 +170,22 @@ class FirebaseViewModel: ViewModel() {
         firestore
             .document("Requests/${getuser?.phoneNumber}/RequestToImport/$id")
             .delete()
+    }
+
+    fun updateCourseDetails(name: String) {
+        (newCourseData.value).let {
+            firestore
+                .document("${it.adminId}/$name")
+                .update(
+                    mapOf(
+                        "adminId" to it!!.adminId,
+                        "name" to it!!.name,
+                        "courseName" to it!!.courseName,
+                        "batchFrom" to it!!.batchFrom,
+                        "batchTo" to it!!.batchTo,
+                        "noAttendace" to it!!.noAttendace
+                    )
+                )
+        }
     }
 }
