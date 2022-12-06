@@ -27,7 +27,7 @@ class FirebaseViewModel: ViewModel() {
         fetchClasses()
     }
 
-    fun createNewClass() {
+    private fun createNewClass() {
         newCourseData.value.adminId = currentUserUid
         firestore
             .document("$currentUserUid/${newCourseData.value.name}")
@@ -186,6 +186,19 @@ class FirebaseViewModel: ViewModel() {
                         "noAttendace" to it!!.noAttendace
                     )
                 )
+        }
+    }
+
+    fun checkIfNameIsUsed(): Boolean {
+        return courseNames.value?.contains(Pair(newCourseData.value.name, currentUserUid)) ?: false
+    }
+
+    fun checkAndCreateClass():Boolean {
+        return if (!checkIfNameIsUsed()){
+            createNewClass()
+            true
+        }else{
+            false
         }
     }
 }

@@ -41,7 +41,10 @@ fun NewCourse(
         Text( text = "Name", fontFamily = bungeeStyle, fontSize = 15.sp)
         CustomTextFeild(
             value = newCourseData.name,
-            onValueChange = { viewModel.updateData("name", it) })
+            onValueChange = { viewModel.updateData("name", it) },
+            isError = viewModel.checkIfNameIsUsed(),
+            errorMessage = "You cannot take this name, It is already taken"
+        )
         Text(text = "Course name", fontFamily = bungeeStyle, fontSize = 15.sp)
         CustomTextFeild(
             value = newCourseData.courseName,
@@ -66,10 +69,7 @@ fun NewCourse(
         }
         Spacer(modifier = Modifier.weight(0.9f))
         Button(
-            onClick = {
-                viewModel.createNewClass()
-                navHostController.popBackStack()
-                      },
+            onClick = { if(viewModel.checkAndCreateClass()) navHostController.popBackStack() },
             modifier = Modifier
                 .height(40.dp)
                 .fillMaxWidth(),
