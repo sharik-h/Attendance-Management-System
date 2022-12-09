@@ -32,92 +32,43 @@ fun ViewCourse(
 ) {
     viewModel.getStudentAtdDetails(courseName, adminId)
     val attendanceDetail by viewModel.attendanceDetail.observeAsState(initial = emptyList())
-
+    var size = 0
+    if (!attendanceDetail.isNullOrEmpty()) { size = attendanceDetail[0].attendance.size }
     val arrowBackIcon = painterResource(id = R.drawable.arrow_back)
-    val moreOptionIcon = painterResource(id = R.drawable.option_icon)
+    val addIconWhite = painterResource(id = R.drawable.add_icon_white)
+    val notificationIcon = painterResource(id = R.drawable.notification_white)
+    val infoIcon = painterResource(id = R.drawable.info_white)
+    val addPersonIcon = painterResource(id = R.drawable.add_person_white)
     val bungee = FontFamily(Font(R.font.bungee))
 
  Column(modifier = Modifier.fillMaxSize()) {
      TopAppBar {
          IconButton(onClick = { navHostController.navigateUp() }) {
-             Icon(painter = arrowBackIcon, contentDescription = "")
+             Image(painter = arrowBackIcon, contentDescription = "")
          }
          Text(text = courseName, fontFamily = bungee, color = Color.White)
          Spacer(modifier = Modifier.weight(0.5f))
+         IconButton(onClick = { navHostController.navigate(Screen.ViewDetails.passCourseName(courseName = courseName, adminId = adminId)) }) {
+             Image(painter = infoIcon, contentDescription = "")
+         }
          IconButton(onClick = { navHostController.navigate(Screen.Notifications.route) }) {
-             Icon(painter = moreOptionIcon, contentDescription = "")
+             Image(painter = notificationIcon, contentDescription = "")
+         }
+         IconButton(onClick = { navHostController.navigate(Screen.NewStudent.passCourseName(courseName = courseName, adminId = adminId)) }) {
+             Image(painter = addPersonIcon, contentDescription = "")
          }
      }
      Row(
          Modifier
              .fillMaxWidth()
-             .padding(horizontal = 10.dp, vertical = 5.dp)
+             .height(40.dp)
+             .padding(start = 10.dp, top = 5.dp)
      ) {
-         Button(
-             onClick = { navHostController.navigate(Screen.NewStudent.passCourseName(courseName = courseName, adminId = adminId)) },
-             modifier = Modifier.weight(0.5f),
-             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
-         ) {
-             Text(text = "add std", fontFamily = bungee, color = Color.White)
-         }
-         Spacer(modifier = Modifier.width(10.dp))
-         Button(
-             onClick = { /*TODO*/ },
-             modifier = Modifier.weight(0.5f),
-             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
-         ) {
-             Text(text = "Take atd", fontFamily = bungee, color = Color.White)
-         }
-     }
-     Row(
-         Modifier
-             .fillMaxWidth()
-             .padding(horizontal = 10.dp, vertical = 5.dp)
-     ) {
-         Button(
-             onClick = {
-                 navHostController.navigate(
-                     Screen.ViewDetails.passCourseName(courseName = courseName, adminId = adminId)
-                 )
-             },
-             modifier = Modifier.weight(0.5f),
-             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
-         ) {
-             Text(text = "view details", fontFamily = bungee, color = Color.White)
-         }
-         Spacer(modifier = Modifier.width(10.dp))
-         Button(
-             onClick = { /*TODO*/ },
-             modifier = Modifier.weight(0.5f),
-             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
-         ) {
-             Text(text = "Edit atd/cls", fontFamily = bungee, color = Color.White)
-         }
-     }
-     Spacer(modifier = Modifier.height(10.dp))
-     Divider(thickness = 1.dp, color = Color.Black)
-     Column(
-         Modifier
-             .fillMaxWidth()
-             .height(30.dp)
-     ) {
-         Row(Modifier.fillMaxWidth()
-         ) {
-             Row(
-                 Modifier
-                     .weight(0.7f)
-                     .padding(start = 10.dp)
-             ) {
-                 Text(text = "Name", fontSize = 20.sp)
-             }
-             for (i in 1..attendanceDetail.size){
-                 Row(Modifier.weight(0.1f)) {
-                     Divider(modifier = Modifier
-                         .width(3.dp)
-                         .fillMaxHeight(), color = Color.Black)
-                     Spacer(modifier = Modifier.width(9.dp) )
-                     Text(text = "$i", fontSize = 20.sp)
-                 }
+         Text(text = "Name", fontSize = 20.sp, modifier = Modifier.weight(0.7f))
+         for (i in 1..size) {
+             Row(Modifier.weight(0.1f)) {
+                 Spacer(modifier = Modifier.width(9.dp))
+                 Text(text = "$i", fontSize = 20.sp)
              }
          }
      }
@@ -125,9 +76,21 @@ fun ViewCourse(
      LazyColumn {
          items(items = attendanceDetail){
              StudentAttendance(attendance = it)
+             Divider(thickness = 0.5.dp, color = Color.Black, modifier = Modifier.padding(top = 10.dp))
          }
      }
  }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.End
+    ) {
+        FloatingActionButton(onClick = { /*TODO*/ }, backgroundColor = Color.Black) {
+            Image(painter = addIconWhite, contentDescription = "")
+        }
+    }
 }
 
 @Composable
@@ -135,34 +98,23 @@ fun StudentAttendance(attendance: AttendceDetail) {
     val chekMarkImg = painterResource(id = R.drawable.check_mark)
     val closeMarkImg = painterResource(id = R.drawable.close_mark)
 
-    Column(
-       modifier = Modifier.fillMaxWidth().height(36.dp)
+    Row(
+        modifier = Modifier.fillMaxWidth().height(36.dp)
+            .padding(start = 10.dp, top = 0.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                Modifier
-                    .weight(0.7f)
-                    .padding(start = 10.dp)
-            ) {
-                Text(text = attendance.registerNo, fontSize = 20.sp)
-            }
-            attendance.attendance!!.forEach {
-                Row(Modifier.weight(0.1f)) {
-                    Divider(modifier = Modifier
-                        .width(3.dp)
-                        .fillMaxHeight(), color = Color.Black)
-                    Spacer(modifier = Modifier.width(9.dp) )
-                    if (it.second){
-                        Image(painter = chekMarkImg, contentDescription = "")
-                    }else {
-                        Image(painter = closeMarkImg, contentDescription = "")
-                    }
+        Text(text = attendance.registerNo, fontSize = 20.sp, modifier = Modifier
+            .weight(0.7f)
+            .padding(top = 10.dp))
+        attendance.attendance!!.forEach {
+            Row(Modifier.weight(0.1f)) {
+                Spacer(modifier = Modifier.width(5.dp) )
+                if (it.second){
+                    Image(painter = chekMarkImg, contentDescription = "", modifier = Modifier.padding(top = 10.dp))
+                }else {
+                    Image(painter = closeMarkImg, contentDescription = "", modifier = Modifier.padding(top = 10.dp))
                 }
             }
         }
     }
-    Divider(thickness = 1.dp, color = Color.Black)
 }

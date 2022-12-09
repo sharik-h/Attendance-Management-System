@@ -36,7 +36,7 @@ fun ListOfCoursePage(
     val listOfClasses by viewModel.courseNames.observeAsState(initial = emptyList())
     var isDropDownVisible by remember { mutableStateOf(false) }
     val bungeeStyle = FontFamily(Font(R.font.bungee))
-    val addIcon = painterResource(id = R.drawable.add_icon)
+    val addIcon = painterResource(id = R.drawable.add_icon_black)
     val importIcon = painterResource(id = R.drawable.import_icon)
 
     Column(modifier = Modifier.fillMaxSize()) {
