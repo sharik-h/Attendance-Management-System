@@ -15,6 +15,7 @@ class FirebaseViewModel: ViewModel() {
     val newStudent = mutableStateOf(StudentDetail())
     val newCourseData = mutableStateOf(NewCoureModel())
     val requestData = mutableStateOf(RequestCourseModel())
+    val teacherDetailsList: MutableLiveData<List<TeachersList>> = MutableLiveData()
     val courseNames: MutableLiveData<List<Pair<String, String>>> = MutableLiveData()
     val courseData: MutableLiveData<NewCoureModel> = MutableLiveData()
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
@@ -202,5 +203,20 @@ class FirebaseViewModel: ViewModel() {
         }else{
             false
         }
+    }
+
+    fun fetchAllTeachersDetails(adminId: String, courseName: String) {
+        val listOfTeacherDetails = mutableListOf<TeachersList>()
+        firestore.collection("$adminId/$courseName/teacherDetails")
+            .get()
+            .addOnSuccessListener { snapShot ->
+                snapShot?.let { documents->
+                    documents.documents.forEach {
+                        val data = it.toObject(TeachersList::class.java)
+                        if (data != null) { listOfTeacherDetails.add(data) }
+                    }
+                    teacherDetailsList.value = listOfTeacherDetails
+                }
+            }
     }
 }
