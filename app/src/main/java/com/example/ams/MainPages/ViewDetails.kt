@@ -16,6 +16,7 @@ import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.ams.Navigation.Screen
 
 @Composable
 fun ViewDetails(
@@ -117,6 +118,28 @@ fun ViewDetails(
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
                     ) {
                         Text(text = "update details", fontFamily = bungee, color = Color.White)
+                    }
+                }else{
+                    Button(
+                        onClick = { navHostController.navigate(Screen.ViewTeachers.passCourseName(courseName = courseName, adminId = adminId)) },
+                        modifier = Modifier
+                            .height(40.dp)
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(2.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+                    ) {
+                        Text(text = "View all Teachers", fontFamily = bungee, color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = {  },
+                        modifier = Modifier
+                            .height(40.dp)
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(2.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+                    ) {
+                        Text(text = "View all students", fontFamily = bungee, color = Color.White)
                     }
                 }
             }
