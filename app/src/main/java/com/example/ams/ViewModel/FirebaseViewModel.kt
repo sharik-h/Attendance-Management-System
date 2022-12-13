@@ -47,8 +47,8 @@ class FirebaseViewModel: ViewModel() {
                 .putFile(it!!)
             i++
         }
-        firestore.collection("$adminId/$courseName/tempAttendance/${newStudent.value.registerNo}")
-            .add(mapOf(1 to false))
+        firestore.document("$adminId/$courseName/tempAttendance/${newStudent.value.registerNo}")
+            .set(hashMapOf("1" to false))
     }
 
     fun updateData(name: String, value: String) {
