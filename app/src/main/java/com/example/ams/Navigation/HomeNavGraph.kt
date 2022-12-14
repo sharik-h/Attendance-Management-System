@@ -3,6 +3,7 @@ package com.example.ams.Navigation
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.example.ams.MainPages.*
+import com.example.ams.MainPages.NewDataPage.ViewStudentDetails
 import com.example.ams.SplashScreen.SplashScreen
 
 fun NavGraphBuilder.HomeNavGraph(
@@ -58,6 +59,34 @@ fun NavGraphBuilder.HomeNavGraph(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
                 adminId = it.arguments?.getString("adminId").toString()
+            )
+        }
+        composable(
+            route = Screen.ViewStudents.route,
+            arguments = listOf(
+                navArgument(name = "courseName") { type = NavType.StringType },
+                navArgument(name = "adminId"){ type = NavType.StringType }
+            )
+        ){
+            ViewStudents(
+                navHostController = navHostController,
+                adminId = it.arguments?.getString("adminId").toString(),
+                courseName = it.arguments?.getString("courseName").toString()
+            )
+        }
+        composable(
+            route = Screen.ViewStudentDetails.route,
+            arguments = listOf(
+                navArgument(name = "courseName") { type = NavType.StringType },
+                navArgument(name = "adminId") { type = NavType.StringType },
+                navArgument(name = "registerNo") { type = NavType.StringType }
+            )
+        ){
+            ViewStudentDetails(
+                navHostController = navHostController,
+                courseName = it.arguments?.getString("courseName").toString(),
+                adminId = it.arguments?.getString("adminId").toString(),
+                registerNo = it.arguments?.getString("registerNo").toString()
             )
         }
     }

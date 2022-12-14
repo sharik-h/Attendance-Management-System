@@ -19,6 +19,7 @@ class FirebaseViewModel: ViewModel() {
     val courseNames: MutableLiveData<List<Pair<String, String>>> = MutableLiveData()
     val courseData: MutableLiveData<NewCoureModel> = MutableLiveData()
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
+    val studentList: MutableLiveData<List<String>> = MutableLiveData()
     private val firestore = Firebase.firestore
     private val storageRef = Firebase.storage.reference
     private val getuser = FirebaseAuth.getInstance().currentUser
@@ -218,5 +219,33 @@ class FirebaseViewModel: ViewModel() {
                     teacherDetailsList.value = listOfTeacherDetails
                 }
             }
+    }
+
+    fun getAllStudents(adminId: String, courseName: String) {
+        val docids = mutableListOf<String>()
+        firestore.collection("$adminId/$courseName/studentDetails")
+            .get()
+            .addOnSuccessListener { snapShot ->
+                snapShot?.let {
+                    snapShot.documents.forEach { doc ->
+                        val name = doc.id
+                        docids.add(name)
+                    }
+                    studentList.value = docids
+                }
+            }
+    }
+
+    fun getStudentDetails(courseName: String, adminId: String, registerNo: String) {
+        var studentData = StudentDetail()
+        firestore.document("$adminId/$courseName/studentDetails/$registerNo")
+            .get()
+            .addOnSuccessListener { snapShot->
+                snapShot?.let { document->
+                    studentData = document.toObject(StudentDetail::class.java)!!
+                }
+                newStudent.value = studentData
+            }
+
     }
 }

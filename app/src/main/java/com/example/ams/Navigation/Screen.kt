@@ -26,4 +26,10 @@ sealed class Screen(val route: String) {
     object ViewTeachers: Screen(route = "ViewTeachers/{courseName}/{adminId}"){
         fun passCourseName(courseName: String, adminId: String) = "ViewTeachers/$courseName/$adminId"
     }
+    object ViewStudents: Screen(route = "ViewStudents/{courseName}/{adminId}") {
+        fun passCourseName(courseName: String, adminId: String) = "ViewStudents/$courseName/$adminId"
+    }
+    object ViewStudentDetails: Screen(route = "ViewStudentDetails/{courseName}/{adminId}/{registerNo}") {
+        fun passCourseName(courseName: String, adminId: String, registerNo: String) = "ViewStudentDetails/$courseName/$adminId/$registerNo"
+    }
 }

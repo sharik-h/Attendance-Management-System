@@ -132,7 +132,7 @@ fun ViewDetails(
                     }
                     Spacer(modifier = Modifier.height(20.dp))
                     Button(
-                        onClick = {  },
+                        onClick = { navHostController.navigate(Screen.ViewStudents.passCourseName(courseName = courseName, adminId = adminId)) },
                         modifier = Modifier
                             .height(40.dp)
                             .fillMaxWidth(),
