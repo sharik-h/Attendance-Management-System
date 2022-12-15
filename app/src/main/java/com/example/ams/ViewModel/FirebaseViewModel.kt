@@ -24,6 +24,7 @@ class FirebaseViewModel: ViewModel() {
     private val storageRef = Firebase.storage.reference
     private val getuser = FirebaseAuth.getInstance().currentUser
     private val currentUserUid = FirebaseAuth.getInstance().currentUser!!.uid
+    private val studentAtdData = mutableListOf<String>()
 
     init {
         fetchClasses()
@@ -74,6 +75,14 @@ class FirebaseViewModel: ViewModel() {
                 "importClassName" -> it.value = it.value.copy(ClassName = value)
                 "creatorPhoneNo" -> it.value = it.value.copy(AdminPhone = value)
             }
+        }
+    }
+
+    fun addAtdData(registerNo: String) {
+        if (studentAtdData.contains(registerNo)) {
+            studentAtdData.remove(registerNo)
+        }else{
+            studentAtdData.add(registerNo)
         }
     }
 
@@ -247,5 +256,13 @@ class FirebaseViewModel: ViewModel() {
                 newStudent.value = studentData
             }
 
+    }
+
+    fun markAttendance(adminId: String, courseName: String, size: Int) {
+        studentList.value?.forEach { registerNo ->
+            val present = studentAtdData.contains(registerNo)
+            firestore.document("$adminId/$courseName/tempAttendance/$registerNo")
+                .update("$size", present)
+        }
     }
 }

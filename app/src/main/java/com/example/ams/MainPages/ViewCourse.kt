@@ -5,8 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +31,7 @@ fun ViewCourse(
 ) {
     viewModel.getStudentAtdDetails(courseName, adminId)
     val attendanceDetail by viewModel.attendanceDetail.observeAsState(initial = emptyList())
+    var selected by remember{ mutableStateOf(false) }
     var size = 0
     if (!attendanceDetail.isNullOrEmpty()) { size = attendanceDetail[0].attendance.size }
     val arrowBackIcon = painterResource(id = R.drawable.arrow_back)
@@ -39,6 +39,8 @@ fun ViewCourse(
     val notificationIcon = painterResource(id = R.drawable.notification_white)
     val infoIcon = painterResource(id = R.drawable.info_white)
     val addPersonIcon = painterResource(id = R.drawable.add_person_white)
+    val checkItemsIcon = painterResource(id = R.drawable.check_item_icon_white)
+    val faceRecoIcon = painterResource(id = R.drawable.face_reco_icon_white)
     val bungee = FontFamily(Font(R.font.bungee))
 
  Column(modifier = Modifier.fillMaxSize()) {
@@ -87,7 +89,27 @@ fun ViewCourse(
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.End
     ) {
-        FloatingActionButton(onClick = { /*TODO*/ }, backgroundColor = Color.Black) {
+        if (selected){
+            FloatingActionButton(
+                onClick = { navHostController.navigate(Screen.MarkAtdManually
+                    .passCourseName(courseName = courseName, adminId = adminId, size = size)) },
+                backgroundColor = Color.Black,
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .size(45.dp)
+            ) {
+                Image(painter = checkItemsIcon, contentDescription = "")
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            FloatingActionButton(onClick = { }, backgroundColor = Color.Black, modifier = Modifier
+                .padding(end = 8.dp)
+                .size(45.dp)
+            ) {
+                Image(painter = faceRecoIcon, contentDescription = "")
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+        FloatingActionButton(onClick = { selected = !selected  }, backgroundColor = Color.Black) {
             Image(painter = addIconWhite, contentDescription = "")
         }
     }
@@ -99,7 +121,9 @@ fun StudentAttendance(attendance: AttendceDetail) {
     val closeMarkImg = painterResource(id = R.drawable.close_mark)
 
     Row(
-        modifier = Modifier.fillMaxWidth().height(36.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(36.dp)
             .padding(start = 10.dp, top = 0.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

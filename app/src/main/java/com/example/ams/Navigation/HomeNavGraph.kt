@@ -89,5 +89,20 @@ fun NavGraphBuilder.HomeNavGraph(
                 registerNo = it.arguments?.getString("registerNo").toString()
             )
         }
+        composable(
+            route = Screen.MarkAtdManually.route,
+            arguments = listOf(
+                navArgument(name = "courseName") { type = NavType.StringType },
+                navArgument(name = "adminId") { type = NavType.StringType },
+                navArgument(name = "size") { type = NavType.IntType }
+            )
+        ) {
+            MarkAtdManually(
+                navHostController = navHostController,
+                courseName = it.arguments?.getString("courseName").toString(),
+                adminId = it.arguments?.getString("adminId").toString(),
+                size = it.arguments?.getInt("size")!!
+            )
+        }
     }
 }
