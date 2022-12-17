@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.ams.Navigation.Screen
 
@@ -23,12 +22,11 @@ fun ViewDetails(
     navHostController: NavHostController,
     courseName: String,
     adminId: String,
-    viewModel: FirebaseViewModel = viewModel()
+    viewModel: FirebaseViewModel
 ) {
     val newCourseData = viewModel.newCourseData.value
-    if (newCourseData.name.isNullOrBlank()){
-        viewModel.getCourseDetails(id = adminId, name = courseName)
-    }
+    viewModel.getCourseDetails(id = adminId, name = courseName)
+
 
     val bungee = FontFamily(Font(R.font.bungee))
     var isEditEnabled by remember { mutableStateOf(false) }

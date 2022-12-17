@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun ViewStudentDetails(
@@ -23,7 +22,7 @@ fun ViewStudentDetails(
     courseName: String,
     adminId: String,
     registerNo: String,
-    viewModel: FirebaseViewModel = viewModel()
+    viewModel: FirebaseViewModel
 ) {
     viewModel.getStudentDetails(courseName = courseName, adminId = adminId, registerNo = registerNo)
     val studentData = viewModel.newStudent.value

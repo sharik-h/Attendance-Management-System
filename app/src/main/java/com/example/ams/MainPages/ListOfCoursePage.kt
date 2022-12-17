@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.ams.Navigation.NEW_COURSE
 import com.example.ams.Navigation.Screen
@@ -30,7 +29,7 @@ import com.example.ams.ViewModel.FirebaseViewModel
 @Composable
 fun ListOfCoursePage(
     navHostController: NavHostController,
-    viewModel: FirebaseViewModel = viewModel()
+    viewModel: FirebaseViewModel
 ) {
 
     val listOfClasses by viewModel.courseNames.observeAsState(initial = emptyList())

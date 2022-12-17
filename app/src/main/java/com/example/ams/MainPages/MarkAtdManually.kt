@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun MarkAtdManually(
@@ -26,7 +25,7 @@ fun MarkAtdManually(
     courseName: String,
     adminId: String,
     size: Int,
-    viewModel: FirebaseViewModel = viewModel()
+    viewModel: FirebaseViewModel
 ) {
     viewModel.getAllStudents(adminId = adminId, courseName = courseName)
     val studentDetail by viewModel.studentList.observeAsState(initial = emptyList())

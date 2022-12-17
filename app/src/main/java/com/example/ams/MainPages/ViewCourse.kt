@@ -15,7 +15,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.ams.Navigation.Screen
 import com.example.ams.R
@@ -27,7 +26,7 @@ fun ViewCourse(
     navHostController: NavHostController,
     courseName: String,
     adminId: String,
-    viewModel: FirebaseViewModel = viewModel()
+    viewModel: FirebaseViewModel
 ) {
     viewModel.getStudentAtdDetails(courseName, adminId)
     val attendanceDetail by viewModel.attendanceDetail.observeAsState(initial = emptyList())

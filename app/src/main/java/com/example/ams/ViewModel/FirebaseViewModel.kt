@@ -3,13 +3,16 @@ package com.example.ams.ViewModel
 import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.ams.data.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.launch
 
-class FirebaseViewModel: ViewModel() {
+class FirebaseViewModel(private val firebaseRepository: FirebaseRepository) : ViewModel() {
 
     val allNotification: MutableLiveData<MutableList<RequestCourseModel>> = MutableLiveData()
     val newStudent = mutableStateOf(StudentDetail())
@@ -20,8 +23,6 @@ class FirebaseViewModel: ViewModel() {
     val courseData: MutableLiveData<NewCoureModel> = MutableLiveData()
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
     val studentList: MutableLiveData<List<String>> = MutableLiveData()
-    private val firestore = Firebase.firestore
-    private val storageRef = Firebase.storage.reference
     private val getuser = FirebaseAuth.getInstance().currentUser
     private val currentUserUid = FirebaseAuth.getInstance().currentUser!!.uid
     private val studentAtdData = mutableListOf<String>()
@@ -30,27 +31,50 @@ class FirebaseViewModel: ViewModel() {
         fetchClasses()
     }
 
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as FirebaseApplication)
+                val firebaseRepository =  application.container.firebaseRepository
+                FirebaseViewModel(firebaseRepository)
+            }
+        }
+    }
+
     private fun createNewClass() {
         newCourseData.value.adminId = currentUserUid
-        firestore
-            .document("$currentUserUid/${newCourseData.value.name}")
-            .set(newCourseData.value)
+        viewModelScope.launch {
+            firebaseRepository.createNewClass(userId = currentUserUid, newCourseData = newCourseData.value)
+        }
+        clearData()
     }
 
     fun addStudent(courseName: String, adminId: String) {
-        var i = 0
-        val images = newStudent.value.images
-        newStudent.value.images.clear()
-        firestore.document("$adminId/$courseName/studentDetails/${newStudent.value.registerNo}")
-            .set(newStudent.value)
-        images.forEach {
-            storageRef
-                .child("faces/${newStudent.value.registerNo}/${newStudent.value.name+i}")
-                .putFile(it!!)
-            i++
+        viewModelScope.launch {
+            firebaseRepository.addNewStudent(courseName = courseName, adminId = adminId, newStudentData = newStudent)
         }
-        firestore.document("$adminId/$courseName/tempAttendance/${newStudent.value.registerNo}")
-            .set(hashMapOf("1" to false))
+        clearData()
+    }
+
+    fun clearData() {
+        newStudent.value.let {
+            it.name = ""
+            it.registerNo = ""
+            it.phone = ""
+            it.images.clear()
+        }
+        newCourseData.value.let {
+            it.name = ""
+            it.courseName = ""
+            it.noAttendace = ""
+            it.batchFrom = ""
+            it.batchTo = ""
+            it.adminId = ""
+        }
+    }
+
+    fun clearAtdData() {
+        attendanceDetail.value = emptyList()
     }
 
     fun updateData(name: String, value: String) {
@@ -87,79 +111,60 @@ class FirebaseViewModel: ViewModel() {
     }
 
     private fun fetchClasses() {
-        val listOfClasses = mutableListOf<Pair<String, String>>()
-        firestore.collection(currentUserUid)
-            .get()
-            .addOnSuccessListener {  result->
-                result?.let {  it1 ->
-                    it1.documents.forEach {
-                        listOfClasses.add(Pair(it.id, it.data!!.get("adminId").toString()))
-                    }
-                    courseNames.value = listOfClasses
-                }
-            }
+        viewModelScope.launch {
+            courseNames.value = firebaseRepository.fetchClasses(userId = currentUserUid)
+        }
     }
 
     fun getCourseDetails(id: String, name: String) {
-        firestore.document("$id/$name")
-            .get()
-            .addOnSuccessListener {
-                val data = it.toObject(NewCoureModel::class.java)
-                if (data != null) { newCourseData.value = data }
-            }
+        viewModelScope.launch {
+            newCourseData.value = firebaseRepository.getCourseDetails(id = id, name = name) ?: NewCoureModel()
+        }
     }
 
     fun getStudentAtdDetails(courseName: String, adminId: String) {
         val atdDetails = mutableListOf<AttendceDetail>()
-        firestore.collection("$adminId/$courseName/tempAttendance")
-            .get()
-            .addOnSuccessListener { snapShot ->
-                val data = snapShot.documents
-                data?.let { it ->
-                    it.forEach { it1->
-                        val eachSTd = mutableListOf<Pair<Int, Boolean>>()
-                       it1.data?.forEach { it2->
-                           eachSTd.add(Pair(it2.key, it2.value) as Pair<Int, Boolean>)
+        viewModelScope.launch {
+            val data = firebaseRepository.getStudentAtdDetails(courseName = courseName, adminId = adminId)
+            data?.forEach {
+                val eachSTd = mutableListOf<Pair<Int, Boolean>>()
+                it.data?.forEach { it2->
+                    eachSTd.add(Pair(it2.key, it2.value) as Pair<Int, Boolean>)
                        }
-                        val atd = AttendceDetail(registerNo = it1.id, attendance = eachSTd)
-                        atdDetails.add(atd)
-                        attendanceDetail.value = atdDetails
-                    }
-                }
+                val atd = AttendceDetail(registerNo = it.id, attendance = eachSTd)
+                atdDetails.add(atd)
+                attendanceDetail.value = atdDetails
             }
+            if (data.isNullOrEmpty()) clearAtdData()
+        }
     }
 
-    fun requestAdmin() {
-        requestData.let {
-            if (it.value.ClassName != "" && it.value.AdminPhone != "") {
-                it.value = it.value.copy(
-                    TeacherName = getuser?.displayName.toString(),
-                    TeacherPhone = getuser?.phoneNumber.toString(),
-                    TeacherUid = currentUserUid
-                )
-                firestore
-                    .collection("Requests/${it.value.AdminPhone}/RequestToImport")
-                    .add(it.value)
-            }
+    fun checkRequestDetails(){
+        if (requestData.value.ClassName != "" && requestData.value.AdminPhone != "") {
+            requestAdmin()
         }
+    }
 
+    private fun requestAdmin() {
+        requestData.value = requestData.value.copy(
+            TeacherName = getuser?.displayName.toString(),
+            TeacherPhone = getuser?.phoneNumber.toString(),
+            TeacherUid = currentUserUid
+        )
+        viewModelScope.launch {
+            firebaseRepository.requestAdmin(data = requestData.value)
+        }
     }
 
     fun getAllNotifications() {
         val requests = mutableListOf<RequestCourseModel>()
-        firestore.collection("Requests/${getuser?.phoneNumber}/RequestToImport")
-            .get()
-            .addOnSuccessListener { SnapShot ->
-                val documents = SnapShot.documents
-                documents?.let {
-                    documents.forEach { data ->
-                        val doc = data.toObject(RequestCourseModel::class.java)
-                        doc?.requestId = data.id
-                        requests.add(doc!!)
-                    }
-                    allNotification.value = requests
-                }
-            }
+        viewModelScope.launch {
+            firebaseRepository.getAllNotifications(phone = getuser?.phoneNumber!!)
+               .forEach { doc ->
+                   doc.toObject(RequestCourseModel::class.java)?.let { requests.add(it) }
+               }
+            allNotification.value = requests
+        }
     }
 
     fun acceptTeacher(data: RequestCourseModel) {
@@ -170,35 +175,26 @@ class FirebaseViewModel: ViewModel() {
             uid = data.TeacherUid
         )
         newStudent.value.images.clear()
-        firestore.document("$currentUserUid/${data.ClassName}/teacherDetails/sushu")
-            .set(teacherDetails)
-        getCourseDetails(currentUserUid, data.ClassName)
-        firestore
-            .document("${data.TeacherUid}/${data.ClassName}")
-            .set(courseData)
-        firestore.document("Requests/8129697750/RequestToImport/${data.requestId}").delete()
+        viewModelScope.launch {
+            firebaseRepository.acceptTeacher(
+                data = data,
+                userId = currentUserUid,
+                phone = getuser?.phoneNumber!!,
+                courseData = courseData.value!!,
+                teacherDetails = teacherDetails
+            )
+        }
     }
 
     fun ignoreTeacher(id: String) {
-        firestore
-            .document("Requests/${getuser?.phoneNumber}/RequestToImport/$id")
-            .delete()
+        viewModelScope.launch {
+            firebaseRepository.ignoreTeacher(id = id, phone = getuser?.phoneNumber!!)
+        }
     }
 
     fun updateCourseDetails(name: String) {
-        (newCourseData.value).let {
-            firestore
-                .document("${it.adminId}/$name")
-                .update(
-                    mapOf(
-                        "adminId" to it!!.adminId,
-                        "name" to it!!.name,
-                        "courseName" to it!!.courseName,
-                        "batchFrom" to it!!.batchFrom,
-                        "batchTo" to it!!.batchTo,
-                        "noAttendace" to it!!.noAttendace
-                    )
-                )
+        viewModelScope.launch {
+            firebaseRepository.updateCourseDetails(name = name, newCourseData = newCourseData.value)
         }
     }
 
@@ -217,52 +213,40 @@ class FirebaseViewModel: ViewModel() {
 
     fun fetchAllTeachersDetails(adminId: String, courseName: String) {
         val listOfTeacherDetails = mutableListOf<TeachersList>()
-        firestore.collection("$adminId/$courseName/teacherDetails")
-            .get()
-            .addOnSuccessListener { snapShot ->
-                snapShot?.let { documents->
-                    documents.documents.forEach {
-                        val data = it.toObject(TeachersList::class.java)
-                        if (data != null) { listOfTeacherDetails.add(data) }
-                    }
-                    teacherDetailsList.value = listOfTeacherDetails
+        viewModelScope.launch {
+            firebaseRepository.fetchAllTeachersDetails(adminId = adminId, courseName = courseName)
+                .forEach { doc->
+                    doc.toObject(TeachersList::class.java)?.let { listOfTeacherDetails.add(it) }
                 }
-            }
+            teacherDetailsList.value = listOfTeacherDetails
+        }
     }
 
     fun getAllStudents(adminId: String, courseName: String) {
         val docids = mutableListOf<String>()
-        firestore.collection("$adminId/$courseName/studentDetails")
-            .get()
-            .addOnSuccessListener { snapShot ->
-                snapShot?.let {
-                    snapShot.documents.forEach { doc ->
-                        val name = doc.id
-                        docids.add(name)
-                    }
-                    studentList.value = docids
-                }
+        viewModelScope.launch {
+            firebaseRepository.getAllStudents(adminId = adminId, courseName = courseName)
+            .forEach { doc->
+                docids.add(doc.id)
             }
+            studentList.value = docids
+        }
     }
 
     fun getStudentDetails(courseName: String, adminId: String, registerNo: String) {
-        var studentData = StudentDetail()
-        firestore.document("$adminId/$courseName/studentDetails/$registerNo")
-            .get()
-            .addOnSuccessListener { snapShot->
-                snapShot?.let { document->
-                    studentData = document.toObject(StudentDetail::class.java)!!
-                }
-                newStudent.value = studentData
-            }
-
+        viewModelScope.launch {
+            newStudent.value = firebaseRepository
+                .getStudentDetails(courseName = courseName, adminId = adminId, registerNo = registerNo) ?: StudentDetail()
+        }
     }
 
     fun markAttendance(adminId: String, courseName: String, size: Int) {
         studentList.value?.forEach { registerNo ->
             val present = studentAtdData.contains(registerNo)
-            firestore.document("$adminId/$courseName/tempAttendance/$registerNo")
-                .update("$size", present)
+            viewModelScope.launch {
+                firebaseRepository
+                    .markAttendance(adminId = adminId, courseName = courseName, registerNo = registerNo, size = size, present = present)
+            }
         }
     }
 }

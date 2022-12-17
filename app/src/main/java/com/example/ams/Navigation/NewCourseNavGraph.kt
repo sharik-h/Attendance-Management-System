@@ -5,16 +5,18 @@ import androidx.navigation.compose.composable
 import com.example.ams.MainPages.NewCourse
 import com.example.ams.MainPages.NewDataPage.AddNewStudent
 import com.example.ams.MainPages.NewDataPage.ImportCourse
+import com.example.ams.ViewModel.FirebaseViewModel
 
 fun NavGraphBuilder.NewCourseNavGraph(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    viewModel: FirebaseViewModel
 ) {
     navigation(
         startDestination = Screen.NewCourse.route,
         route = NEW_COURSE
     ){
         composable(route = Screen.NewCourse.route) {
-            NewCourse(navHostController = navHostController)
+            NewCourse(navHostController = navHostController, viewModel = viewModel)
         }
         composable(
             route = Screen.NewStudent.route,
@@ -26,11 +28,12 @@ fun NavGraphBuilder.NewCourseNavGraph(
             AddNewStudent(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
-                adminId = it.arguments?.getString("adminId").toString()
+                adminId = it.arguments?.getString("adminId").toString(),
+                viewModel = viewModel
             )
         }
         composable(route =  Screen.ImportCourse.route){
-            ImportCourse(navHostController = navHostController)
+            ImportCourse(navHostController = navHostController, viewModel = viewModel)
         }
     }
 }

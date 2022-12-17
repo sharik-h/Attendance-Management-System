@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.ViewModel.FirebaseViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ams.R
 import com.example.ams.data.TeachersList
 
@@ -30,7 +29,7 @@ fun ViewTeachers(
     navHostController: NavHostController,
     courseName: String,
     adminId: String,
-    viewModel: FirebaseViewModel = viewModel()
+    viewModel: FirebaseViewModel
 ) {
     viewModel.fetchAllTeachersDetails(courseName = courseName, adminId = adminId)
     val teachersList by viewModel.teacherDetailsList.observeAsState(initial = emptyList())

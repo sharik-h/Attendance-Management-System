@@ -29,7 +29,6 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ams.MainPages.CustomTextFeild
 import java.io.ByteArrayOutputStream
 
@@ -38,8 +37,9 @@ fun AddNewStudent(
     navHostController: NavHostController,
     courseName: String,
     adminId: String,
-    viewModel: FirebaseViewModel = viewModel()
+    viewModel: FirebaseViewModel
 ) {
+    viewModel.clearData()
     var i = 0
     val bungeeStyle = FontFamily(Font(R.font.bungee))
     val addIcon = painterResource(id = R.drawable.add_icon_black)

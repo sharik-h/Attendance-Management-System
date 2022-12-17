@@ -5,9 +5,11 @@ import androidx.navigation.compose.composable
 import com.example.ams.MainPages.*
 import com.example.ams.MainPages.NewDataPage.ViewStudentDetails
 import com.example.ams.SplashScreen.SplashScreen
+import com.example.ams.ViewModel.FirebaseViewModel
 
 fun NavGraphBuilder.HomeNavGraph(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    viewModel: FirebaseViewModel
 ) {
     navigation(
         startDestination = Screen.Splash.route,
@@ -17,10 +19,10 @@ fun NavGraphBuilder.HomeNavGraph(
             SplashScreen(navHostController = navHostController)
         }
         composable(route = Screen.ListOfCoursesPage.route) {
-            ListOfCoursePage(navHostController = navHostController)
+            ListOfCoursePage(navHostController = navHostController, viewModel = viewModel)
         }
         composable(route = Screen.Notifications.route){
-            Notifications(navHostController = navHostController)
+            Notifications(navHostController = navHostController, viewModel = viewModel)
         }
         composable(
             route = Screen.ViewCourse.route,
@@ -32,7 +34,8 @@ fun NavGraphBuilder.HomeNavGraph(
             ViewCourse(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
-                adminId = it.arguments?.getString("adminId").toString()
+                adminId = it.arguments?.getString("adminId").toString(),
+                viewModel = viewModel
             )
         }
         composable(
@@ -45,7 +48,8 @@ fun NavGraphBuilder.HomeNavGraph(
             ViewDetails(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
-                adminId = it.arguments?.getString("adminId").toString()
+                adminId = it.arguments?.getString("adminId").toString(),
+                viewModel = viewModel
             )
         }
         composable(
@@ -58,7 +62,8 @@ fun NavGraphBuilder.HomeNavGraph(
             ViewTeachers(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
-                adminId = it.arguments?.getString("adminId").toString()
+                adminId = it.arguments?.getString("adminId").toString(),
+                viewModel = viewModel
             )
         }
         composable(
@@ -71,7 +76,8 @@ fun NavGraphBuilder.HomeNavGraph(
             ViewStudents(
                 navHostController = navHostController,
                 adminId = it.arguments?.getString("adminId").toString(),
-                courseName = it.arguments?.getString("courseName").toString()
+                courseName = it.arguments?.getString("courseName").toString(),
+                viewModel = viewModel
             )
         }
         composable(
@@ -86,7 +92,8 @@ fun NavGraphBuilder.HomeNavGraph(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
                 adminId = it.arguments?.getString("adminId").toString(),
-                registerNo = it.arguments?.getString("registerNo").toString()
+                registerNo = it.arguments?.getString("registerNo").toString(),
+                viewModel = viewModel
             )
         }
         composable(
@@ -101,7 +108,8 @@ fun NavGraphBuilder.HomeNavGraph(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
                 adminId = it.arguments?.getString("adminId").toString(),
-                size = it.arguments?.getInt("size")!!
+                size = it.arguments?.getInt("size")!!,
+                viewModel = viewModel
             )
         }
     }

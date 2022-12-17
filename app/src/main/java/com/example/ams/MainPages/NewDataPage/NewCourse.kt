@@ -13,7 +13,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
@@ -21,7 +20,7 @@ import com.example.ams.ViewModel.FirebaseViewModel
 @Composable
 fun NewCourse(
     navHostController: NavHostController,
-    viewModel: FirebaseViewModel = viewModel()
+    viewModel: FirebaseViewModel
 ) {
     val bungeeStyle = FontFamily(Font(R.font.bungee))
     val newCourseData = viewModel.newCourseData.value

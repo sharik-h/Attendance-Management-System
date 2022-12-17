@@ -14,13 +14,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ams.ViewModel.FirebaseViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.ams.MainPages.CustomTextFeild
 import com.example.ams.R
 
 @Composable
-fun ImportCourse(navHostController: NavHostController  ,viewModel: FirebaseViewModel = viewModel()) {
+fun ImportCourse(navHostController: NavHostController  ,viewModel: FirebaseViewModel) {
 
     val requestData = viewModel.requestData.value
     val bungeeStyle = FontFamily(Font(R.font.bungee))
@@ -40,7 +39,7 @@ fun ImportCourse(navHostController: NavHostController  ,viewModel: FirebaseViewM
         Spacer(modifier = Modifier.weight(0.5f))
         Button(
             onClick = {
-                viewModel.requestAdmin()
+                viewModel.checkRequestDetails()
                 navHostController.navigateUp()
             },
             modifier = Modifier

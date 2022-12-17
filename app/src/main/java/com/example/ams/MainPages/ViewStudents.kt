@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ams.Navigation.Screen
 
 @Composable
@@ -26,7 +25,7 @@ fun ViewStudents(
     navHostController: NavHostController,
     adminId: String,
     courseName: String,
-    viewModel: FirebaseViewModel = viewModel()
+    viewModel: FirebaseViewModel
 ) {
     viewModel.getAllStudents(adminId = adminId, courseName = courseName)
     val data by viewModel.studentList.observeAsState(initial = emptyList())

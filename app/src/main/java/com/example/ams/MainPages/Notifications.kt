@@ -17,14 +17,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.ams.R
 import com.example.ams.ViewModel.FirebaseViewModel
 import com.example.ams.data.RequestCourseModel
 
 @Composable
-fun Notifications(navHostController: NavHostController, viewModel: FirebaseViewModel = viewModel()) {
+fun Notifications(navHostController: NavHostController, viewModel: FirebaseViewModel) {
 
     viewModel.getAllNotifications()
     val allNotifications by viewModel.allNotification.observeAsState()
