@@ -5,7 +5,7 @@ import androidx.navigation.compose.composable
 import com.example.ams.MainPages.*
 import com.example.ams.MainPages.NewDataPage.ViewStudentDetails
 import com.example.ams.SplashScreen.SplashScreen
-import com.example.ams.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.FirebaseViewModel
 
 fun NavGraphBuilder.HomeNavGraph(
     navHostController: NavHostController,

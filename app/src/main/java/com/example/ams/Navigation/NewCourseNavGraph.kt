@@ -5,7 +5,7 @@ import androidx.navigation.compose.composable
 import com.example.ams.MainPages.NewCourse
 import com.example.ams.MainPages.NewDataPage.AddNewStudent
 import com.example.ams.MainPages.NewDataPage.ImportCourse
-import com.example.ams.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.FirebaseViewModel
 
 fun NavGraphBuilder.NewCourseNavGraph(
     navHostController: NavHostController,

@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.ams.R
-import com.example.ams.ViewModel.FirebaseViewModel
-import com.example.ams.data.RequestCourseModel
+import com.example.ams.data.ViewModel.FirebaseViewModel
+import com.example.ams.data.DataClasses.RequestCourseModel
 
 @Composable
 fun Notifications(navHostController: NavHostController, viewModel: FirebaseViewModel) {

@@ -1,10 +1,10 @@
 package com.example.ams.ViewModel
 
 import androidx.compose.runtime.MutableState
-import com.example.ams.data.NewCoureModel
-import com.example.ams.data.RequestCourseModel
-import com.example.ams.data.StudentDetail
-import com.example.ams.data.TeachersList
+import com.example.ams.data.DataClasses.NewCoureModel
+import com.example.ams.data.DataClasses.RequestCourseModel
+import com.example.ams.data.DataClasses.StudentDetail
+import com.example.ams.data.DataClasses.TeachersList
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference

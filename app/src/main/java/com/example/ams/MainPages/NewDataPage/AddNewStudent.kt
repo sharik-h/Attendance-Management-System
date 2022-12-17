@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.ams.R
-import com.example.ams.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.MainPages.CustomTextFeild
 import java.io.ByteArrayOutputStream
 

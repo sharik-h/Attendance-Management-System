@@ -1,4 +1,4 @@
-package com.example.ams.ViewModel
+package com.example.ams.data.ViewModel
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,8 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.ams.data.*
+import com.example.ams.ViewModel.FirebaseRepository
+import com.example.ams.data.DataClasses.*
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 

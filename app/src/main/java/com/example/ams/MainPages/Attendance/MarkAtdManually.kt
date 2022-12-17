@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.R
-import com.example.ams.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.FirebaseViewModel
 
 @Composable
 fun MarkAtdManually(

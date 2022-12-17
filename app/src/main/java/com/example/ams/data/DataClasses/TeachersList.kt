@@ -1,4 +1,4 @@
-package com.example.ams.data
+package com.example.ams.data.DataClasses
 
 import android.graphics.Bitmap
 

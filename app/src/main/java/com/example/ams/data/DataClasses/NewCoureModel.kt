@@ -1,4 +1,4 @@
-package com.example.ams.data
+package com.example.ams.data.DataClasses
 
 data class NewCoureModel (
     var adminId: String = "",

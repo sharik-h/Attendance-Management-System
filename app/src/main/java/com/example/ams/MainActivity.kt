@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.ams.MainNavigation.MainNavgraph
-import com.example.ams.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.ui.theme.AMSTheme
 
 class MainActivity : ComponentActivity() {

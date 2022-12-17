@@ -1,4 +1,4 @@
-package com.example.ams.ViewModel
+package com.example.ams.data.ViewModel
 
 import android.app.Application
 

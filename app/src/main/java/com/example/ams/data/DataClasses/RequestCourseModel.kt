@@ -1,4 +1,4 @@
-package com.example.ams.data
+package com.example.ams.data.DataClasses
 
 data class RequestCourseModel (
     var requestId: String = "",

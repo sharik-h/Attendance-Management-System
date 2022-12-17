@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.ams.Navigation.*
-import com.example.ams.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.FirebaseViewModel
 
 @Composable
 fun MainNavgraph(navHostController: NavHostController, viewModel: FirebaseViewModel) {
