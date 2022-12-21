@@ -1,16 +1,19 @@
-package com.example.ams.ViewModel
+package com.example.ams.data.Model
 
 import androidx.compose.runtime.MutableState
 import com.example.ams.data.DataClasses.NewCoureModel
 import com.example.ams.data.DataClasses.RequestCourseModel
 import com.example.ams.data.DataClasses.StudentDetail
 import com.example.ams.data.DataClasses.TeachersList
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 
 interface FirebaseRepository {
+    suspend fun getUser(): FirebaseUser?
     suspend fun createNewClass(userId: String, newCourseData: NewCoureModel)
     suspend fun addNewStudent(courseName: String, adminId: String, newStudentData: MutableState<StudentDetail>)
     suspend fun markAttendance(adminId: String, courseName: String, size: Int, registerNo: String, present: Boolean)
@@ -31,6 +34,10 @@ class DefaultFirebaseRepository(
     private val firestore: FirebaseFirestore,
     private val storageRef: StorageReference
     ): FirebaseRepository {
+
+    override suspend fun getUser(): FirebaseUser? {
+       return FirebaseAuth.getInstance().currentUser
+    }
 
     override suspend fun createNewClass(userId: String, newCourseData: NewCoureModel) {
         firestore

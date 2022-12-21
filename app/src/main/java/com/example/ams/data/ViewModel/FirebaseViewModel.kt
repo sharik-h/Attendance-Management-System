@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.ams.ViewModel.FirebaseRepository
+import com.example.ams.data.Model.FirebaseRepository
 import com.example.ams.data.DataClasses.*
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 class FirebaseViewModel(private val firebaseRepository: FirebaseRepository) : ViewModel() {
@@ -24,12 +24,15 @@ class FirebaseViewModel(private val firebaseRepository: FirebaseRepository) : Vi
     val courseData: MutableLiveData<NewCoureModel> = MutableLiveData()
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
     val studentList: MutableLiveData<List<String>> = MutableLiveData()
-    private val getuser = FirebaseAuth.getInstance().currentUser
-    private val currentUserUid = FirebaseAuth.getInstance().currentUser!!.uid
+    lateinit var getuser : FirebaseUser
+    private lateinit var currentUserUid :String
     private val studentAtdData = mutableListOf<String>()
 
     init {
-        fetchClasses()
+        viewModelScope.launch {
+            getUserDetails()
+        }
+        if (!currentUserUid.isNullOrEmpty()) fetchClasses()
     }
 
     companion object {
@@ -40,6 +43,11 @@ class FirebaseViewModel(private val firebaseRepository: FirebaseRepository) : Vi
                 FirebaseViewModel(firebaseRepository)
             }
         }
+    }
+
+    private suspend fun getUserDetails() {
+        getuser = firebaseRepository.getUser()!!
+        currentUserUid = getuser.uid
     }
 
     private fun createNewClass() {
