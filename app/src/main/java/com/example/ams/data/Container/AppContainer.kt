@@ -1,7 +1,7 @@
 package com.example.ams.data.ViewModel
 
-import com.example.ams.ViewModel.DefaultFirebaseRepository
-import com.example.ams.ViewModel.FirebaseRepository
+import com.example.ams.data.Model.DefaultFirebaseRepository
+import com.example.ams.data.Model.FirebaseRepository
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
