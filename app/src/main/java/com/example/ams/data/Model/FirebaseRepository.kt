@@ -124,7 +124,7 @@ class DefaultFirebaseRepository(
     }
 
     override suspend fun getStudentAtdDetails(courseName: String, adminId: String): MutableList<DocumentSnapshot> {
-      val ref = firestore.collection("$adminId/$courseName/tempAttendance")
+        val ref = firestore.collection("$adminId/$courseName/tempAttendance")
         return ref.get().await().documents
     }
 
