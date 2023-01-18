@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Login.Authenticate" />
+        <activity android:name=".MainPages.Attendance.FaceRecogActivity"/>
     </application>
 
 </manifest>

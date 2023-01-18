@@ -1,5 +1,6 @@
 package com.example.ams.data.ViewModel
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,12 +9,16 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.ams.MainPages.Attendance.FaceProcessing.ImageProcessing
 import com.example.ams.data.Model.FirebaseRepository
 import com.example.ams.data.DataClasses.*
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
-class FirebaseViewModel(private val firebaseRepository: FirebaseRepository) : ViewModel() {
+class FirebaseViewModel(
+    private val firebaseRepository: FirebaseRepository,
+    private val ImageProcessing: ImageProcessing
+) : ViewModel() {
 
     val allNotification: MutableLiveData<MutableList<RequestCourseModel>> = MutableLiveData()
     val newStudent = mutableStateOf(StudentDetail())
@@ -27,6 +32,7 @@ class FirebaseViewModel(private val firebaseRepository: FirebaseRepository) : Vi
     lateinit var getuser : FirebaseUser
     private lateinit var currentUserUid :String
     private val studentAtdData = mutableListOf<String>()
+    val imageUri = MutableLiveData<List<Bitmap>>()
 
     init {
         viewModelScope.launch {
@@ -40,7 +46,8 @@ class FirebaseViewModel(private val firebaseRepository: FirebaseRepository) : Vi
             initializer {
                 val application = (this[APPLICATION_KEY] as FirebaseApplication)
                 val firebaseRepository =  application.container.firebaseRepository
-                FirebaseViewModel(firebaseRepository)
+                val imageProcessing = ImageProcessing()
+                FirebaseViewModel(firebaseRepository, imageProcessing)
             }
         }
     }
@@ -256,6 +263,13 @@ class FirebaseViewModel(private val firebaseRepository: FirebaseRepository) : Vi
                 firebaseRepository
                     .markAttendance(adminId = adminId, courseName = courseName, registerNo = registerNo, size = size, present = present)
             }
+        }
+    }
+
+    fun ImageFaceDetection(image: Bitmap?) {
+        viewModelScope.launch {
+            val faces = ImageProcessing.processImage(image!!)
+            imageUri.postValue(faces)
         }
     }
 }

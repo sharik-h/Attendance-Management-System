@@ -1,5 +1,10 @@
 package com.example.ams.MainPages
 
+import android.content.Intent
+import android.graphics.Bitmap
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,12 +15,14 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.ams.MainPages.Attendance.FaceRecogActivity
 import com.example.ams.Navigation.Screen
 import com.example.ams.R
 import com.example.ams.data.ViewModel.FirebaseViewModel
@@ -32,6 +39,12 @@ fun ViewCourse(
     val attendanceDetail by viewModel.attendanceDetail.observeAsState(initial = emptyList())
     var selected by remember{ mutableStateOf(false) }
     var size = 0
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val context = LocalContext.current
+    val clauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) {
+        bitmap = it
+        context.startActivity(Intent(context, FaceRecogActivity::class.java).putExtra("image", bitmap))
+    }
     if (!attendanceDetail.isNullOrEmpty()) { size = attendanceDetail[0].attendance.size }
     val arrowBackIcon = painterResource(id = R.drawable.arrow_back)
     val addIconWhite = painterResource(id = R.drawable.add_icon_white)
@@ -100,9 +113,10 @@ fun ViewCourse(
                 Image(painter = checkItemsIcon, contentDescription = "")
             }
             Spacer(modifier = Modifier.height(10.dp))
-            FloatingActionButton(onClick = { }, backgroundColor = Color.Black, modifier = Modifier
-                .padding(end = 8.dp)
-                .size(45.dp)
+            FloatingActionButton(onClick = { clauncher.launch() },
+                backgroundColor = Color.Black, modifier = Modifier
+                    .padding(end = 8.dp)
+                    .size(45.dp)
             ) {
                 Image(painter = faceRecoIcon, contentDescription = "")
             }
