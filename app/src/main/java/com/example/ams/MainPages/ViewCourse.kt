@@ -39,12 +39,8 @@ fun ViewCourse(
     val attendanceDetail by viewModel.attendanceDetail.observeAsState(initial = emptyList())
     var selected by remember{ mutableStateOf(false) }
     var size = 0
-    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     val context = LocalContext.current
-    val clauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) {
-        bitmap = it
-        context.startActivity(Intent(context, FaceRecogActivity::class.java).putExtra("image", bitmap))
-    }
+
     if (!attendanceDetail.isNullOrEmpty()) { size = attendanceDetail[0].attendance.size }
     val arrowBackIcon = painterResource(id = R.drawable.arrow_back)
     val addIconWhite = painterResource(id = R.drawable.add_icon_white)
@@ -113,7 +109,9 @@ fun ViewCourse(
                 Image(painter = checkItemsIcon, contentDescription = "")
             }
             Spacer(modifier = Modifier.height(10.dp))
-            FloatingActionButton(onClick = { clauncher.launch() },
+            FloatingActionButton(onClick = {
+                context.startActivity(Intent(context, FaceRecogActivity::class.java))
+            },
                 backgroundColor = Color.Black, modifier = Modifier
                     .padding(end = 8.dp)
                     .size(45.dp)

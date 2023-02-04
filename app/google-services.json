@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "620177206406",
-    "project_id": "attendance-management-sy-aa616",
-    "storage_bucket": "attendance-management-sy-aa616.appspot.com"
+    "project_number": "751985260632",
+    "project_id": "amss-490b5",
+    "storage_bucket": "amss-490b5.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:620177206406:android:ae692a7189861a7cc67507",
+        "mobilesdk_app_id": "1:751985260632:android:44b49a171fa23a0541722d",
         "android_client_info": {
           "package_name": "com.example.ams"
         }
       },
       "oauth_client": [
         {
-          "client_id": "620177206406-ivr49m4oj9d7q2nccfg3rv7msleeo45s.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.ams",
-            "certificate_hash": "e175a6f817cfcacae5de5b3d6cf14f7f41f2beed"
-          }
-        },
-        {
-          "client_id": "620177206406-r18231t4i2hgda4kmna7vtk893frho8a.apps.googleusercontent.com",
+          "client_id": "751985260632-67e2gpcpleu41pgm2hqliu9g8jpo916t.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB0rAxE20vaQu46rDhjrcZwVcINKt7wLfM"
+          "current_key": "AIzaSyAEPFJFU52RqedbbspCqWA_WeomgzRtoFo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "620177206406-r18231t4i2hgda4kmna7vtk893frho8a.apps.googleusercontent.com",
+              "client_id": "751985260632-67e2gpcpleu41pgm2hqliu9g8jpo916t.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
