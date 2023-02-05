@@ -1,4 +1,4 @@
-package com.example.ams.MainPages.Attendance.FaceProcessing
+package com.example.ams.faceDetection
 
 import android.graphics.Bitmap
 import android.util.Log
