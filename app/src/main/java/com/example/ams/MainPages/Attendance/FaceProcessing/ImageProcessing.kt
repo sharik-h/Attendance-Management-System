@@ -9,36 +9,32 @@ class ImageProcessing {
     companion object {
 
         val detector = FaceDetection.getClient()
-        val normalizeImageList = mutableListOf<Bitmap>()
         val DEFAULT_SIZE = 160
 
         // detect and collect all the faces in the image
-        fun getDetectedImages(image: Bitmap, callback: (List<Bitmap>) -> Unit) {
+        fun getDetectedImages(image: Bitmap, callback: (Bitmap) -> Unit) {
             processImage(image){ face ->
-                println("--------------------------------------------------")
-                println(face)
                 NormalizeFaces(face){
-                    callback(normalizeImageList)
+                    callback(it)
                 }
             }
         }
 
         // Resize the detected image into 160x160
         private fun ResizeDetectedFaces(face: Bitmap): Bitmap {
-            println("inside resizedDEtected ========================")
             return Bitmap.createScaledBitmap(face, DEFAULT_SIZE, DEFAULT_SIZE, false)
         }
 
 
         // Normalize the Resized images
-        private fun NormalizeFaces(scaledFace1: Bitmap, callback: (List<Bitmap>) -> Unit) {
+        private fun NormalizeFaces(scaledFace1: Bitmap, callback: (Bitmap) -> Unit) {
             val scaledFace = ResizeDetectedFaces(scaledFace1)
             val pixels = IntArray(scaledFace.width * scaledFace.height)
             scaledFace.getPixels(pixels, 0, scaledFace.width, 0, 0, scaledFace.width, scaledFace.height)
             for (i in pixels.indices) {
                 pixels[i] = pixels[i] / 255
             }
-            normalizeImageList.add(
+            callback(
                 Bitmap.createBitmap(
                     pixels,
                     scaledFace.width,
@@ -46,7 +42,6 @@ class ImageProcessing {
                     Bitmap.Config.ARGB_8888
                 )
             )
-            callback(normalizeImageList)
         }
 
         fun processImage(image: Bitmap, callback: (Bitmap) -> Unit) {

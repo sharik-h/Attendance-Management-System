@@ -41,7 +41,7 @@ class FileLoader(private val model: FaceNetModel) {
                     GlobalScope.launch(Dispatchers.Main) {
                         val byteArr = item.getBytes(Long.MAX_VALUE).await()
                         val image = BitmapFactory.decodeByteArray(byteArr , 0, byteArr.size)
-                        imgFromServer.add(Pair(item.name, image))
+                        imgFromServer.add(Pair(storageRef.name, image))
                         size++
                         if (size == result.items.size){
                             bitmapToEmbeding()
@@ -61,8 +61,10 @@ class FileLoader(private val model: FaceNetModel) {
     // nameAndEmbd as name and embedding and passes it to callback function
     private fun bitmapToEmbeding() {
         for (data in imgFromServer){
-            model.getFaceEmbedding(data.second){ embd ->
-                nameAndEmbd.add( Pair( data.first, embd ) )
+            GlobalScope.launch {
+                model.getFaceEmbedding(data.second){ embd ->
+                    nameAndEmbd.add( Pair( data.first, embd ) )
+                }
             }
         }
         callback.onProcessComplete(nameAndEmbd)

@@ -2,7 +2,6 @@ package com.example.ams.faceDetection
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import com.example.ams.MainPages.Attendance.FaceProcessing.ImageProcessing
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
@@ -41,16 +40,14 @@ class FaceNetModel(
 
     // Detect the face embeddings
     fun getFaceEmbedding(image: Bitmap, onResult: (result: FloatArray) -> Unit) {
-        Log.d("personId","getFaceEmbedding-- starting")
-        ImageProcessing.getDetectedImages(image){faces->
-            onResult(runFaceNet(convertToByteBuffer(faces[0]))[0])
+        ImageProcessing.getDetectedImages(image){ face ->
+            onResult(runFaceNet(convertToByteBuffer(face))[0])
         }
     }
 
 
     // Actual running of faceNet Model takes place here.
     private fun runFaceNet(image: Any): Array<FloatArray> {
-        Log.d("personId", "runFAcenet starting")
         val faceNetModelOutputs = Array(1){ FloatArray(128)}
         interpreter.run(image, faceNetModelOutputs)
         return faceNetModelOutputs
