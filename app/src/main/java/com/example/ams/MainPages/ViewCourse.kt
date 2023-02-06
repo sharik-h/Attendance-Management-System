@@ -110,7 +110,11 @@ fun ViewCourse(
             }
             Spacer(modifier = Modifier.height(10.dp))
             FloatingActionButton(onClick = {
-                context.startActivity(Intent(context, FaceRecogActivity::class.java))
+                context.startActivity(Intent(context, FaceRecogActivity::class.java)
+                    .putExtra("courseName", courseName)
+                    .putExtra("adminId", adminId)
+                    .putExtra("size",size)
+                )
             },
                 backgroundColor = Color.Black, modifier = Modifier
                     .padding(end = 8.dp)

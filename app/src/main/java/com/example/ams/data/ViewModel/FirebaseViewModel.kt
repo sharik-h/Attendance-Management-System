@@ -1,6 +1,8 @@
 package com.example.ams.data.ViewModel
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.ams.MainPages.Attendance.FaceProcessing.ImageProcessing
 import com.example.ams.data.Model.FirebaseRepository
 import com.example.ams.data.DataClasses.*
 import com.google.firebase.auth.FirebaseUser
@@ -17,7 +18,6 @@ import kotlinx.coroutines.launch
 
 class FirebaseViewModel(
     private val firebaseRepository: FirebaseRepository,
-    private val ImageProcessing: ImageProcessing
 ) : ViewModel() {
 
     val allNotification: MutableLiveData<MutableList<RequestCourseModel>> = MutableLiveData()
@@ -32,7 +32,7 @@ class FirebaseViewModel(
     lateinit var getuser : FirebaseUser
     private lateinit var currentUserUid :String
     private val studentAtdData = mutableListOf<String>()
-    val imageUri = MutableLiveData<List<Bitmap>>()
+    val imageBitmap = MutableLiveData<Bitmap>()
 
     init {
         viewModelScope.launch {
@@ -46,8 +46,7 @@ class FirebaseViewModel(
             initializer {
                 val application = (this[APPLICATION_KEY] as FirebaseApplication)
                 val firebaseRepository =  application.container.firebaseRepository
-                val imageProcessing = ImageProcessing()
-                FirebaseViewModel(firebaseRepository, imageProcessing)
+                FirebaseViewModel(firebaseRepository)
             }
         }
     }
@@ -266,10 +265,30 @@ class FirebaseViewModel(
         }
     }
 
-    fun ImageFaceDetection(image: Bitmap?) {
-        viewModelScope.launch {
-            val faces = ImageProcessing.processImage(image!!)
-            imageUri.postValue(faces)
-        }
+    fun setbitimgValue(bitmap: Bitmap){
+        imageBitmap.postValue(bitmap)
+    }
+
+    fun saveDetectedStudents(name: String) {
+        val availableStd = mutableListOf<String>()
+        availableStd.add(name)
+        studentList.value = availableStd
+    }
+
+    private fun resizeBitmap(bitmap: Bitmap, newWidth: Int, newHeight: Int): Bitmap {
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false)
+        val resizedBitmap = Bitmap.createBitmap(newWidth, newHeight, bitmap.config)
+        val canvas = Canvas(resizedBitmap)
+        val paint = Paint()
+        paint.isFilterBitmap = true
+        canvas.drawBitmap(scaledBitmap, 0f, 0f, paint)
+        scaledBitmap.recycle()
+        return resizedBitmap
+    }
+
+    fun resizeBitmapByHeight(bitmap: Bitmap, newHeight: Int): Bitmap {
+        val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
+        val newWidth = (newHeight * aspectRatio).toInt()
+        return resizeBitmap(bitmap, newWidth, newHeight)
     }
 }

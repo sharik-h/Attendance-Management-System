@@ -11,11 +11,21 @@ import com.example.ams.faceDetection.FaceNetModel
 class FaceRecogActivity: ComponentActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val courseName = intent.getStringExtra("courseName")
+        val adminId = intent.getStringExtra("adminId")
+        val size = intent.getIntExtra("size",1)
         setContent {
             val viewModel: FirebaseViewModel = viewModel(factory = FirebaseViewModel.Factory)
             val faceNetModel = FaceNetModel(this)
             val faceDetection = FaceDetection( faceNetModel, this )
-            MarkyAtdByFace(viewModel = viewModel, faceDetection = faceDetection )
+            MarkyAtdByFace(
+                context = this,
+                viewModel = viewModel,
+                faceDetection = faceDetection,
+                courseName = courseName,
+                adminId = adminId!!,
+                size = size
+            )
         }
     }
 }

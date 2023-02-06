@@ -2,7 +2,6 @@ package com.example.ams.faceDetection
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.example.ams.MainPages.Attendance.FaceProcessing.ImageProcessing
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
