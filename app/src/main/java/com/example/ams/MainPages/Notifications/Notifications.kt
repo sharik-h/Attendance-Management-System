@@ -16,16 +16,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.ams.Navigation.Screen
 import com.example.ams.R
+import com.example.ams.data.DataClasses.NotificationModel
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.data.DataClasses.RequestCourseModel
 
 @Composable
-fun Notifications(navHostController: NavHostController, viewModel: FirebaseViewModel) {
+fun Notifications(
+    navHostController: NavHostController,
+    viewModel: FirebaseViewModel,
+    courseName: String
+) {
 
-    viewModel.getAllNotifications()
+    viewModel.getAllRequests()
+    viewModel.getAllNotifications(courseName = courseName)
+    val allRequests by viewModel.allRequests.observeAsState()
     val allNotifications by viewModel.allNotification.observeAsState()
     val arrowBackIcon = painterResource(id = R.drawable.arrow_back)
     val bungee = FontFamily(Font(R.font.bungee))
@@ -39,10 +50,17 @@ fun Notifications(navHostController: NavHostController, viewModel: FirebaseViewM
             Text(text = "Notifications", fontFamily = bungee, color = Color.White)
             Spacer(modifier = Modifier.weight(0.5f))
         }
-        allNotifications?.let {
+        allNotifications?.let { it->
+            LazyColumn{
+                items(items = it){ it1->
+                    NotificationItem(data = it1)
+                }
+            }
+        }
+        allRequests?.let {
             LazyColumn {
                 items(items = it) {
-                    NotificationModel(
+                    RequestModel(
                         data = it,
                         onAccept = { viewModel.acceptTeacher(it) },
                         onIgnore = { viewModel.ignoreTeacher(it.requestId) }
@@ -52,10 +70,50 @@ fun Notifications(navHostController: NavHostController, viewModel: FirebaseViewM
             }
         }
     }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.End
+    ) {
+        FloatingActionButton(
+            modifier = Modifier.width(100.dp),
+            backgroundColor = Color.Black,
+            onClick = { navHostController
+                .navigate(Screen.NewNotification.passCourseName(courseName = courseName))
+            }
+        ) {
+            Text(text = "Create +", color = Color.White)
+        }
+    }
 }
 
 @Composable
-fun NotificationModel(data: RequestCourseModel, onAccept : () -> Unit, onIgnore : () -> Unit  ) {
+fun NotificationItem(data: NotificationModel) {
+    Column(modifier = Modifier.fillMaxWidth())
+    {
+        Column(modifier = Modifier.padding(15.dp)) {
+            Text(
+                text = data.heading,
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(text = data.discription, modifier = Modifier.fillMaxWidth())
+            Text(
+                text = data.date,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Right,
+                color = Color.Gray
+            )
+        }
+        Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth())
+    }
+}
+
+@Composable
+fun RequestModel(data: RequestCourseModel, onAccept : () -> Unit, onIgnore : () -> Unit  ) {
     val bungeeStyle = FontFamily(Font(R.font.bungee))
 
     Column(

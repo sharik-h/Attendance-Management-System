@@ -4,6 +4,7 @@ import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.example.ams.MainPages.*
 import com.example.ams.MainPages.NewDataPage.ViewStudentDetails
+import com.example.ams.MainPages.Notifications.NewNotification
 import com.example.ams.SplashScreen.SplashScreen
 import com.example.ams.data.ViewModel.FirebaseViewModel
 
@@ -21,8 +22,29 @@ fun NavGraphBuilder.HomeNavGraph(
         composable(route = Screen.ListOfCoursesPage.route) {
             ListOfCoursePage(navHostController = navHostController, viewModel = viewModel)
         }
-        composable(route = Screen.Notifications.route){
-            Notifications(navHostController = navHostController, viewModel = viewModel)
+        composable(
+            route = Screen.Notifications.route,
+            arguments = listOf(
+                navArgument(name = "courseName"){ type = NavType.StringType}
+            )
+        ){
+            Notifications(
+                navHostController = navHostController,
+                viewModel = viewModel,
+                courseName = it.arguments?.getString("courseName").toString()
+            )
+        }
+        composable(
+            route = Screen.NewNotification.route,
+            arguments = listOf(
+                navArgument(name = "courseName"){ type = NavType.StringType }
+            )
+        ){
+            NewNotification(
+                navHostController = navHostController,
+                viewModel = viewModel,
+                courseName = it.arguments?.getString("courseName").toString(),
+            )
         }
         composable(
             route = Screen.ViewCourse.route,

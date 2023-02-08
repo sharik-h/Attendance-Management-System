@@ -61,7 +61,7 @@ fun ViewCourse(
          IconButton(onClick = { navHostController.navigate(Screen.ViewDetails.passCourseName(courseName = courseName, adminId = adminId)) }) {
              Image(painter = infoIcon, contentDescription = "")
          }
-         IconButton(onClick = { navHostController.navigate(Screen.Notifications.route) }) {
+         IconButton(onClick = { navHostController.navigate(Screen.Notifications.PassCourseName(courseName = courseName)) }) {
              Image(painter = notificationIcon, contentDescription = "")
          }
          IconButton(onClick = { navHostController.navigate(Screen.NewStudent.passCourseName(courseName = courseName, adminId = adminId)) }) {

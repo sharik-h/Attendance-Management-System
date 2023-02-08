@@ -1,10 +1,8 @@
 package com.example.ams.data.Model
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
-import com.example.ams.data.DataClasses.NewCoureModel
-import com.example.ams.data.DataClasses.RequestCourseModel
-import com.example.ams.data.DataClasses.StudentDetail
-import com.example.ams.data.DataClasses.TeachersList
+import com.example.ams.data.DataClasses.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
@@ -27,7 +25,9 @@ interface FirebaseRepository {
     suspend fun fetchAllTeachersDetails(adminId: String, courseName: String):  MutableList<DocumentSnapshot>
     suspend fun requestAdmin(data: RequestCourseModel)
     suspend fun acceptTeacher(data: RequestCourseModel, userId: String, phone: String, courseData: NewCoureModel, teacherDetails: TeachersList)
-    suspend fun getAllNotifications(phone: String): MutableList<DocumentSnapshot>
+    suspend fun getAllRequests(phone: String): MutableList<DocumentSnapshot>
+    suspend fun getAllNotifications(courseName: String, userId: String): MutableList<DocumentSnapshot>
+    fun createNewNotification(notificationData: MutableState<NotificationModel>, courseName: String)
 }
 
 class DefaultFirebaseRepository(
@@ -160,8 +160,25 @@ class DefaultFirebaseRepository(
         firestore.document("Requests/$phone/RequestToImport/${data.requestId}").delete()
     }
 
-    override suspend fun getAllNotifications(phone: String): MutableList<DocumentSnapshot> {
+    override suspend fun getAllRequests(phone: String): MutableList<DocumentSnapshot> {
         val ref = firestore.collection("Requests/$phone/RequestToImport")
         return ref.get().await().documents
+    }
+
+    override suspend fun getAllNotifications(
+        courseName: String,
+        userId: String
+    ): MutableList<DocumentSnapshot> {
+        val ref = firestore.collection("$userId/$courseName/Notifications")
+        return ref.get().await().documents
+    }
+
+    override fun createNewNotification(
+        notificationData: MutableState<NotificationModel>,
+        courseName: String
+    ) {
+        firestore
+            .collection("${notificationData.value.id}/$courseName/Notifications")
+            .add(notificationData.value)
     }
 }

@@ -15,12 +15,14 @@ import com.example.ams.data.Model.FirebaseRepository
 import com.example.ams.data.DataClasses.*
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class FirebaseViewModel(
     private val firebaseRepository: FirebaseRepository,
 ) : ViewModel() {
 
-    val allNotification: MutableLiveData<MutableList<RequestCourseModel>> = MutableLiveData()
+    val allNotification: MutableLiveData<MutableList<NotificationModel>> = MutableLiveData()
+    val allRequests : MutableLiveData<MutableList<RequestCourseModel>> = MutableLiveData()
     val newStudent = mutableStateOf(StudentDetail())
     val newCourseData = mutableStateOf(NewCoureModel())
     val requestData = mutableStateOf(RequestCourseModel())
@@ -33,13 +35,14 @@ class FirebaseViewModel(
     private lateinit var currentUserUid :String
     private val studentAtdData = mutableListOf<String>()
     val imageBitmap = MutableLiveData<Bitmap>()
+    val notificationData = mutableStateOf(NotificationModel())
 
     init {
         viewModelScope.launch {
             getUserDetails()
         }
         if (!currentUserUid.isNullOrEmpty()) fetchClasses()
-    }
+     }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
@@ -115,6 +118,12 @@ class FirebaseViewModel(
                 "creatorPhoneNo" -> it.value = it.value.copy(AdminPhone = value)
             }
         }
+        (notificationData).let {
+            when(name) {
+                "notificationHeading" -> it.value = it.value.copy(heading = value)
+                "notificationDiscrip" -> it.value = it.value.copy(discription = value)
+            }
+        }
     }
 
     fun addAtdData(registerNo: String) {
@@ -171,14 +180,27 @@ class FirebaseViewModel(
         }
     }
 
-    fun getAllNotifications() {
+    fun getAllRequests() {
         val requests = mutableListOf<RequestCourseModel>()
         viewModelScope.launch {
-            firebaseRepository.getAllNotifications(phone = getuser?.phoneNumber!!)
+            firebaseRepository.getAllRequests(phone = getuser?.phoneNumber!!)
                .forEach { doc ->
                    doc.toObject(RequestCourseModel::class.java)?.let { requests.add(it) }
                }
-            allNotification.value = requests
+            allRequests.value = requests
+        }
+    }
+
+    fun getAllNotifications(courseName: String){
+        val notifications = mutableListOf<NotificationModel>()
+        viewModelScope.launch {
+            firebaseRepository.getAllNotifications(courseName = courseName, userId = getuser.uid)
+                .forEach { doc ->
+                    doc.toObject(NotificationModel::class.java)?.let {
+                        notifications.add(it)
+                    }
+                }
+            allNotification.value = notifications
         }
     }
 
@@ -290,5 +312,19 @@ class FirebaseViewModel(
         val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
         val newWidth = (newHeight * aspectRatio).toInt()
         return resizeBitmap(bitmap, newWidth, newHeight)
+    }
+
+    fun createNewNotification(courseName: String) {
+        notificationData.value = notificationData.value.copy(id = currentUserUid)
+        notificationData.value = notificationData.value.copy(date = LocalDate.now().toString())
+        viewModelScope.launch {
+            firebaseRepository.createNewNotification(notificationData,courseName)
+        }
+        notificationData.value = notificationData.value.let {
+            it.copy(id = "")
+            it.copy(heading = "")
+            it.copy(discription = "")
+            it.copy(date = "")
+        }
     }
 }
