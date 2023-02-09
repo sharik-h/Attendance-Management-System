@@ -1,5 +1,6 @@
 package com.example.ams.MainPages
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,8 @@ import com.example.ams.R
 import com.example.ams.data.DataClasses.NotificationModel
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.data.DataClasses.RequestCourseModel
+import me.saket.swipe.SwipeAction
+import me.saket.swipe.SwipeableActionsBox
 
 @Composable
 fun Notifications(
@@ -91,24 +94,52 @@ fun Notifications(
 
 @Composable
 fun NotificationItem(data: NotificationModel) {
-    Column(modifier = Modifier.fillMaxWidth())
-    {
-        Column(modifier = Modifier.padding(15.dp)) {
-            Text(
-                text = data.heading,
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 17.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(text = data.discription, modifier = Modifier.fillMaxWidth())
-            Text(
-                text = data.date,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Right,
-                color = Color.Gray
-            )
+    val edit = SwipeAction(
+        onSwipe = { },
+        icon = {Icon(
+            modifier = Modifier.padding(16.dp),
+            painter = painterResource(id = R.drawable.edit_option),
+            contentDescription = "",
+            tint = Color.White
+        )},
+        background = Color(0xFF03B8FF)
+    )
+    val delete = SwipeAction(
+        onSwipe = { },
+        icon = { Icon(
+            modifier = Modifier.padding(16.dp),
+            painter = painterResource(id = R.drawable.delete_white),
+            contentDescription = " ",
+            tint = Color.White
+        ) },
+        background = Color.Red
+    )
+    SwipeableActionsBox(
+        startActions = listOf(edit),
+        endActions = listOf(delete),
+        swipeThreshold = 200.dp
+    ) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.White))
+        {
+            Column(modifier = Modifier.padding(15.dp)) {
+                Text(
+                    text = data.heading,
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(text = data.discription, modifier = Modifier.fillMaxWidth())
+                Text(
+                    text = data.date,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Right,
+                    color = Color.Gray
+                )
+            }
+            Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth())
         }
-        Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth())
     }
 }
 
