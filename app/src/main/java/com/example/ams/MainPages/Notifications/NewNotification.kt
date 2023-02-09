@@ -38,7 +38,11 @@ fun NewNotification(
             Text(text = "New Notification", color = Color.White)
             Spacer(modifier = Modifier.weight(0.1f))
             TextButton(onClick = {
-                viewModel.createNewNotification(courseName)
+                if (notificationData.notificationId == "") {
+                    viewModel.createNewNotification(courseName)
+                }else{
+                    viewModel.updateNotificatoin(courseName)
+                }
                 navHostController.navigateUp()
             }) {
                 Text(text = "Save", color = Color.White)

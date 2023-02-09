@@ -58,7 +58,11 @@ fun Notifications(
                 items(items = it){ it1->
                     NotificationItem(data = it1){
                         if (it == "edit"){
-
+                            viewModel.updateData("notificationHeading", it1.heading)
+                            viewModel.updateData("notificationDiscrip", it1.discription)
+                            viewModel.updateData("notificationDate", it1.date)
+                            viewModel.updateData("notificationId", it1.notificationId!!)
+                            navHostController.navigate(Screen.NewNotification.passCourseName(courseName = courseName))
                         }else{
                             viewModel.deleteNotification(courseName = courseName, notificationId = it)
                         }

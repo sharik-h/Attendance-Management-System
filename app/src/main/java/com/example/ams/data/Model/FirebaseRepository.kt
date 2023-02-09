@@ -29,6 +29,7 @@ interface FirebaseRepository {
     suspend fun getAllNotifications(courseName: String, userId: String): MutableList<DocumentSnapshot>
     fun createNewNotification(notificationData: MutableState<NotificationModel>, courseName: String)
     suspend fun deleteNotification(userId: String, courseName: String, notificationId: String)
+    suspend fun updateNotificatoin(userId: String, courseName: String, data: MutableState<NotificationModel>)
 }
 
 class DefaultFirebaseRepository(
@@ -191,5 +192,19 @@ class DefaultFirebaseRepository(
         firestore
             .document("$userId/$courseName/Notifications/$notificationId")
             .delete()
+    }
+
+    override suspend fun updateNotificatoin(
+        userId: String,
+        courseName: String,
+        data: MutableState<NotificationModel>
+    ) {
+        firestore.document("$userId/$courseName/Notifications/${data.value.notificationId}")
+            .update(mapOf(
+                "heading" to data.value.heading,
+                "discription" to data.value.discription,
+                "date" to data.value.date,
+                "id" to data.value.id
+            ))
     }
 }

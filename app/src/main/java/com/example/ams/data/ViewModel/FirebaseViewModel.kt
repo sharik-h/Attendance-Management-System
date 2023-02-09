@@ -122,6 +122,8 @@ class FirebaseViewModel(
             when(name) {
                 "notificationHeading" -> it.value = it.value.copy(heading = value)
                 "notificationDiscrip" -> it.value = it.value.copy(discription = value)
+                "notificationDate" -> it.value = it.value.copy(date = value)
+                "notificationId" -> it.value = it.value.copy(notificationId = value)
             }
         }
     }
@@ -339,5 +341,22 @@ class FirebaseViewModel(
             )
         }
         getAllNotifications(courseName = courseName)
+    }
+
+    fun updateNotificatoin(courseName: String) {
+        viewModelScope.launch {
+            firebaseRepository.updateNotificatoin(
+                userId = currentUserUid,
+                courseName = courseName,
+                data = notificationData
+            )
+        }
+        notificationData.value = notificationData.value.let {
+            it.copy(id = "")
+            it.copy(heading = "")
+            it.copy(discription = "")
+            it.copy(date = "")
+            it.copy(notificationId = "")
+        }
     }
 }
