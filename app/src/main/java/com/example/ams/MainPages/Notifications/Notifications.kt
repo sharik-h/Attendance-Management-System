@@ -56,7 +56,13 @@ fun Notifications(
         allNotifications?.let { it->
             LazyColumn{
                 items(items = it){ it1->
-                    NotificationItem(data = it1)
+                    NotificationItem(data = it1){
+                        if (it == "edit"){
+
+                        }else{
+                            viewModel.deleteNotification(courseName = courseName, notificationId = it)
+                        }
+                    }
                 }
             }
         }
@@ -93,9 +99,9 @@ fun Notifications(
 }
 
 @Composable
-fun NotificationItem(data: NotificationModel) {
+fun NotificationItem(data: NotificationModel, onClick: (String) -> Unit) {
     val edit = SwipeAction(
-        onSwipe = { },
+        onSwipe = { onClick("edit") },
         icon = {Icon(
             modifier = Modifier.padding(16.dp),
             painter = painterResource(id = R.drawable.edit_option),
@@ -105,7 +111,7 @@ fun NotificationItem(data: NotificationModel) {
         background = Color(0xFF03B8FF)
     )
     val delete = SwipeAction(
-        onSwipe = { },
+        onSwipe = { onClick(data.notificationId!!) },
         icon = { Icon(
             modifier = Modifier.padding(16.dp),
             painter = painterResource(id = R.drawable.delete_white),

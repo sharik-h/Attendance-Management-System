@@ -197,6 +197,7 @@ class FirebaseViewModel(
             firebaseRepository.getAllNotifications(courseName = courseName, userId = getuser.uid)
                 .forEach { doc ->
                     doc.toObject(NotificationModel::class.java)?.let {
+                        it.notificationId = doc.id
                         notifications.add(it)
                     }
                 }
@@ -326,5 +327,17 @@ class FirebaseViewModel(
             it.copy(discription = "")
             it.copy(date = "")
         }
+    }
+
+    // Calls deleteNotification in firebaseRepository to delete the notification
+    fun deleteNotification(courseName: String, notificationId: String){
+        viewModelScope.launch {
+            firebaseRepository.deleteNotification(
+                userId = currentUserUid,
+                courseName = courseName,
+                notificationId = notificationId
+            )
+        }
+        getAllNotifications(courseName = courseName)
     }
 }

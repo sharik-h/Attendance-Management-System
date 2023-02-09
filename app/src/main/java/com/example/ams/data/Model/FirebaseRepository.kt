@@ -28,6 +28,7 @@ interface FirebaseRepository {
     suspend fun getAllRequests(phone: String): MutableList<DocumentSnapshot>
     suspend fun getAllNotifications(courseName: String, userId: String): MutableList<DocumentSnapshot>
     fun createNewNotification(notificationData: MutableState<NotificationModel>, courseName: String)
+    suspend fun deleteNotification(userId: String, courseName: String, notificationId: String)
 }
 
 class DefaultFirebaseRepository(
@@ -180,5 +181,15 @@ class DefaultFirebaseRepository(
         firestore
             .collection("${notificationData.value.id}/$courseName/Notifications")
             .add(notificationData.value)
+    }
+
+    override suspend fun deleteNotification(
+        userId: String,
+        courseName: String,
+        notificationId: String
+    ) {
+        firestore
+            .document("$userId/$courseName/Notifications/$notificationId")
+            .delete()
     }
 }
