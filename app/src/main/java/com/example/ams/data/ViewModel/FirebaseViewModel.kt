@@ -31,8 +31,8 @@ class FirebaseViewModel(
     val courseData: MutableLiveData<NewCoureModel> = MutableLiveData()
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
     val studentList: MutableLiveData<List<String>> = MutableLiveData()
-    lateinit var getuser : FirebaseUser
-    private lateinit var currentUserUid :String
+    var getuser : FirebaseUser? = null
+    private var currentUserUid :String? = null
     private val studentAtdData = mutableListOf<String>()
     val imageBitmap = MutableLiveData<Bitmap>()
     val notificationData = mutableStateOf(NotificationModel())
@@ -55,14 +55,14 @@ class FirebaseViewModel(
     }
 
     private suspend fun getUserDetails() {
-        getuser = firebaseRepository.getUser()!!
-        currentUserUid = getuser.uid
+        getuser = firebaseRepository?.getUser()
+        currentUserUid = getuser?.uid
     }
 
     private fun createNewClass() {
-        newCourseData.value.adminId = currentUserUid
+        newCourseData.value.adminId = currentUserUid!!
         viewModelScope.launch {
-            firebaseRepository.createNewClass(userId = currentUserUid, newCourseData = newCourseData.value)
+            firebaseRepository.createNewClass(userId = currentUserUid!!, newCourseData = newCourseData.value)
         }
         clearData()
     }
@@ -138,7 +138,7 @@ class FirebaseViewModel(
 
     private fun fetchClasses() {
         viewModelScope.launch {
-            courseNames.value = firebaseRepository.fetchClasses(userId = currentUserUid)
+            courseNames.value = firebaseRepository.fetchClasses(userId = currentUserUid!!)
         }
     }
 
@@ -175,7 +175,7 @@ class FirebaseViewModel(
         requestData.value = requestData.value.copy(
             TeacherName = getuser?.displayName.toString(),
             TeacherPhone = getuser?.phoneNumber.toString(),
-            TeacherUid = currentUserUid
+            TeacherUid = currentUserUid!!
         )
         viewModelScope.launch {
             firebaseRepository.requestAdmin(data = requestData.value)
@@ -196,7 +196,7 @@ class FirebaseViewModel(
     fun getAllNotifications(courseName: String){
         val notifications = mutableListOf<NotificationModel>()
         viewModelScope.launch {
-            firebaseRepository.getAllNotifications(courseName = courseName, userId = getuser.uid)
+            firebaseRepository.getAllNotifications(courseName = courseName, userId = getuser!!.uid)
                 .forEach { doc ->
                     doc.toObject(NotificationModel::class.java)?.let {
                         it.notificationId = doc.id
@@ -218,7 +218,7 @@ class FirebaseViewModel(
         viewModelScope.launch {
             firebaseRepository.acceptTeacher(
                 data = data,
-                userId = currentUserUid,
+                userId = currentUserUid!!,
                 phone = getuser?.phoneNumber!!,
                 courseData = courseData.value!!,
                 teacherDetails = teacherDetails
@@ -318,7 +318,7 @@ class FirebaseViewModel(
     }
 
     fun createNewNotification(courseName: String) {
-        notificationData.value = notificationData.value.copy(id = currentUserUid)
+        notificationData.value = notificationData.value.copy(id = currentUserUid!!)
         notificationData.value = notificationData.value.copy(date = LocalDate.now().toString())
         viewModelScope.launch {
             firebaseRepository.createNewNotification(notificationData,courseName)
@@ -335,7 +335,7 @@ class FirebaseViewModel(
     fun deleteNotification(courseName: String, notificationId: String){
         viewModelScope.launch {
             firebaseRepository.deleteNotification(
-                userId = currentUserUid,
+                userId = currentUserUid!!,
                 courseName = courseName,
                 notificationId = notificationId
             )
@@ -346,7 +346,7 @@ class FirebaseViewModel(
     fun updateNotificatoin(courseName: String) {
         viewModelScope.launch {
             firebaseRepository.updateNotificatoin(
-                userId = currentUserUid,
+                userId = currentUserUid!!,
                 courseName = courseName,
                 data = notificationData
             )
