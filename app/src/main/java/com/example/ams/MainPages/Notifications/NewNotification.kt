@@ -54,7 +54,7 @@ fun NewNotification(
             onValueChange = { viewModel.updateData(name = "notificationHeading", value = it) },
             maxLines = 3,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            placeholder = { Text(text = "Title goes here") },
+            placeholder = { Text(text = "Title goes here", color = Color.Gray) },
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 backgroundColor = Color.Transparent,
@@ -65,7 +65,7 @@ fun NewNotification(
         TextField(
             value = notificationData.discription,
             onValueChange = { viewModel.updateData(name = "notificationDiscrip", value = it) },
-            placeholder = { Text(text = "Give some details about it") },
+            placeholder = { Text(text = "Give some details about it", color = Color.Gray) },
             modifier = Modifier.fillMaxSize(),
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
