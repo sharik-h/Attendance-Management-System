@@ -39,7 +39,6 @@ fun AddNewStudent(
     adminId: String,
     viewModel: FirebaseViewModel
 ) {
-    viewModel.clearData()
     var i = 0
     val bungeeStyle = FontFamily(Font(R.font.bungee))
     val addIcon = painterResource(id = R.drawable.add_icon_black)
