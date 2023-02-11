@@ -89,6 +89,13 @@ class FirebaseViewModel(
             it.batchTo = ""
             it.adminId = ""
         }
+        notificationData.value.let {
+            it.id = ""
+            it.date = ""
+            it.heading = ""
+            it.discription = ""
+            it.notificationId = ""
+        }
     }
 
     fun clearAtdData() {

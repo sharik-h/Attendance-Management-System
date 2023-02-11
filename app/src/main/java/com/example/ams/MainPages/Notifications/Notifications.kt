@@ -93,8 +93,9 @@ fun Notifications(
         FloatingActionButton(
             modifier = Modifier.width(100.dp),
             backgroundColor = Color.Black,
-            onClick = { navHostController
-                .navigate(Screen.NewNotification.passCourseName(courseName = courseName))
+            onClick = {
+                viewModel.clearData()
+                navHostController.navigate(Screen.NewNotification.passCourseName(courseName = courseName))
             }
         ) {
             Text(text = "Create +", color = Color.White)
