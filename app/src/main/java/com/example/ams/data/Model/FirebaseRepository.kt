@@ -13,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 interface FirebaseRepository {
     suspend fun getUser(): FirebaseUser?
     suspend fun createNewClass(userId: String, newCourseData: NewCoureModel)
-    suspend fun addNewStudent(courseName: String, adminId: String, newStudentData: MutableState<StudentDetail>)
+    suspend fun addNewStudent(courseName: String, adminId: String, newStudentData: MutableState<StudentDetail>, noAttendance: Int)
     suspend fun markAttendance(adminId: String, courseName: String, size: Int, registerNo: String, present: Boolean)
     suspend fun updateCourseDetails(name: String, newCourseData: NewCoureModel)
     suspend fun fetchClasses(userId: String):  MutableList<Pair<String, String>>
@@ -30,6 +30,7 @@ interface FirebaseRepository {
     fun createNewNotification(notificationData: MutableState<NotificationModel>, courseName: String)
     suspend fun deleteNotification(userId: String, courseName: String, notificationId: String)
     suspend fun updateNotificatoin(userId: String, courseName: String, data: MutableState<NotificationModel>)
+    suspend fun getToatlAtd(courseName: String, adminId: String): Int
 }
 
 class DefaultFirebaseRepository(
@@ -48,7 +49,13 @@ class DefaultFirebaseRepository(
     }
 
 
-    override suspend fun addNewStudent(courseName: String, adminId: String, newStudentData: MutableState<StudentDetail>) {
+    override suspend fun addNewStudent(
+        courseName: String,
+        adminId: String,
+        newStudentData: MutableState<StudentDetail>,
+        noAttendance: Int
+    ) {
+        val atdHashmap = (1..noAttendance).map{ "$it" }.associateWith { false }
         var i = 0
         val images = newStudentData.value.images
         newStudentData.value.images.clear()
@@ -62,7 +69,7 @@ class DefaultFirebaseRepository(
             i++
         }
         firestore.document("$adminId/$courseName/tempAttendance/${newStudentData.value.registerNo}")
-            .set(hashMapOf("1" to false))
+            .set(atdHashmap)
     }
 
     override suspend fun markAttendance(
@@ -206,5 +213,10 @@ class DefaultFirebaseRepository(
                 "date" to data.value.date,
                 "id" to data.value.id
             ))
+    }
+
+    override suspend fun getToatlAtd(courseName: String, adminId: String): Int {
+        val ref = firestore.document("$adminId/$courseName")
+        return ref.get().await().toObject(NewCoureModel::class.java)?.noAttendace?.toInt() ?: 0
     }
 }

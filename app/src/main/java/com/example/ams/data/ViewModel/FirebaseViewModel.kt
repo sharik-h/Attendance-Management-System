@@ -36,6 +36,7 @@ class FirebaseViewModel(
     private val studentAtdData = mutableListOf<String>()
     val imageBitmap = MutableLiveData<Bitmap>()
     val notificationData = mutableStateOf(NotificationModel())
+    var noAttendance = mutableStateOf(0)
 
     init {
         viewModelScope.launch {
@@ -69,7 +70,12 @@ class FirebaseViewModel(
 
     fun addStudent(courseName: String, adminId: String) {
         viewModelScope.launch {
-            firebaseRepository.addNewStudent(courseName = courseName, adminId = adminId, newStudentData = newStudent)
+            firebaseRepository.addNewStudent(
+                courseName = courseName,
+                adminId = adminId,
+                newStudentData = newStudent,
+                noAttendance = noAttendance.value
+            )
         }
         clearData()
     }
@@ -364,6 +370,12 @@ class FirebaseViewModel(
             it.copy(discription = "")
             it.copy(date = "")
             it.copy(notificationId = "")
+        }
+    }
+
+    fun getTotalAtd(courseName: String, adminId: String){
+        viewModelScope.launch {
+            noAttendance.value = firebaseRepository.getToatlAtd(courseName = courseName, adminId = adminId)
         }
     }
 }
