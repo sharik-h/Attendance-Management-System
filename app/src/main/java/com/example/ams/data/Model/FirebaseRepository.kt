@@ -31,6 +31,8 @@ interface FirebaseRepository {
     suspend fun deleteNotification(userId: String, courseName: String, notificationId: String)
     suspend fun updateNotificatoin(userId: String, courseName: String, data: MutableState<NotificationModel>)
     suspend fun getToatlAtd(courseName: String, adminId: String): Int
+    suspend fun getPeriodNo(courseName: String, adminId: String): Int
+    suspend fun updatePeriod(adminId: String, courseName: String, periodNo: Int)
 }
 
 class DefaultFirebaseRepository(
@@ -218,5 +220,14 @@ class DefaultFirebaseRepository(
     override suspend fun getToatlAtd(courseName: String, adminId: String): Int {
         val ref = firestore.document("$adminId/$courseName")
         return ref.get().await().toObject(NewCoureModel::class.java)?.noAttendace?.toInt() ?: 0
+    }
+
+    override suspend fun getPeriodNo(courseName: String, adminId: String): Int {
+        val ref = firestore.document("$adminId/$courseName")
+        return ref.get().await().toObject(NewCoureModel::class.java)?.periodNo?.toInt() ?: 0
+    }
+
+    override suspend fun updatePeriod(adminId: String, courseName: String, periodNo: Int) {
+        firestore.document("$adminId/$courseName").update(mapOf("periodNo" to "$periodNo"))
     }
 }

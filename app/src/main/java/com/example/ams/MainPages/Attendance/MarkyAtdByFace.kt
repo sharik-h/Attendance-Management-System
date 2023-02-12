@@ -110,7 +110,7 @@ fun MarkyAtdByFace(
     ) {
         Button(
             onClick = {
-                viewModel.markAttendance(adminId = adminId, courseName = courseName, size = size?.toInt() ?: 0)
+                viewModel.markAttendance(adminId = adminId, courseName = courseName)
                 context.finish()
             },
             modifier = Modifier.fillMaxWidth(),

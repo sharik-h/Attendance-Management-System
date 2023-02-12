@@ -6,5 +6,6 @@ data class NewCoureModel (
     var courseName: String = "",
     var batchFrom: String= "",
     var batchTo: String = "",
-    var noAttendace: String = ""
+    var noAttendace: String = "",
+    var periodNo: String = ""
 )

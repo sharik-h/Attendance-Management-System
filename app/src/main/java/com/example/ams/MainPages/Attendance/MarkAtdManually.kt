@@ -24,9 +24,10 @@ fun MarkAtdManually(
     navHostController: NavHostController,
     courseName: String,
     adminId: String,
-    size: Int,
     viewModel: FirebaseViewModel
 ) {
+    viewModel.getPeriodNo(adminId = adminId, courseName = courseName)
+    viewModel.getTotalAtd(adminId = adminId, courseName = courseName)
     viewModel.getAllStudents(adminId = adminId, courseName = courseName)
     val studentDetail by viewModel.studentList.observeAsState(initial = emptyList())
 
@@ -52,7 +53,7 @@ fun MarkAtdManually(
     ) {
         FloatingActionButton(
             onClick = {
-                viewModel.markAttendance(adminId = adminId, courseName = courseName, size = size)
+                viewModel.markAttendance(adminId = adminId, courseName = courseName)
                 navHostController.navigateUp() },
             backgroundColor = Color.Black
         ) {

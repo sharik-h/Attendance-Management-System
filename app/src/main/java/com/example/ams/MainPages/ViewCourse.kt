@@ -103,7 +103,7 @@ fun ViewCourse(
         if (selected){
             FloatingActionButton(
                 onClick = { navHostController.navigate(Screen.MarkAtdManually
-                    .passCourseName(courseName = courseName, adminId = adminId, size = size)) },
+                    .passCourseName(courseName = courseName, adminId = adminId)) },
                 backgroundColor = Color.Black,
                 modifier = Modifier
                     .padding(end = 8.dp)

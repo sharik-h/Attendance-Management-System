@@ -122,15 +122,13 @@ fun NavGraphBuilder.HomeNavGraph(
             route = Screen.MarkAtdManually.route,
             arguments = listOf(
                 navArgument(name = "courseName") { type = NavType.StringType },
-                navArgument(name = "adminId") { type = NavType.StringType },
-                navArgument(name = "size") { type = NavType.IntType }
+                navArgument(name = "adminId") { type = NavType.StringType }
             )
         ) {
             MarkAtdManually(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
                 adminId = it.arguments?.getString("adminId").toString(),
-                size = it.arguments?.getInt("size")!!,
                 viewModel = viewModel
             )
         }

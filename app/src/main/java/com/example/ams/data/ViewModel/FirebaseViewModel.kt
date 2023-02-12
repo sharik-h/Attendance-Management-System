@@ -37,6 +37,7 @@ class FirebaseViewModel(
     val imageBitmap = MutableLiveData<Bitmap>()
     val notificationData = mutableStateOf(NotificationModel())
     var noAttendance = mutableStateOf(0)
+    var periodNo = mutableStateOf(0)
 
     init {
         viewModelScope.launch {
@@ -62,6 +63,7 @@ class FirebaseViewModel(
 
     private fun createNewClass() {
         newCourseData.value.adminId = currentUserUid!!
+        newCourseData.value.periodNo = "0"
         viewModelScope.launch {
             firebaseRepository.createNewClass(userId = currentUserUid!!, newCourseData = newCourseData.value)
         }
@@ -293,12 +295,26 @@ class FirebaseViewModel(
         }
     }
 
-    fun markAttendance(adminId: String, courseName: String, size: Int) {
-        studentList.value?.forEach { registerNo ->
-            val present = studentAtdData.contains(registerNo)
-            viewModelScope.launch {
-                firebaseRepository
-                    .markAttendance(adminId = adminId, courseName = courseName, registerNo = registerNo, size = size, present = present)
+    fun markAttendance(adminId: String, courseName: String) {
+        if (periodNo.value +1 <= noAttendance.value) {
+            studentList.value?.forEach { registerNo ->
+                val present = studentAtdData.contains(registerNo)
+                viewModelScope.launch {
+                    firebaseRepository
+                        .markAttendance(
+                            adminId = adminId,
+                            courseName = courseName,
+                            registerNo = registerNo,
+                            size = periodNo.value+1,
+                            present = present
+                        )
+                    firebaseRepository
+                        .updatePeriod(
+                            adminId = adminId,
+                            courseName = courseName,
+                            periodNo = periodNo.value + 1
+                    )
+                }
             }
         }
     }
@@ -376,6 +392,12 @@ class FirebaseViewModel(
     fun getTotalAtd(courseName: String, adminId: String){
         viewModelScope.launch {
             noAttendance.value = firebaseRepository.getToatlAtd(courseName = courseName, adminId = adminId)
+        }
+    }
+
+    fun getPeriodNo(adminId: String, courseName: String) {
+        viewModelScope.launch {
+            periodNo.value = firebaseRepository.getPeriodNo(courseName = courseName, adminId = adminId)
         }
     }
 }
