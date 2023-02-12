@@ -114,4 +114,7 @@ dependencies {
 
     // Swipe
     implementation "me.saket.swipe:swipe:1.0.0"
+
+    // accompanist
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
 }
