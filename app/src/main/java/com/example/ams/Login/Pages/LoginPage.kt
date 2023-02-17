@@ -1,13 +1,16 @@
 package com.example.ams.Login.Pages
 
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -18,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.example.ams.Login.Authenticate
 import com.example.ams.Navigation.Screen
 import com.example.ams.R
@@ -28,84 +32,113 @@ import com.example.ams.R
 fun LoginPage(navHostController: NavHostController) {
 
     var name by remember { mutableStateOf("") }
-    val bungeeFont = FontFamily(Font(R.font.bungee))
     val context = LocalContext.current
     var method = "error"
+    var rmbrMe by remember { mutableStateOf(false) }
+    var password by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-
-        Text(text = "AMS", fontSize = 35.sp, fontFamily = bungeeFont)
-        Text(text = "HELLO THERE, WELCOME BACK", fontSize = 35.sp, fontFamily = bungeeFont)
-    }
-    Column(
-        modifier = Modifier.fillMaxSize().padding(20.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Sign up to continue", fontSize = 18.sp, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(20.dp))
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            placeholder = { Text(text = "Email or Phone")},
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                unfocusedIndicatorColor = Color.Black,
-                focusedIndicatorColor = Color.Black,
-                cursorColor = Color.Black,
-                textColor = Color.Black,
-                placeholderColor = Color.Black
-            )
+    Column(Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.height(30.dp))
+        Text(
+            text = "Login",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            fontSize = 40.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Blue
         )
-        TextButton(
-            onClick = { /*TODO*/ },
-            modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Forgot password?",
-                color = Color.Black,
+        Spacer(modifier = Modifier.height(30.dp))
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 30.dp))
+        {
+            Text(text = "Email", color = Color.Gray)
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.End
+                leadingIcon = { 
+                    Image(painter = painterResource(id = R.drawable.mail_white), contentDescription = "")
+                },
+                colors = TextFieldDefaults.textFieldColors(
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Blue,
+                    backgroundColor = Color.LightGray,
+                    cursorColor = Color.Blue
+                )
             )
-        }
-        Button(
-            onClick = {
-
-                if(name.length == 10 && name.isDigitsOnly()) { method = "phone" }
-                else if( name.split("@").contains("gmail.com")){ method = "email" }
-                if (method != "error") {
-                    context.startActivity(
-                        Intent(context, Authenticate::class.java)
-                            .putExtra("method", method)
-                            .putExtra("email", name)
-                            .putExtra("phone", name))
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(text = "Password", color = Color.Gray)
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = {
+                    Image(painter = painterResource(id = R.drawable.lock_white), contentDescription = "")
+                },
+                colors = TextFieldDefaults.textFieldColors(
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Blue,
+                    backgroundColor = Color.LightGray,
+                    cursorColor = Color.Blue
+                )
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = rmbrMe,
+                    onCheckedChange = { rmbrMe = !rmbrMe },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Color.Transparent,
+                        uncheckedColor = Color.Gray
+                    )
+                )
+                Text(text = "Remember me", color = Color.Blue)
+            }
+            Spacer(modifier = Modifier.height(30.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    onClick = {
+                        if(name.length == 10 && name.isDigitsOnly()) { method = "phone" }
+                        else if( name.split("@").contains("gmail.com")){ method = "email" }
+                        if (method != "error") {
+                            context.startActivity(
+                                Intent(context, Authenticate::class.java)
+                                    .putExtra("method", method)
+                                    .putExtra("email", name)
+                                    .putExtra("phone", name))
+                        }
+                              },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Login", color = Color.White)
                 }
-                      },
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            colors = ButtonDefaults.buttonColors( backgroundColor = Color.Black )  ) {
-            Text(
-                text = "GO",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxSize().padding(top = 8.dp),
-                textAlign = TextAlign.Center
-            )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Don't have an account?", color = Color.DarkGray)
+                TextButton(onClick = { navHostController.navigate(Screen.NewAccountPage.route)  }) {
+                    Text(text = "Sign up", color = Color.Blue)
+                }
+
+            }
         }
-        Spacer(modifier = Modifier.height(10.dp))
-        Button(
-            onClick = { navHostController.navigate(Screen.NewAccountPage.route) },
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            colors = ButtonDefaults.buttonColors( backgroundColor = Color.White ),
-        ) {
-            Text(
-                text = "NEW USER? SIGN UP",
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxSize().padding(top = 8.dp),
-                textAlign = TextAlign.Center,
-            )
-        }
+
     }
+
 }
 @Preview(showBackground = true)
 @Composable
