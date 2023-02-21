@@ -308,15 +308,18 @@ class FirebaseViewModel(
                             size = periodNo.value+1,
                             present = present
                         )
-                    firebaseRepository
-                        .updatePeriod(
-                            adminId = adminId,
-                            courseName = courseName,
-                            periodNo = periodNo.value + 1
-                    )
                 }
             }
+            viewModelScope.launch {
+                firebaseRepository
+                    .updatePeriod(
+                        adminId = adminId,
+                        courseName = courseName,
+                        periodNo = periodNo.value + 1
+                    )
+            }
         }
+        studentAtdData.removeAll(studentAtdData)
     }
 
     fun setbitimgValue(bitmap: Bitmap){
