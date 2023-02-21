@@ -4,6 +4,8 @@
     package="com.example.ams">
 
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
         android:name=".data.ViewModel.FirebaseApplication"
         android:allowBackup="true"
@@ -28,6 +30,14 @@
         </activity>
         <activity android:name=".Login.Authenticate" />
         <activity android:name=".MainPages.Attendance.FaceRecogActivity"/>
+        <receiver
+            android:name=".MainPages.Attendance.MarkDailyAtd"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.ams.ACTION_SCHEDULED_TASK" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="preloaded_fonts"

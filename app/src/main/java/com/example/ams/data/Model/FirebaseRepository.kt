@@ -8,7 +8,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.time.LocalDate
 
 interface FirebaseRepository {
     suspend fun getUser(): FirebaseUser?
@@ -33,6 +37,7 @@ interface FirebaseRepository {
     suspend fun getToatlAtd(courseName: String, adminId: String): Int
     suspend fun getPeriodNo(courseName: String, adminId: String): Int
     suspend fun updatePeriod(adminId: String, courseName: String, periodNo: Int)
+    fun markRealAtd(adminId: String, courseName: String, atdList: List<Pair<String, Int>>, date: LocalDate?)
 }
 
 class DefaultFirebaseRepository(
@@ -104,6 +109,8 @@ class DefaultFirebaseRepository(
 
     override suspend fun fetchClasses(userId: String): MutableList<Pair<String, String>> {
         val listOfClasses = mutableListOf<Pair<String, String>>()
+        val deferred = CompletableDeferred<MutableList<Pair<String, String>>>()
+        withContext(Dispatchers.IO){
         firestore.collection(userId)
             .addSnapshotListener {  result, _ ->
                 result?.let {  it1 ->
@@ -112,10 +119,11 @@ class DefaultFirebaseRepository(
                             listOfClasses.add(Pair(it.id, it.data!!["adminId"].toString()))
                         }
                     }
-//                    courseNames.value = listOfClasses
+                    deferred.complete(listOfClasses)
                 }
             }
-        return listOfClasses
+        }
+        return deferred.await()
     }
 
     override suspend fun getCourseDetails(id: String, name: String): NewCoureModel? {
@@ -229,5 +237,15 @@ class DefaultFirebaseRepository(
 
     override suspend fun updatePeriod(adminId: String, courseName: String, periodNo: Int) {
         firestore.document("$adminId/$courseName").update(mapOf("periodNo" to "$periodNo"))
+    }
+
+    override fun markRealAtd(
+        adminId: String,
+        courseName: String,
+        atdList: List<Pair<String, Int>>,
+        date: LocalDate?
+    ) {
+      firestore.document("$adminId/$courseName/Attendance/$date")
+          .set(atdList.toMap())
     }
 }
