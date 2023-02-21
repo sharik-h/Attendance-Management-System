@@ -3,11 +3,13 @@ package com.example.ams.Login.Pages
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -56,7 +58,9 @@ fun LoginPage(navHostController: NavHostController) {
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20)),
                 leadingIcon = { 
                     Image(painter = painterResource(id = R.drawable.mail_white), contentDescription = "")
                 },
@@ -72,7 +76,9 @@ fun LoginPage(navHostController: NavHostController) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20)),
                 leadingIcon = {
                     Image(painter = painterResource(id = R.drawable.lock_white), contentDescription = "")
                 },
