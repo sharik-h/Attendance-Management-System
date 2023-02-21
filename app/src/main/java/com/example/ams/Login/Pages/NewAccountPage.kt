@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,11 +22,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.ams.Login.Authenticate
 import com.example.ams.R
@@ -52,18 +57,13 @@ fun NewAccountPage(navHostController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Creating a new account?",
-            fontFamily = bungeeFont,
-            fontSize = 25.sp
-        )
-        Text(
-            text = "It may cost you some personal information",
-            fontFamily = bungeeFont,
-            fontSize = 13.sp,
+            text = "Sign up",
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Left
+            fontSize = 40.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Blue
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         Box(
             modifier = Modifier
                 .size(150.dp)
@@ -78,92 +78,105 @@ fun NewAccountPage(navHostController: NavHostController) {
         }
         Text(
             text = "Your name",
-            fontFamily = bungeeFont,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left
         )
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            placeholder = { Text(text = "Name") },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
+                .clip(RoundedCornerShape(20)),
             colors = TextFieldDefaults.textFieldColors(
-                unfocusedIndicatorColor = Color.Black,
-                focusedIndicatorColor = Color.Black,
-                cursorColor = Color.Black,
-                textColor = Color.Black,
-                placeholderColor = Color.Black),
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Blue,
+                cursorColor = Color.Blue,
+                backgroundColor = Color.LightGray,
+                textColor = Color.Black),
             singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            leadingIcon = {
+                Image(painter = painterResource(id = R.drawable.person_white), contentDescription ="" )
+            }
         )
         Text(
             text = "Phone",
-            fontFamily = bungeeFont,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left
         )
         OutlinedTextField(
             value = phone,
             onValueChange = { phone = it },
-            placeholder = { Text(text = "Phone") },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
+                .clip(RoundedCornerShape(20)),
             colors = TextFieldDefaults.textFieldColors(
-                unfocusedIndicatorColor = Color.Black,
-                focusedIndicatorColor = Color.Black,
-                cursorColor = Color.Black,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Blue,
+                cursorColor = Color.Blue,
                 textColor = Color.Black,
-                placeholderColor = Color.Black),
+            backgroundColor = Color.LightGray),
             singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Number
+            ),
+            leadingIcon = {
+                Image(painter = painterResource(id = R.drawable.phone_white), contentDescription ="" )
+            }
         )
         Text(
-            text = "Enter your email address",
-            fontFamily = bungeeFont,
+            text = "Email",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left
         )
         OutlinedTextField(
             value = password1,
             onValueChange = { password1 = it },
-            placeholder = { Text(text = "Email Address") },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
+                .clip(RoundedCornerShape(20)),
             colors = TextFieldDefaults.textFieldColors(
-                unfocusedIndicatorColor = Color.Black,
-                focusedIndicatorColor = Color.Black,
-                cursorColor = Color.Black,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Blue,
+                cursorColor = Color.Blue,
                 textColor = Color.Black,
-                placeholderColor = Color.Black),
+            backgroundColor = Color.LightGray),
             singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email
+            ),
+            leadingIcon = {
+                Image(painter = painterResource(id = R.drawable.mail_white), contentDescription = "")
+            }
         )
         Text(
-            text = "Create a password",
-            fontFamily = bungeeFont,
+            text = "Password",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left
         )
         OutlinedTextField(
             value = password2,
             onValueChange = { password2 = it },
-            placeholder = { Text(text = "Password") },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
+                .clip(RoundedCornerShape(20)),
             colors = TextFieldDefaults.textFieldColors(
-                unfocusedIndicatorColor = Color.Black,
-                focusedIndicatorColor = Color.Black,
-                cursorColor = Color.Black,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Blue,
+                cursorColor = Color.Blue,
                 textColor = Color.Black,
-                placeholderColor = Color.Black),
-            singleLine = true
+            backgroundColor = Color.LightGray),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+              keyboardType = KeyboardType.Password
+            ),
+            leadingIcon = {
+                Image(painter = painterResource(id = R.drawable.lock_white), contentDescription ="" )
+            }
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
                 if (name.isNotEmpty() && phone.isNotEmpty() && password1.isNotEmpty() && password2.isNotEmpty() && password1.isNotEmpty() ) {
@@ -180,13 +193,13 @@ fun NewAccountPage(navHostController: NavHostController) {
             },
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(20))
                 .height(50.dp),
-            colors = ButtonDefaults.buttonColors( backgroundColor = Color.Black ),
+            colors = ButtonDefaults.buttonColors( backgroundColor = Color.Blue ),
         ) {
             Text(
-                text = "Create account",
+                text = "Sign up",
                 color = Color.White,
-                fontFamily = bungeeFont
             )
         }
     }
