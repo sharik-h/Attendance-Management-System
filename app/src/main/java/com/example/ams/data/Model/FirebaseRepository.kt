@@ -38,6 +38,8 @@ interface FirebaseRepository {
     suspend fun getPeriodNo(courseName: String, adminId: String): Int
     suspend fun updatePeriod(adminId: String, courseName: String, periodNo: Int)
     fun markRealAtd(adminId: String, courseName: String, atdList: List<Pair<String, Int>>, date: LocalDate?)
+    suspend fun getStdRealAtd(courseName: String, adminId: String): MutableList<DocumentSnapshot>
+    suspend fun getStdRealAtdDates(adminId: String, courseName: String): List<String>
 }
 
 class DefaultFirebaseRepository(
@@ -247,5 +249,23 @@ class DefaultFirebaseRepository(
     ) {
       firestore.document("$adminId/$courseName/Attendance/$date")
           .set(atdList.toMap())
+    }
+
+    override suspend fun getStdRealAtd(courseName: String, adminId: String): MutableList<DocumentSnapshot> {
+        val ref = firestore.collection("$adminId/$courseName/Attendance")
+        return ref.get().await().documents
+    }
+
+    override suspend fun getStdRealAtdDates(adminId: String, courseName: String): List<String> {
+        val date = mutableListOf<String>()
+        firestore
+            .collection("$adminId/$courseName/Attendance")
+            .get()
+            .addOnSuccessListener {
+                it.documents.forEach {
+                    date.add(it.id)
+                }
+            }.await()
+        return date
     }
 }

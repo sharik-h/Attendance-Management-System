@@ -58,6 +58,9 @@ fun ViewCourse(
          }
          Text(text = courseName, fontFamily = bungee, color = Color.White)
          Spacer(modifier = Modifier.weight(0.5f))
+         IconButton(onClick = { navHostController.navigate(Screen.ViewAttendance.passCourseName(courseName = courseName, adminId = adminId)) }) {
+             Image(painter = checkItemsIcon, contentDescription = "")
+         }
          IconButton(onClick = { navHostController.navigate(Screen.ViewDetails.passCourseName(courseName = courseName, adminId = adminId)) }) {
              Image(painter = infoIcon, contentDescription = "")
          }

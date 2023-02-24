@@ -3,6 +3,7 @@ package com.example.ams.Navigation
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.example.ams.MainPages.*
+import com.example.ams.MainPages.DetailViewPages.ViewAttendance
 import com.example.ams.MainPages.NewDataPage.ViewStudentDetails
 import com.example.ams.MainPages.Notifications.NewNotification
 import com.example.ams.SplashScreen.SplashScreen
@@ -130,6 +131,20 @@ fun NavGraphBuilder.HomeNavGraph(
                 courseName = it.arguments?.getString("courseName").toString(),
                 adminId = it.arguments?.getString("adminId").toString(),
                 viewModel = viewModel
+            )
+        }
+        composable(
+            route = Screen.ViewAttendance.route,
+            arguments = listOf(
+                navArgument(name = "courseName") { type = NavType.StringType },
+                navArgument(name = "adminId") { type = NavType.StringType }
+            )
+        )
+        {
+            ViewAttendance(
+                viewModel = viewModel,
+                adminId = it.arguments?.getString("adminId").toString(),
+                courseName = it.arguments?.getString("courseName").toString()
             )
         }
     }

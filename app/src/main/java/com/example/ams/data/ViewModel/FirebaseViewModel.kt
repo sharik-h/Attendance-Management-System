@@ -38,6 +38,8 @@ class FirebaseViewModel(
     val notificationData = mutableStateOf(NotificationModel())
     var noAttendance = mutableStateOf(0)
     var periodNo = mutableStateOf(0)
+    var realAtd: MutableLiveData< Map<String, List<Int>>> = MutableLiveData()
+    var realAtdDates: MutableLiveData<List<String>> = MutableLiveData()
 
     init {
         viewModelScope.launch {
@@ -401,6 +403,21 @@ class FirebaseViewModel(
     fun getPeriodNo(adminId: String, courseName: String) {
         viewModelScope.launch {
             periodNo.value = firebaseRepository.getPeriodNo(courseName = courseName, adminId = adminId)
+        }
+    }
+
+    fun getStdRealAtd(adminId: String, courseName: String) {
+        viewModelScope.launch {
+            val snapShotAtds = firebaseRepository.getStdRealAtd(adminId = adminId, courseName = courseName)
+            val snapShotDates = firebaseRepository.getStdRealAtdDates(adminId = adminId, courseName = courseName)
+            val rawAtd = mutableListOf<Pair<String, Int>>()
+            snapShotAtds.forEach { doc ->
+                doc.data?.forEach { regNo, atd ->
+                    rawAtd.add(Pair(regNo, atd) as Pair<String, Int>)
+                }
+            }
+            realAtd.value = rawAtd.groupBy { it.first }.mapValues { it.value.map { it.second } }
+            realAtdDates.value = snapShotDates
         }
     }
 }
