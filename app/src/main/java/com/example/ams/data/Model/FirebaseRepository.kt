@@ -67,7 +67,6 @@ class DefaultFirebaseRepository(
         val atdHashmap = (1..noAttendance).map{ "$it" }.associateWith { false }
         var i = 0
         val images = newStudentData.value.images
-        newStudentData.value.images.clear()
         firestore
             .document("$adminId/$courseName/studentDetails/${newStudentData.value.registerNo}")
             .set(newStudentData.value)

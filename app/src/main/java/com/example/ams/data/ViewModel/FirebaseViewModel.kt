@@ -84,6 +84,8 @@ class FirebaseViewModel(
             )
         }
         clearData()
+        newStudent.value.images.clear()
+        studentImages.value = emptyList()
     }
 
     fun clearData() {
