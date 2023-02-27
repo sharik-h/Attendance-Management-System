@@ -3,6 +3,7 @@ package com.example.ams.data.ViewModel
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.net.Uri
 import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,6 +25,7 @@ class FirebaseViewModel(
     val allNotification: MutableLiveData<MutableList<NotificationModel>> = MutableLiveData()
     val allRequests : MutableLiveData<MutableList<RequestCourseModel>> = MutableLiveData()
     val newStudent = mutableStateOf(StudentDetail())
+    val studentImages = MutableLiveData<List<Uri>>()
     val newCourseData = mutableStateOf(NewCoureModel())
     val requestData = mutableStateOf(RequestCourseModel())
     val teacherDetailsList: MutableLiveData<List<TeachersList>> = MutableLiveData()
@@ -326,6 +328,13 @@ class FirebaseViewModel(
 
     fun setbitimgValue(bitmap: Bitmap){
         imageBitmap.postValue(bitmap)
+    }
+
+    fun setStudentImage(uri: Uri){
+        val currentList: MutableList<Uri> = studentImages.value?.toMutableList() ?: mutableListOf()
+        currentList.add(uri)
+        studentImages.value = currentList
+        newStudent.value.images.add(uri)
     }
 
     fun saveDetectedStudents(name: String) {

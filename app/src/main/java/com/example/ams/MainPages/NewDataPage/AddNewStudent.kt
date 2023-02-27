@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,12 +46,13 @@ fun AddNewStudent(
     val addIcon = painterResource(id = R.drawable.add_icon_black)
     val context = LocalContext.current
     val studentDetail = viewModel.newStudent.value
+    val studentImage = viewModel.studentImages.observeAsState(initial = emptyList())
     val cameraLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) {
         if (it != null) {
             val bytes = ByteArrayOutputStream()
             it.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
             val path = MediaStore.Images.Media.insertImage(context.contentResolver, it, studentDetail.name+(i++), null)
-            studentDetail.images.add(Uri.parse(path.toString()))
+            viewModel.setStudentImage(Uri.parse(path.toString()))
         }
     }
 
@@ -92,7 +94,7 @@ fun AddNewStudent(
         }
         Spacer(modifier = Modifier.height(10.dp))
         LazyRow(reverseLayout = true) {
-            items(items = studentDetail.images) {
+            items(items = studentImage.value) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
                     painter = rememberAsyncImagePainter(it),
