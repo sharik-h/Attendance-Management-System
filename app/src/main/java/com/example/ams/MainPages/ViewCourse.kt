@@ -1,11 +1,8 @@
 package com.example.ams.MainPages
 
 import android.content.Intent
-import android.graphics.Bitmap
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,10 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.MainPages.Attendance.FaceRecogActivity
+import com.example.ams.MainPages.CustomComposes.cornerBorder
 import com.example.ams.Navigation.Screen
 import com.example.ams.R
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.data.DataClasses.AttendceDetail
+import com.example.ams.ui.theme.pri
 
 @Composable
 fun ViewCourse(
@@ -49,14 +48,14 @@ fun ViewCourse(
     val addPersonIcon = painterResource(id = R.drawable.add_person_white)
     val checkItemsIcon = painterResource(id = R.drawable.check_item_icon_white)
     val faceRecoIcon = painterResource(id = R.drawable.face_reco_icon_white)
-    val bungee = FontFamily(Font(R.font.bungee))
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
 
  Column(modifier = Modifier.fillMaxSize()) {
-     TopAppBar {
+     TopAppBar(backgroundColor = pri) {
          IconButton(onClick = { navHostController.navigateUp() }) {
              Image(painter = arrowBackIcon, contentDescription = "")
          }
-         Text(text = courseName, fontFamily = bungee, color = Color.White)
+         Text(text = courseName, fontFamily = quickSand, color = Color.White)
          Spacer(modifier = Modifier.weight(0.5f))
          IconButton(onClick = { navHostController.navigate(Screen.ViewAttendance.passCourseName(courseName = courseName, adminId = adminId)) }) {
              Image(painter = checkItemsIcon, contentDescription = "")
@@ -77,22 +76,32 @@ fun ViewCourse(
      Row(
          Modifier
              .fillMaxWidth()
-             .height(40.dp)
-             .padding(start = 10.dp, top = 5.dp)
+             .height(30.dp)
+             .padding(start = 10.dp, top = 0.dp)
      ) {
-         Text(text = "Name", fontSize = 20.sp, modifier = Modifier.weight(0.7f))
+         Text(
+             text = "Reg No",
+             fontSize = 20.sp,
+             modifier = Modifier.weight(0.7f),
+             fontFamily = quickSand
+         )
          for (i in 1..size) {
-             Row(Modifier.weight(0.1f)) {
-                 Spacer(modifier = Modifier.width(9.dp))
-                 Text(text = "$i", fontSize = 20.sp)
-             }
+//             Row(Modifier.weight(0.1f)) {
+                 Box(
+                     contentAlignment = Alignment.Center,
+                     modifier = Modifier.width(45.dp).height(36.dp)
+                 ){
+                     Text(text = "$i", fontSize = 20.sp, fontFamily = quickSand)
+                 }
+//            }
          }
      }
-     Divider(thickness = 1.dp, color = Color.Black)
+     Divider(thickness = 0.9.dp, color = Color.Black)
+     var even by remember{ mutableStateOf(false)}
      LazyColumn {
          items(items = attendanceDetail){
-             StudentAttendance(attendance = it)
-             Divider(thickness = 0.5.dp, color = Color.Black, modifier = Modifier.padding(top = 10.dp))
+             StudentAttendance(attendance = it , even = even)
+             even = !even
          }
      }
  }
@@ -130,34 +139,47 @@ fun ViewCourse(
             }
             Spacer(modifier = Modifier.height(10.dp))
         }
-        FloatingActionButton(onClick = { selected = !selected  }, backgroundColor = Color.Black) {
+        FloatingActionButton(onClick = { selected = !selected  }, backgroundColor = pri) {
             Image(painter = addIconWhite, contentDescription = "")
         }
     }
 }
 
 @Composable
-fun StudentAttendance(attendance: AttendceDetail) {
-    val chekMarkImg = painterResource(id = R.drawable.check_mark)
-    val closeMarkImg = painterResource(id = R.drawable.close_mark)
+fun StudentAttendance(attendance: AttendceDetail , even : Boolean) {
+    val chekMarkImg = painterResource(id = R.drawable.check_green)
+    val closeMarkImg = painterResource(id = R.drawable.cancel_47)
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(36.dp)
-            .padding(start = 10.dp, top = 0.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .background(if (even) Color(0xFFEEEEEE) else Color.White)
+            .padding(start = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
-        Text(text = attendance.registerNo, fontSize = 20.sp, modifier = Modifier
-            .weight(0.7f)
-            .padding(top = 10.dp))
+        Text(
+            text = attendance.registerNo,
+            fontSize = 20.sp,
+            fontFamily = quickSand,
+            modifier = Modifier
+                .weight(0.7f)
+                .fillMaxHeight()
+        )
         attendance.attendance!!.forEach {
-            Row(Modifier.weight(0.1f)) {
-                Spacer(modifier = Modifier.width(5.dp) )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .cornerBorder(1.dp, Color.Black)
+                    .height(36.dp)
+                    .width(45.dp)
+            ) {
                 if (it.second){
-                    Image(painter = chekMarkImg, contentDescription = "", modifier = Modifier.padding(top = 10.dp))
+                    Image(painter = chekMarkImg, contentDescription = "")
                 }else {
-                    Image(painter = closeMarkImg, contentDescription = "", modifier = Modifier.padding(top = 10.dp))
+                    Image(painter = closeMarkImg, contentDescription = "")
                 }
             }
         }
