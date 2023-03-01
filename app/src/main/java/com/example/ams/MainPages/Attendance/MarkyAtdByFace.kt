@@ -35,7 +35,7 @@ fun MarkyAtdByFace(
     size: Int
 ) {
 
-    faceDetection.load(courseName!!)
+    faceDetection.load("$adminId/$courseName")
     val detectedStd by viewModel.studentList.observeAsState(initial = emptyList())
     val bitimg  by viewModel.imageBitmap.observeAsState(initial = null)
     val cLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { bitmap ->
