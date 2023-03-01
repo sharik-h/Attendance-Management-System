@@ -72,7 +72,7 @@ class DefaultFirebaseRepository(
             .set(newStudentData.value)
         images.forEach {
             storageRef
-                .child("faces/${newStudentData.value.registerNo}/${newStudentData.value.name+i}")
+                .child("$adminId/$courseName/${newStudentData.value.registerNo}/${newStudentData.value.name+i}")
                 .putFile(it!!)
             i++
         }
