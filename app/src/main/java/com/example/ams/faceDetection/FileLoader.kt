@@ -18,7 +18,7 @@ class FileLoader(private val model: FaceNetModel) {
 
     val imgFromServer =  mutableListOf<Pair<String, Bitmap>>()
     val nameAndEmbd = arrayListOf<Pair<String, FloatArray>>()
-    var size = 0
+    val imgNames = mutableListOf<String>()
 
     interface ProcessCallback {
         fun onProcessComplete(data: List<Pair<String, FloatArray>>)
@@ -38,12 +38,12 @@ class FileLoader(private val model: FaceNetModel) {
                 // All the images is this storage reference is saved to ImgFromServer with
                 // the format of name and bitmap.
                 for (item in result.items){
+                    if (!imgNames.contains(item.name))  imgNames.add(item.name)
                     GlobalScope.launch(Dispatchers.Main) {
                         val byteArr = item.getBytes(Long.MAX_VALUE).await()
                         val image = BitmapFactory.decodeByteArray(byteArr , 0, byteArr.size)
                         imgFromServer.add(Pair(storageRef.name, image))
-                        size++
-                        if (size == result.items.size){
+                        if (imgNames.size == imgFromServer.size){
                             bitmapToEmbeding()
                         }
                     }
@@ -64,9 +64,11 @@ class FileLoader(private val model: FaceNetModel) {
             GlobalScope.launch {
                 model.getFaceEmbedding(data.second){ embd ->
                     nameAndEmbd.add( Pair( data.first, embd ) )
+                    if (nameAndEmbd.size == imgNames.size){
+                        callback.onProcessComplete(nameAndEmbd)
+                    }
                 }
             }
         }
-        callback.onProcessComplete(nameAndEmbd)
     }
 }

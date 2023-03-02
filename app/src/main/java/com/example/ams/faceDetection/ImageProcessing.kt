@@ -12,11 +12,15 @@ class ImageProcessing {
         val DEFAULT_SIZE = 160
 
         // detect and collect all the faces in the image
-        fun getDetectedImages(image: Bitmap, callback: (Bitmap) -> Unit) {
-            processImage(image){ face ->
-                NormalizeFaces(face){
-                    callback(it)
+        fun getDetectedImages(image: Bitmap, callback: (MutableList<Bitmap>) -> Unit) {
+            val normalizedImages = mutableListOf<Bitmap>()
+            processImage(image){ faces ->
+                faces.forEach { face ->
+                    NormalizeFaces(face){
+                        normalizedImages.add(it)
+                    }
                 }
+                callback(normalizedImages)
             }
         }
 
@@ -44,7 +48,7 @@ class ImageProcessing {
             )
         }
 
-        fun processImage(image: Bitmap, callback: (Bitmap) -> Unit) {
+        fun processImage(image: Bitmap, callback: (MutableList<Bitmap>) -> Unit) {
             val faceList = mutableListOf<Bitmap>()
             val image1 = InputImage.fromBitmap(image!!, 0)
             detector.process(image1)
@@ -60,11 +64,11 @@ class ImageProcessing {
                                     it.boundingBox.height()
                                 )
                             )
-                            callback(faceList[0])
                         }catch (e: Exception){
                             Log.d("personId", e.message.toString())
                         }
                     }
+                    callback(faceList)
                 }
         }
     }

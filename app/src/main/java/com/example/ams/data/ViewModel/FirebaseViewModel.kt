@@ -42,6 +42,7 @@ class FirebaseViewModel(
     var periodNo = mutableStateOf(0)
     var realAtd: MutableLiveData< Map<String, List<Int>>> = MutableLiveData()
     var realAtdDates: MutableLiveData<List<String>> = MutableLiveData()
+    val availableStd = mutableListOf<String>()
 
     init {
         viewModelScope.launch {
@@ -340,7 +341,6 @@ class FirebaseViewModel(
     }
 
     fun saveDetectedStudents(name: String) {
-        val availableStd = mutableListOf<String>()
         availableStd.add(name)
         studentList.value = availableStd
     }

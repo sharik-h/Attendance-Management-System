@@ -39,8 +39,10 @@ class FaceNetModel(
 
     // Detect the face embeddings
     fun getFaceEmbedding(image: Bitmap, onResult: (result: FloatArray) -> Unit) {
-        ImageProcessing.getDetectedImages(image){ face ->
-            onResult(runFaceNet(convertToByteBuffer(face))[0])
+        ImageProcessing.getDetectedImages(image){ faces ->
+            faces.forEach { face ->
+                onResult(runFaceNet(convertToByteBuffer(face))[0])
+            }
         }
     }
 
