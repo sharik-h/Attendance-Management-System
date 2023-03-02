@@ -21,9 +21,13 @@ import androidx.compose.material.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import com.example.ams.R
 import com.example.ams.faceDetection.FaceDetection
+import com.example.ams.ui.theme.pri
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun MarkyAtdByFace(
@@ -52,21 +56,31 @@ fun MarkyAtdByFace(
                 }
         }
     }
-    val cameraIcon = painterResource(id = R.drawable.camera_icon_grey)
-    val backIcon = painterResource(id = R.drawable.arrow_back)
-
+    val quicksand = FontFamily(Font(R.font.quicksand_medium))
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(color = pri)
 
     Column(Modifier.fillMaxSize()) {
 
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
         ) {
-            TopAppBar {
+            TopAppBar(backgroundColor = pri) {
                 Spacer(modifier = Modifier.width(5.dp))
-                IconButton(onClick = { }) {
-                    Image(painter = backIcon, contentDescription = "")
+                IconButton(onClick = { context.finish() }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.arrow_back),
+                        contentDescription = ""
+                    )
                 }
-                Text(text = "Mark Attendance")
+                Text(
+                    text = "Mark Attendance",
+                    fontFamily = quicksand,
+                    color = Color.White,
+                    fontSize = 20.sp
+                )
             }
             Column(modifier = Modifier
                 .fillMaxWidth()
@@ -90,7 +104,7 @@ fun MarkyAtdByFace(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
-                            painter = cameraIcon,
+                            painter = painterResource(id = R.drawable.camera_icon_grey),
                             contentDescription = "",
                             Modifier.size(40.dp)
                         )
@@ -98,20 +112,65 @@ fun MarkyAtdByFace(
                     }
                 }
             }
-            Text(text = "Identified")
-            LazyColumn {
-                items(items = detectedStd) {
-                    ListView(name = it, selected = true) {
-                        viewModel.addAtdData(it)
-                    }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 10.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                if (!faceDetection.isImageDataEmpty.observeAsState().value!!){
+                    Text(
+                        text = "Model Training",
+                        fontFamily = quicksand,
+                        fontSize = 15.sp
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    CircularProgressIndicator(
+                        color = Color.Blue,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier
+                            .size(15.dp)
+                            .padding(top = 5.dp)
+                    )
+                }else{
+                    Text(
+                        text = "Model Trained successfully",
+                        fontFamily = quicksand,
+                        fontSize = 15.sp
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.check_green),
+                        contentDescription = ""
+                    )
                 }
             }
-            Text(text = "un-Identified")
+            Text(
+                text = "Identified",
+                fontFamily = quicksand,
+                modifier = Modifier.padding(top = 10.dp, start = 10.dp)
+            )
             LazyColumn {
-                items(items = unDetectedStd) {
-                    ListView(name = it, selected = false) {
+                items(items = detectedStd) {
+                    var even by remember { mutableStateOf(true) }
+                    ListView(name = it, selected = true, even = even) {
                         viewModel.addAtdData(it)
                     }
+                    even = !even
+                }
+            }
+            Text(
+                text = "un-Identified",
+                fontFamily = quicksand,
+                modifier = Modifier.padding(top = 10.dp, start = 10.dp)
+            )
+            LazyColumn {
+                items(items = unDetectedStd) {
+                    var even by remember { mutableStateOf(true) }
+                    ListView(name = it, selected = false, even = even) {
+                        viewModel.addAtdData(it)
+                    }
+                    even = !even
                 }
             }
         }
@@ -128,34 +187,47 @@ fun MarkyAtdByFace(
                 context.finish()
             },
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(50)
+            shape = RoundedCornerShape(30),
+            colors = ButtonDefaults.buttonColors(backgroundColor = pri)
         ) {
-            Text(text = "Mark Attendance")
+            Text(
+                text = "Mark Attendance",
+                fontSize = 15.sp,
+                fontFamily = quicksand,
+                color = Color.White
+            )
         }
     }
 }
 
 @Composable
-fun ListView(name: String, selected: Boolean, onClick: () -> Unit) {
+fun ListView(
+    name: String,
+    selected: Boolean,
+    even: Boolean,
+    onClick: () -> Unit
+) {
+    val quicksand = FontFamily(Font(R.font.quicksand_medium))
     var checked by remember { mutableStateOf(selected) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(36.dp)
-            .padding(top = 0.dp)
+            .background(if (even) Color(0xFFEEEEEE) else Color.White)
             .clickable {
                 checked = !checked
                 onClick()
             },
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.width(5.dp))
         Text(
             text = name,
-            fontSize = 20.sp,
+            fontSize = 18.sp,
+            fontFamily = quicksand,
             modifier = Modifier
                 .weight(0.7f)
-                .padding(top = 10.dp)
+                .padding(start = 10.dp)
         )
         Spacer(modifier = Modifier.width(5.dp) )
         Checkbox(

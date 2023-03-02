@@ -3,6 +3,7 @@ package com.example.ams.faceDetection
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -19,6 +20,7 @@ class FaceDetection(
     }
 
     var imageData = arrayListOf<Pair<String, FloatArray>>()
+    val isImageDataEmpty = MutableLiveData(false)
     private val nameScoreHashmap = HashMap<String,ArrayList<Float>>()
 
     // Loads the file from the server
@@ -37,6 +39,7 @@ class FaceDetection(
     private val fileLoaderCallback = object : FileLoader.ProcessCallback {
         override fun onProcessComplete(data: List<Pair<String, FloatArray>>) {
             imageData = data as ArrayList<Pair<String, FloatArray>>
+            isImageDataEmpty.value = true
         }
     }
 
