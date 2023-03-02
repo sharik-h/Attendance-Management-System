@@ -38,7 +38,9 @@ fun MarkyAtdByFace(
     faceDetection.load("$adminId/$courseName")
     viewModel.getPeriodNo(adminId = adminId, courseName = courseName!!)
     viewModel.getTotalAtd(adminId = adminId, courseName = courseName)
-    val detectedStd by viewModel.studentList.observeAsState(initial = emptyList())
+    viewModel.getAllStudents(adminId = adminId, courseName = courseName)
+    val detectedStd by viewModel.identifiedStudents.observeAsState(initial = emptyList())
+    val unDetectedStd by viewModel.unIdentifiedStudents.observeAsState(initial = emptyList())
     val bitimg  by viewModel.imageBitmap.observeAsState(initial = null)
     val cLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { bitmap ->
         if (bitmap != null) {
@@ -96,9 +98,19 @@ fun MarkyAtdByFace(
                     }
                 }
             }
+            Text(text = "Identified")
             LazyColumn {
                 items(items = detectedStd) {
-                    ListView(name = it) {
+                    ListView(name = it, selected = true) {
+                        viewModel.addAtdData(it)
+                    }
+                }
+            }
+            Text(text = "un-Identified")
+            LazyColumn {
+                items(items = unDetectedStd) {
+                    ListView(name = it, selected = false) {
+                        viewModel.addAtdData(it)
                     }
                 }
             }
@@ -124,8 +136,8 @@ fun MarkyAtdByFace(
 }
 
 @Composable
-fun ListView(name: String, onClick: () -> Unit) {
-    var checked by remember { mutableStateOf(true) }
+fun ListView(name: String, selected: Boolean, onClick: () -> Unit) {
+    var checked by remember { mutableStateOf(selected) }
     Row(
         modifier = Modifier
             .fillMaxWidth()

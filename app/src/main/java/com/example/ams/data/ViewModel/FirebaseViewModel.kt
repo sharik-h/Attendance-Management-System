@@ -33,6 +33,8 @@ class FirebaseViewModel(
     val courseData: MutableLiveData<NewCoureModel> = MutableLiveData()
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
     val studentList: MutableLiveData<List<String>> = MutableLiveData()
+    val identifiedStudents: MutableLiveData<List<String>> = MutableLiveData()
+    val unIdentifiedStudents: MutableLiveData<List<String>> = MutableLiveData()
     var getuser : FirebaseUser? = null
     private var currentUserUid :String? = null
     private val studentAtdData = mutableListOf<String>()
@@ -43,6 +45,7 @@ class FirebaseViewModel(
     var realAtd: MutableLiveData< Map<String, List<Int>>> = MutableLiveData()
     var realAtdDates: MutableLiveData<List<String>> = MutableLiveData()
     val availableStd = mutableListOf<String>()
+    val unAvailableStd = mutableListOf<String>()
 
     init {
         viewModelScope.launch {
@@ -342,7 +345,13 @@ class FirebaseViewModel(
 
     fun saveDetectedStudents(name: String) {
         availableStd.add(name)
-        studentList.value = availableStd
+        identifiedStudents.value = availableStd
+        studentList.value?.forEach {
+            if (!(identifiedStudents.value as MutableList<String>).contains(it)){
+                unAvailableStd.add(it)
+                unIdentifiedStudents.value = unAvailableStd
+            }
+        }
     }
 
     private fun resizeBitmap(bitmap: Bitmap, newWidth: Int, newHeight: Int): Bitmap {
