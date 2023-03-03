@@ -350,6 +350,9 @@ class FirebaseViewModel(
             if (!(identifiedStudents.value as MutableList<String>).contains(it)){
                 unAvailableStd.add(it)
                 unIdentifiedStudents.value = unAvailableStd
+            }else{
+                unAvailableStd.remove(it)
+                unIdentifiedStudents.value = unAvailableStd
             }
         }
     }
