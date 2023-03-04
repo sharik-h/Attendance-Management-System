@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,7 +16,9 @@ import androidx.compose.ui.unit.sp
 import com.example.ams.R
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import androidx.navigation.NavHostController
+import com.example.ams.MainPages.CustomComposes.customDropDown
 import com.example.ams.Navigation.Screen
+import com.example.ams.ui.theme.pri
 
 @Composable
 fun ViewDetails(
@@ -25,28 +28,28 @@ fun ViewDetails(
     viewModel: FirebaseViewModel
 ) {
     val newCourseData = viewModel.newCourseData.value
-    viewModel.getCourseDetails(id = adminId, name = courseName)
+    val totalAtd by viewModel.totalAtdSoFar.observeAsState()
+    val totalStd by viewModel.totalStd.observeAsState()
+    val totalTchr by viewModel.totalTchr.observeAsState()
+    val adminDetail by viewModel.adminInfo.observeAsState()
 
-
-    val bungee = FontFamily(Font(R.font.bungee))
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
     var isEditEnabled by remember { mutableStateOf(false) }
     val editIcon = painterResource(id = R.drawable.edit_option)
     val backArrowIcon = painterResource(id = R.drawable.arrow_back)
-    val color = if (isEditEnabled) Color(0x7ECACACA)
-    else Color.Transparent
-
-
+    var isexpanded by remember { mutableStateOf(false) }
+    var isexpandedTo by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        TopAppBar(backgroundColor = Color.Black) {
+        TopAppBar(backgroundColor = pri) {
             IconButton(onClick = { navHostController.navigateUp() }) {
                 Image(painter = backArrowIcon, contentDescription = "")
             }
             Text(
                 text = "class details",
-                fontFamily = bungee,
-                fontSize = 15.sp,
+                fontFamily = quickSand,
+                fontSize = 22.sp,
                 color = Color.White
             )
             Spacer(modifier = Modifier.weight(0.25f))
@@ -58,50 +61,71 @@ fun ViewDetails(
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(20.dp)
-            ) {
-
-                Text(text = "Name", fontFamily = bungee, fontSize = 15.sp)
-                CustomTextFeild(
-                    value = newCourseData.name,
-                    onValueChange = { viewModel.updateData("name", it) },
-                    color = color,
-                    enabled = isEditEnabled
+                    .padding(20.dp))
+            {
+                customFeildModel(
+                    field = "Name :",
+                    data = newCourseData.name,
+                    isEditEnabled = isEditEnabled,
+                    onclick = { viewModel.updateData("name", it) }
                 )
-                Text(text = "Course name", fontFamily = bungee, fontSize = 15.sp)
-                CustomTextFeild(
-                    value = newCourseData.courseName,
-                    onValueChange = { viewModel.updateData("courseName", it) },
-                    color = color,
-                    enabled = isEditEnabled
+                Spacer(modifier = Modifier.height(5.dp))
+                customFeildModel(
+                    field = "Course name :",
+                    data = newCourseData.courseName,
+                    isEditEnabled = isEditEnabled,
+                    onclick = { viewModel.updateData("courseName", it) }
                 )
-                Text(text = "Batch year", fontFamily = bungee, fontSize = 15.sp)
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    CustomTextFeild(
-                        value = newCourseData.batchFrom,
-                        onValueChange = { viewModel.updateData("batchFrom", it) },
-                        color = color,
-                        enabled = isEditEnabled
-                    )
-                    Text(text = "TO", fontFamily = bungee)
-                    CustomTextFeild(
-                        value = newCourseData.batchTo,
-                        onValueChange = { viewModel.updateData("batchTo", it) },
-                        color = color,
-                        enabled = isEditEnabled
-                    )
-                }
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "No. of attendace per day", fontFamily = bungee)
-                    Spacer(modifier = Modifier.width(20.dp))
-                    CustomTextFeild(
-                        value = newCourseData.noAttendace,
-                        onValueChange = { viewModel.updateData("noAttendance", it) },
-                        color = color,
-                        enabled = isEditEnabled
-                    )
+                    Text(text = "Batch :  From", fontFamily = quickSand, fontSize = 15.sp)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    customDropDown(
+                        isEditEnabled = isEditEnabled,
+                        expanded = isexpandedTo,
+                        batch = newCourseData.batchFrom
+                    ) {
+                        if (isEditEnabled){
+                            isexpandedTo = !isexpandedTo
+                        }
+                        newCourseData.batchFrom = it
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "To", fontFamily = quickSand)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    customDropDown(
+                        isEditEnabled = isEditEnabled,
+                        expanded = isexpanded,
+                        batch = newCourseData.batchTo,
+                    ){
+                        if (isEditEnabled){
+                            isexpanded = !isexpanded
+                        }
+                        newCourseData.batchTo = it
+                    }
                 }
+                Spacer(modifier = Modifier.height(10.dp))
+                customFeildModel(
+                    field = "No. of attendace per day :",
+                    data = newCourseData.noAttendace,
+                    isEditEnabled = isEditEnabled,
+                    onclick = { viewModel.updateData("noAttendance", it) }
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+                customDataModel(field = "Total working days :", data = totalAtd.toString())
+                Spacer(modifier = Modifier.height(15.dp))
+                customDataModel(field = "Total Students :", data = totalStd.toString())
+                Spacer(modifier = Modifier.height(15.dp))
+                customDataModel(field = "Total No. Teachers :", data = totalTchr.toString())
+                Spacer(modifier = Modifier.height(15.dp))
+                Text(text = "Admin Info.", fontFamily = quickSand)
+                Divider(thickness = 0.5.dp, modifier = Modifier.fillMaxWidth(), color = Color.Black)
+                Spacer(modifier = Modifier.height(10.dp))
+                customDataModel(field = "Name :", data = adminDetail?.name ?: "---")
+                Spacer(modifier = Modifier.height(10.dp))
+                customDataModel(field = "Phone :", data = adminDetail?.phone ?: "---")
+                Spacer(modifier = Modifier.height(10.dp))
+                customDataModel(field = "Email id :", data = adminDetail?.email ?: "---")
                 Spacer(modifier = Modifier.weight(0.9f))
                 if (isEditEnabled) {
                     Button(
@@ -113,9 +137,9 @@ fun ViewDetails(
                             .height(40.dp)
                             .fillMaxWidth(),
                         contentPadding = PaddingValues(2.dp),
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+                        colors = ButtonDefaults.buttonColors(backgroundColor = pri)
                     ) {
-                        Text(text = "update details", fontFamily = bungee, color = Color.White)
+                        Text(text = "update details", fontFamily = quickSand, color = Color.White)
                     }
                 }else{
                     Button(
@@ -124,9 +148,9 @@ fun ViewDetails(
                             .height(40.dp)
                             .fillMaxWidth(),
                         contentPadding = PaddingValues(2.dp),
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+                        colors = ButtonDefaults.buttonColors(backgroundColor = pri)
                     ) {
-                        Text(text = "View all Teachers", fontFamily = bungee, color = Color.White)
+                        Text(text = "View all Teachers", fontFamily = quickSand, color = Color.White)
                     }
                     Spacer(modifier = Modifier.height(20.dp))
                     Button(
@@ -135,9 +159,9 @@ fun ViewDetails(
                             .height(40.dp)
                             .fillMaxWidth(),
                         contentPadding = PaddingValues(2.dp),
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+                        colors = ButtonDefaults.buttonColors(backgroundColor = pri)
                     ) {
-                        Text(text = "View all students", fontFamily = bungee, color = Color.White)
+                        Text(text = "View all students", fontFamily = quickSand, color = Color.White)
                     }
                 }
             }
@@ -159,3 +183,35 @@ fun ViewDetails(
     }
 }
 
+@Composable
+fun customDataModel(
+    field: String,
+    data: String
+) {
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(text = field, fontFamily = quickSand, fontSize = 15.sp)
+        Spacer(modifier = Modifier.width(15.dp))
+        Text(text = data, fontFamily = quickSand, fontSize = 15.sp )
+    }
+}
+
+@Composable
+fun customFeildModel(
+    field: String,
+    data: String,
+    isEditEnabled: Boolean,
+    color: Color = if (isEditEnabled) Color(0x7ECACACA) else Color.Transparent,
+    onclick: (String) -> Unit
+) {
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(text = field, fontFamily = quickSand)
+        CustomTextFeild(
+            value = data,
+            onValueChange = { onclick(it) },
+            color = color,
+            enabled = isEditEnabled
+        )
+    }
+}

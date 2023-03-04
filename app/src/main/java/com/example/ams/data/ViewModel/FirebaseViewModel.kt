@@ -46,6 +46,10 @@ class FirebaseViewModel(
     var realAtdDates: MutableLiveData<List<String>> = MutableLiveData()
     val availableStd = mutableListOf<String>()
     val unAvailableStd = mutableListOf<String>()
+    val totalAtdSoFar = MutableLiveData<Int>()
+    val totalStd = MutableLiveData<Int>()
+    val totalTchr = MutableLiveData<Int>()
+    val adminInfo = MutableLiveData<TeachersList>()
 
     init {
         viewModelScope.launch {
@@ -171,6 +175,10 @@ class FirebaseViewModel(
         viewModelScope.launch {
             newCourseData.value = firebaseRepository.getCourseDetails(id = id, name = name) ?: NewCoureModel()
         }
+        getTotalNoAtd(adminId = id, courseName = name)
+        getTotalStd(adminId = id, courseName = name)
+        getTotalTeacher(adminId = id, courseName = name)
+        getAdminDetail(adminId = id, courseName = name)
     }
 
     fun getStudentAtdDetails(courseName: String, adminId: String) {
@@ -441,6 +449,34 @@ class FirebaseViewModel(
             }
             realAtd.value = rawAtd.groupBy { it.first }.mapValues { it.value.map { it.second } }
             realAtdDates.value = snapShotDates
+        }
+    }
+
+    fun getTotalNoAtd(adminId: String, courseName: String){
+        viewModelScope.launch {
+            val snapShotDates = firebaseRepository.getStdRealAtdDates(adminId = adminId, courseName = courseName)
+            totalAtdSoFar.value = snapShotDates.size
+        }
+    }
+
+    fun getTotalStd(adminId: String, courseName: String){
+        viewModelScope.launch {
+            val totalNoStd = firebaseRepository.getTotalNoStd(adminId = adminId, courseName = courseName)
+            totalStd.value = totalNoStd
+        }
+    }
+
+    fun getTotalTeacher(adminId: String, courseName: String){
+        viewModelScope.launch {
+            val totalNoTchr = firebaseRepository.getTotalNoTeacher(adminId = adminId, courseName = courseName)
+            totalTchr.value = totalNoTchr
+        }
+    }
+
+    fun getAdminDetail(adminId: String, courseName: String){
+        viewModelScope.launch {
+            val docSnapShot = firebaseRepository.getAdminData(adminId = adminId, courseName = courseName, phone = getuser?.phoneNumber)
+            adminInfo.value = docSnapShot.toObject(TeachersList::class.java)
         }
     }
 }

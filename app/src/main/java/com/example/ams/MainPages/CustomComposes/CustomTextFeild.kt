@@ -27,21 +27,21 @@ fun CustomTextFeild(
     errorMessage: String? = null,
     enabled: Boolean = true
 ) {
-    val bungeeStyle = FontFamily(Font(R.font.bungee))
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
     var color = color
     if (isError) color = Color.Red
     BasicTextField(
         value = value,
         onValueChange = { onValueChange(it) },
         singleLine = true,
-        textStyle = TextStyle(fontFamily = bungeeStyle),
+        textStyle = TextStyle(fontFamily = quickSand),
         enabled = enabled,
         modifier = Modifier
             .clip(RoundedCornerShape(20))
             .background(color)
             .height(40.dp)
             .fillMaxWidth()
-            .padding(start = 10.dp, top = 2.dp)
+            .padding(start = 10.dp, top = 10.dp)
     )
     if (isError) {
         Text(

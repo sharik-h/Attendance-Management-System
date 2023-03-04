@@ -40,6 +40,9 @@ interface FirebaseRepository {
     fun markRealAtd(adminId: String, courseName: String, atdList: List<Pair<String, Int>>, date: LocalDate?)
     suspend fun getStdRealAtd(courseName: String, adminId: String): MutableList<DocumentSnapshot>
     suspend fun getStdRealAtdDates(adminId: String, courseName: String): List<String>
+    suspend fun getTotalNoStd(adminId: String, courseName: String): Int
+    suspend fun getTotalNoTeacher(adminId: String, courseName: String): Int
+    suspend fun getAdminData(adminId: String, courseName: String, phone: String?): DocumentSnapshot
 }
 
 class DefaultFirebaseRepository(
@@ -266,5 +269,20 @@ class DefaultFirebaseRepository(
                 }
             }.await()
         return date
+    }
+
+    override suspend fun getTotalNoStd(adminId: String, courseName: String): Int {
+        val ref = firestore.collection("$adminId/$courseName/studentDetails")
+        return ref.get().await().documents.size
+    }
+
+    override suspend fun getTotalNoTeacher(adminId: String, courseName: String): Int {
+        val ref = firestore.collection("$adminId/$courseName/teacherDetails")
+        return ref.get().await().documents.size
+    }
+
+    override suspend fun getAdminData(adminId: String, courseName: String, phone: String?): DocumentSnapshot {
+        val ref = firestore.document("$adminId/$courseName/teacherDetails/$phone")
+        return ref.get().await()
     }
 }
