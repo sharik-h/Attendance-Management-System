@@ -78,7 +78,7 @@ fun ViewDetails(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Batch :  From", fontFamily = quickSand, fontSize = 15.sp)
+                    Text(text = "Batch :  From", fontFamily = quickSand, fontSize = 17.sp)
                     Spacer(modifier = Modifier.width(10.dp))
                     customDropDown(
                         isEditEnabled = isEditEnabled,
@@ -91,7 +91,7 @@ fun ViewDetails(
                         newCourseData.batchFrom = it
                     }
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "To", fontFamily = quickSand)
+                    Text(text = "To", fontFamily = quickSand, fontSize = 17.sp)
                     Spacer(modifier = Modifier.width(10.dp))
                     customDropDown(
                         isEditEnabled = isEditEnabled,
@@ -190,9 +190,9 @@ fun customDataModel(
 ) {
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(text = field, fontFamily = quickSand, fontSize = 15.sp)
+        Text(text = field, fontFamily = quickSand, fontSize = 17.sp)
         Spacer(modifier = Modifier.width(15.dp))
-        Text(text = data, fontFamily = quickSand, fontSize = 15.sp )
+        Text(text = data, fontFamily = quickSand, fontSize = 17.sp )
     }
 }
 
@@ -206,7 +206,7 @@ fun customFeildModel(
 ) {
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(text = field, fontFamily = quickSand)
+        Text(text = field, fontFamily = quickSand, fontSize = 17.sp)
         CustomTextFeild(
             value = data,
             onValueChange = { onclick(it) },
