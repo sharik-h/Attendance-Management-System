@@ -95,7 +95,6 @@ class FirebaseViewModel(
             )
         }
         clearData()
-        newStudent.value.images.clear()
         studentImages.value = emptyList()
     }
 
@@ -104,7 +103,6 @@ class FirebaseViewModel(
             it.name = ""
             it.registerNo = ""
             it.phone = ""
-            it.images.clear()
         }
         newCourseData.value.let {
             it.name = ""
@@ -250,7 +248,6 @@ class FirebaseViewModel(
             email = data.TeacherEmail,
             uid = data.TeacherUid
         )
-        newStudent.value.images.clear()
         viewModelScope.launch {
             firebaseRepository.acceptTeacher(
                 data = data,
@@ -344,7 +341,6 @@ class FirebaseViewModel(
         val currentList: MutableList<Uri> = studentImages.value?.toMutableList() ?: mutableListOf()
         currentList.add(uri)
         studentImages.value = currentList
-        newStudent.value.images.add(uri)
     }
 
     fun saveDetectedStudents(name: String) {
