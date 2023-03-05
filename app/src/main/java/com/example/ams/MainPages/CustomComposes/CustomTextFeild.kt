@@ -16,6 +16,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ams.R
 
 @Composable
@@ -34,14 +35,14 @@ fun CustomTextFeild(
         value = value,
         onValueChange = { onValueChange(it) },
         singleLine = true,
-        textStyle = TextStyle(fontFamily = quickSand),
+        textStyle = TextStyle(fontFamily = quickSand, fontSize = 17.sp),
         enabled = enabled,
         modifier = Modifier
             .clip(RoundedCornerShape(20))
             .background(color)
             .height(40.dp)
             .fillMaxWidth()
-            .padding(start = 10.dp, top = 10.dp)
+            .padding(start = 10.dp, top = 7.dp)
     )
     if (isError) {
         Text(
