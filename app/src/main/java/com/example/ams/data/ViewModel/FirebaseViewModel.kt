@@ -50,6 +50,8 @@ class FirebaseViewModel(
     val totalStd = MutableLiveData<Int>()
     val totalTchr = MutableLiveData<Int>()
     val adminInfo = MutableLiveData<TeachersList>()
+    val allStudentInfo = MutableLiveData<List<StudentDetail>>()
+    val allStudentImg = MutableLiveData<MutableList<Pair<String, Bitmap>>>()
 
     init {
         viewModelScope.launch {
@@ -88,7 +90,8 @@ class FirebaseViewModel(
                 courseName = courseName,
                 adminId = adminId,
                 newStudentData = newStudent,
-                noAttendance = noAttendance.value
+                noAttendance = noAttendance.value,
+                studentImages = studentImages.value!!
             )
         }
         clearData()
@@ -306,13 +309,6 @@ class FirebaseViewModel(
         }
     }
 
-    fun getStudentDetails(courseName: String, adminId: String, registerNo: String) {
-        viewModelScope.launch {
-            newStudent.value = firebaseRepository
-                .getStudentDetails(courseName = courseName, adminId = adminId, registerNo = registerNo) ?: StudentDetail()
-        }
-    }
-
     fun markAttendance(adminId: String, courseName: String) {
         if (periodNo.value +1 <= noAttendance.value) {
             studentList.value?.forEach { registerNo ->
@@ -477,6 +473,40 @@ class FirebaseViewModel(
         viewModelScope.launch {
             val docSnapShot = firebaseRepository.getAdminData(adminId = adminId, courseName = courseName, phone = getuser?.phoneNumber)
             adminInfo.value = docSnapShot.toObject(TeachersList::class.java)
+        }
+    }
+
+    fun getAllStduentData(adminId: String, courseName: String) {
+        val allstddata = mutableListOf<StudentDetail>()
+        viewModelScope.launch {
+            firebaseRepository
+                .getAllStudentData(adminId = adminId, courseName = courseName)
+                .forEach {
+                    val item = it.toObject(StudentDetail::class.java)
+                    allstddata.add(item!!)
+                }
+            allStudentInfo.value = allstddata
+            fetchData(adminId = adminId, courseName = courseName)
+        }
+    }
+
+    fun fetchData(adminId: String, courseName: String) {
+        var imgFromServer =  mutableListOf<Pair<String, Bitmap>>()
+        viewModelScope.launch {
+                firebaseRepository.getAllImages(
+                    adminId = adminId,
+                    courseName = courseName,
+                    registerNos = allStudentInfo.value?.map { it.registerNo }!!
+                ){
+                    imgFromServer += it
+                    allStudentImg.value = imgFromServer
+                }
+        }
+    }
+
+    fun addStudentImg(courseName: String, adminId: String, regNo: String, name: String, img: Uri) {
+        viewModelScope.launch {
+            firebaseRepository.addStudentImg(courseName = courseName, adminId = adminId, regNo = regNo, name = name, img = img)
         }
     }
 }

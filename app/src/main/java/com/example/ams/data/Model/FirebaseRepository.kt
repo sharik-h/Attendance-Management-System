@@ -1,6 +1,8 @@
 package com.example.ams.data.Model
 
-import android.util.Log
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.compose.runtime.MutableState
 import com.example.ams.data.DataClasses.*
 import com.google.firebase.auth.FirebaseAuth
@@ -8,11 +10,10 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.util.regex.Pattern
 
 interface FirebaseRepository {
     suspend fun getUser(): FirebaseUser?
@@ -43,6 +44,9 @@ interface FirebaseRepository {
     suspend fun getTotalNoStd(adminId: String, courseName: String): Int
     suspend fun getTotalNoTeacher(adminId: String, courseName: String): Int
     suspend fun getAdminData(adminId: String, courseName: String, phone: String?): DocumentSnapshot
+    suspend fun getAllStudentData(adminId: String, courseName: String): MutableList<DocumentSnapshot>
+    suspend fun getAllImages(adminId: String, courseName: String, registerNos: List<String>, callback: (MutableList<Pair<String, Bitmap>>) -> Unit)
+    suspend fun addStudentImg(courseName: String, adminId: String, regNo: String, name: String, img: Uri)
 }
 
 class DefaultFirebaseRepository(
@@ -285,4 +289,68 @@ class DefaultFirebaseRepository(
         val ref = firestore.document("$adminId/$courseName/teacherDetails/$phone")
         return ref.get().await()
     }
+
+    override suspend fun getAllStudentData(
+        adminId: String,
+        courseName: String
+    ): MutableList<DocumentSnapshot> {
+        val ref = firestore.collection("$adminId/$courseName/studentDetails")
+        return ref.get().await().documents
+    }
+
+    override suspend fun getAllImages(
+        adminId: String,
+        courseName: String,
+        registerNos: List<String>,
+        callback: (MutableList<Pair<String, Bitmap>>) -> Unit
+    ) {
+        val imgFromServer =  mutableListOf<Pair<String, Bitmap>>()
+        val imgName = mutableListOf<String>()
+        val totalfile = registerNos.size
+        var totalfetched = 0
+        registerNos.forEach {
+            totalfetched++
+            storageRef
+                .child("$adminId/$courseName/$it")
+                .listAll()
+                .addOnSuccessListener { result ->
+                    for (item in result.items){
+                        println(item.name)
+                        if (!imgName.contains(item.name)){
+                            imgName.add(item.name)
+                        }
+                        GlobalScope.launch(Dispatchers.Main) {
+                            val byteArr = item.getBytes(Long.MAX_VALUE).await()
+                            val image = BitmapFactory.decodeByteArray(byteArr , 0, byteArr.size)
+                            imgFromServer.add(Pair(item.name, image))
+                            if (imgFromServer.size == imgName.size && totalfile == totalfetched) {
+                                callback(imgFromServer)
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    override suspend fun addStudentImg(
+        courseName: String,
+        adminId: String,
+        regNo: String,
+        name: String,
+        img: Uri
+    ) {
+        println("5: $courseName, $adminId, $regNo, $name, $img")
+        val lastSize = Pattern.compile("\\D+").matcher(name).replaceAll("") + 1
+        val stdname = Pattern.compile("\\d+").matcher(name).replaceAll("")
+        println("6: $courseName, $adminId, $regNo, $name, $img, $lastSize, $stdname")
+        storageRef
+            .child("$adminId/$courseName/$regNo/$stdname$lastSize")
+            .putFile(img)
+            .addOnSuccessListener {
+                println("sucess")
+            }.addOnFailureListener{
+                println(it.message)
+            }
+    }
+
 }
