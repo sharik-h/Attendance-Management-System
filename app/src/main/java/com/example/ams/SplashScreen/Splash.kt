@@ -14,7 +14,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.Navigation.LOGIN_ROUTE
@@ -46,7 +45,7 @@ fun SplashScreen(navHostController: NavHostController) {
 
 @Composable
 fun Splash(floatAsState: Float) {
-    val bungeeStyle = FontFamily(Font(R.font.bungee))
+    val quickStand = FontFamily(Font(R.font.quicksand_medium))
     Column(modifier = Modifier
         .fillMaxSize()
         .alpha(alpha = floatAsState)
@@ -57,8 +56,8 @@ fun Splash(floatAsState: Float) {
         Text(
             text = "AMS",
             fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = bungeeStyle
+            fontFamily = quickStand
+
         )
     }
 
