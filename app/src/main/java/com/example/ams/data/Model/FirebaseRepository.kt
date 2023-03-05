@@ -18,7 +18,7 @@ import java.util.regex.Pattern
 interface FirebaseRepository {
     suspend fun getUser(): FirebaseUser?
     suspend fun createNewClass(userId: String, newCourseData: NewCoureModel)
-    suspend fun addNewStudent(courseName: String, adminId: String, newStudentData: MutableState<StudentDetail>, noAttendance: Int)
+    suspend fun addNewStudent(courseName: String, adminId: String, newStudentData: MutableState<StudentDetail>, noAttendance: Int, studentImages: List<Uri>)
     suspend fun markAttendance(adminId: String, courseName: String, size: Int, registerNo: String, present: Boolean)
     suspend fun updateCourseDetails(name: String, newCourseData: NewCoureModel)
     suspend fun fetchClasses(userId: String):  MutableList<Pair<String, String>>
@@ -69,11 +69,12 @@ class DefaultFirebaseRepository(
         courseName: String,
         adminId: String,
         newStudentData: MutableState<StudentDetail>,
-        noAttendance: Int
-    ) {
+        noAttendance: Int,
+        studentImages: List<Uri>
+        ) {
         val atdHashmap = (1..noAttendance).map{ "$it" }.associateWith { false }
         var i = 0
-        val images = newStudentData.value.images
+        val images = studentImages
         firestore
             .document("$adminId/$courseName/studentDetails/${newStudentData.value.registerNo}")
             .set(newStudentData.value)
