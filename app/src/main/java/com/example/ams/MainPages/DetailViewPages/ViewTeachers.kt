@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.R
 import com.example.ams.data.DataClasses.TeachersList
+import com.example.ams.ui.theme.pri
 
 @Composable
 fun ViewTeachers(
@@ -35,18 +36,19 @@ fun ViewTeachers(
     val teachersList by viewModel.teacherDetailsList.observeAsState(initial = emptyList())
 
     val backArrowImg = painterResource(id = R.drawable.arrow_back)
-    val bungee = FontFamily(Font(R.font.bungee))
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
 
     Column(Modifier.fillMaxSize()) {
-        TopAppBar {
+        TopAppBar(backgroundColor = pri) {
             IconButton(onClick = { navHostController.navigateUp() }) {
                 Image(painter = backArrowImg, contentDescription = "")
             }
-            Text(text = "Teachers", fontSize = 15.sp, fontFamily = bungee, color = Color.White)
+            Text(text = "Teachers", fontSize = 20.sp, fontFamily = quickSand, color = Color.White)
         }
         LazyColumn {
            items(items = teachersList) {
                TeacherItem(teacherDetail = it)
+               Spacer(modifier = Modifier.height(10.dp))
                Divider(thickness = 0.5.dp, color = Color.Black)
            }
         }
@@ -59,32 +61,24 @@ fun TeacherItem(
 ) {
     val defaultUserImage = painterResource(id = R.drawable.account_img)
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Spacer(modifier = Modifier.width(5.dp))
         Image(painter = defaultUserImage, contentDescription = "", modifier = Modifier.size(80.dp))
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "name : ${teacherDetail.name}",
-                fontSize = 15.sp,
-                fontFamily = FontFamily.Serif,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp)
-            )
-            Text(
-                text = "phone: ${teacherDetail.phone}",
-                fontSize = 15.sp,
-                fontFamily = FontFamily.Serif,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp)
-            )
-            Text(
-                text = "email: ${teacherDetail.email}",
-                fontSize = 15.sp,
-                fontFamily = FontFamily.Serif,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp)
-            )
+            customDataModel2(field = "Name", data = teacherDetail.name)
+            customDataModel2(field = "Phone", data = teacherDetail.phone)
+            customDataModel2(field = "Email", data = teacherDetail.email)
         }
+    }
+}
+@Composable
+fun customDataModel2(
+    field: String,
+    data: String
+) {
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(text = field, fontFamily = quickSand, fontSize = 17.sp)
+        Spacer(modifier = Modifier.width(15.dp))
+        Text(text = data, fontFamily = quickSand, fontSize = 17.sp )
     }
 }
