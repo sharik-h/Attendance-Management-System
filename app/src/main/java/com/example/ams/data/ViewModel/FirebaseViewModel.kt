@@ -505,4 +505,10 @@ class FirebaseViewModel(
             firebaseRepository.addStudentImg(courseName = courseName, adminId = adminId, regNo = regNo, name = name, img = img)
         }
     }
+
+    fun checkIfRegNoIsUsed(): Boolean {
+        return attendanceDetail
+            .value?.map { it.registerNo.replace(" ", "") }
+            ?.contains(newStudent.value.registerNo.replace(" ", "")) ?: false
+    }
 }
