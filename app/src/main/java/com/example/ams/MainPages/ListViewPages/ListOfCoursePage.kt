@@ -85,7 +85,10 @@ fun ListOfCoursePage(
                                 .width(200.dp)
                                 .height(40.dp)
                                 .padding(start = 20.dp, top = 5.dp)
-                                .clickable { navHostController.navigate(Screen.NewCourse.route) }
+                                .clickable {
+                                    viewModel.clearData()
+                                    navHostController.navigate(Screen.NewCourse.route)
+                                }
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.create_new_white),
