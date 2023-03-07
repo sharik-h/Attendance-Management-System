@@ -30,6 +30,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.ams.R
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.data.DataClasses.StudentDetail
+import com.example.ams.ui.theme.pri
 import java.io.ByteArrayOutputStream
 import java.util.regex.Pattern
 
@@ -68,12 +69,14 @@ fun ViewStudents(
           )
         }
     }
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar {
+        TopAppBar(backgroundColor = pri) {
             IconButton(onClick = { navHostController.navigateUp() }) {
-                Icon(painter = painterResource(id = R.drawable.arrow_back), contentDescription = "")
+                Image(painter = painterResource(id = R.drawable.arrow_back), contentDescription = "")
             }
+            Text(text = "All Students", fontFamily = quickSand, color = Color.White, fontSize = 20.sp)
         }
         LazyColumn {
             items(items = stddata) {
