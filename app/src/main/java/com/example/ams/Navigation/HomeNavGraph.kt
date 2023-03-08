@@ -125,6 +125,7 @@ fun NavGraphBuilder.HomeNavGraph(
         )
         {
             ViewAttendance(
+                navController = navHostController,
                 viewModel = viewModel,
                 adminId = it.arguments?.getString("adminId").toString(),
                 courseName = it.arguments?.getString("courseName").toString()
