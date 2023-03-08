@@ -1,6 +1,9 @@
 package com.example.ams.MainPages
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,12 +16,16 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.ams.R
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.ams.MainPages.CustomComposes.customDropDown
 import com.example.ams.Navigation.Screen
 import com.example.ams.ui.theme.pri
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
 
 @Composable
 fun ViewDetails(
@@ -39,6 +46,7 @@ fun ViewDetails(
     val backArrowIcon = painterResource(id = R.drawable.arrow_back)
     var isexpanded by remember { mutableStateOf(false) }
     var isexpandedTo by remember { mutableStateOf(false) }
+    var isQrCodeShown by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -53,6 +61,9 @@ fun ViewDetails(
                 color = Color.White
             )
             Spacer(modifier = Modifier.weight(0.25f))
+            IconButton(onClick = { isQrCodeShown = !isQrCodeShown }) {
+                Image(painter = painterResource(id = R.drawable.qr_code_white), contentDescription = "")
+            }
             IconButton(onClick = { isEditEnabled = !isEditEnabled }) {
                 Image(painter = editIcon, contentDescription = "")
             }
@@ -183,6 +194,32 @@ fun ViewDetails(
                 )
             }
         }
+        if (isQrCodeShown){
+            val img = qrGenerator(adminId = adminId, 340)
+            println(img)
+            Dialog(onDismissRequest = { isQrCodeShown = false }){
+                Column(
+                    modifier = Modifier.clickable { isQrCodeShown = false },
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Column(modifier = Modifier.width(270.dp).height(270.dp).background(Color.White),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Scan QR code to join",
+                            fontFamily = quickSand,
+                            color = Color.Black,
+                            fontSize = 17.sp
+                        )
+                        Icon(
+                            painter = rememberAsyncImagePainter(img),
+                            contentDescription = "",
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -217,4 +254,19 @@ fun customFeildModel(
             enabled = isEditEnabled
         )
     }
+}
+
+@Composable
+fun qrGenerator(adminId: String, size: Int): Bitmap {
+    val writer = QRCodeWriter()
+    val matrix = writer.encode(adminId, BarcodeFormat.QR_CODE, size, size)
+    val width = matrix.width
+    val height = matrix.height
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    for (x in 0 until width) {
+        for (y in 0 until height) {
+            bitmap.setPixel(x, y, if (matrix.get(x, y)) -0x1000000 else 0x1000000)
+        }
+    }
+    return bitmap
 }
