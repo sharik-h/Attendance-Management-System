@@ -1,5 +1,6 @@
 package com.example.ams.MainPages
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,7 @@ import com.example.ams.R
 import com.example.ams.data.DataClasses.NotificationModel
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.data.DataClasses.RequestCourseModel
+import com.example.ams.ui.theme.pri
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -41,16 +43,15 @@ fun Notifications(
     viewModel.getAllNotifications(courseName = courseName)
     val allRequests by viewModel.allRequests.observeAsState()
     val allNotifications by viewModel.allNotification.observeAsState()
-    val arrowBackIcon = painterResource(id = R.drawable.arrow_back)
-    val bungee = FontFamily(Font(R.font.bungee))
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
 
     Column(modifier = Modifier.fillMaxSize())
     {
-        TopAppBar {
+        TopAppBar(backgroundColor = pri) {
             IconButton(onClick = { navHostController.navigateUp() }) {
-                Icon(painter = arrowBackIcon, contentDescription = "")
+                Image(painter = painterResource(id = R.drawable.arrow_back), contentDescription = "")
             }
-            Text(text = "Notifications", fontFamily = bungee, color = Color.White)
+            Text(text = "Notifications", fontFamily = quickSand, color = Color.White, fontSize = 20.sp)
             Spacer(modifier = Modifier.weight(0.5f))
         }
         allNotifications?.let { it->
@@ -67,6 +68,7 @@ fun Notifications(
                             viewModel.deleteNotification(courseName = courseName, notificationId = it)
                         }
                     }
+                    Divider(thickness = 0.5.dp, color = Color.Black)
                 }
             }
         }
@@ -78,7 +80,7 @@ fun Notifications(
                         onAccept = { viewModel.acceptTeacher(it) },
                         onIgnore = { viewModel.ignoreTeacher(it.requestId) }
                     )
-                    Divider(thickness = 1.dp, color = Color.Black)
+                    Divider(thickness = 0.5.dp, color = Color.Black)
                 }
             }
         }
@@ -91,20 +93,20 @@ fun Notifications(
         horizontalAlignment = Alignment.End
     ) {
         FloatingActionButton(
-            modifier = Modifier.width(100.dp),
-            backgroundColor = Color.Black,
+            backgroundColor = pri,
             onClick = {
                 viewModel.clearData()
                 navHostController.navigate(Screen.NewNotification.passCourseName(courseName = courseName))
             }
         ) {
-            Text(text = "Create +", color = Color.White)
+            Image(painter = painterResource(id = R.drawable.add_icon_white), contentDescription = "")
         }
     }
 }
 
 @Composable
 fun NotificationItem(data: NotificationModel, onClick: (String) -> Unit) {
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
     val edit = SwipeAction(
         onSwipe = { onClick("edit") },
         icon = {Icon(
@@ -139,14 +141,16 @@ fun NotificationItem(data: NotificationModel, onClick: (String) -> Unit) {
                     text = data.heading,
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 17.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = quickSand
                 )
-                Text(text = data.discription, modifier = Modifier.fillMaxWidth())
+                Text(text = data.discription, modifier = Modifier.fillMaxWidth(), fontFamily = quickSand)
                 Text(
                     text = data.date,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Right,
-                    color = Color.Gray
+                    color = Color.Gray,
+                    fontFamily = quickSand
                 )
             }
             Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth())
@@ -156,7 +160,7 @@ fun NotificationItem(data: NotificationModel, onClick: (String) -> Unit) {
 
 @Composable
 fun RequestModel(data: RequestCourseModel, onAccept : () -> Unit, onIgnore : () -> Unit  ) {
-    val bungeeStyle = FontFamily(Font(R.font.bungee))
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -168,19 +172,19 @@ fun RequestModel(data: RequestCourseModel, onAccept : () -> Unit, onIgnore : () 
     ) {
         Text(
             text = "Request to join the class.",
-            fontFamily = bungeeStyle,
+            fontFamily = quickSand,
             color = Color.Black,
             modifier = Modifier.padding(start = 20.dp)
         )
         Text(
             text = "${data.TeacherName} is asking to join the ${data.ClassName}",
-            fontFamily = bungeeStyle,
+            fontFamily = quickSand,
             color = Color.Black,
             modifier = Modifier.padding(start = 20.dp)
         )
         Text(
             text = "Phone: ${data.TeacherPhone}",
-            fontFamily = bungeeStyle,
+            fontFamily = quickSand,
             color = Color.Black,
             modifier = Modifier.padding(start = 20.dp)
         )
