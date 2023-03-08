@@ -57,7 +57,10 @@ fun ViewCourse(
          }
          Text(text = courseName, fontFamily = quickSand, color = Color.White)
          Spacer(modifier = Modifier.weight(0.5f))
-         IconButton(onClick = { navHostController.navigate(Screen.ViewAttendance.passCourseName(courseName = courseName, adminId = adminId)) }) {
+         IconButton(onClick = {
+             viewModel.getStdRealAtd(adminId = adminId, courseName = courseName)
+             navHostController.navigate(Screen.ViewAttendance.passCourseName(courseName = courseName, adminId = adminId))
+         }) {
              Image(painter = checkItemsIcon, contentDescription = "")
          }
          IconButton(onClick = {
