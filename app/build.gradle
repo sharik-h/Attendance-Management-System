@@ -118,6 +118,6 @@ dependencies {
     // accompanist
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
 
-    // zxing
-    implementation 'com.google.zxing:core:3.4.1'
+    // firebase barcode scanner
+    implementation 'com.google.mlkit:barcode-scanning:17.0.3'
 }
