@@ -6,16 +6,16 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ams.R
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import java.util.concurrent.TimeUnit
@@ -42,7 +42,6 @@ class Authenticate: ComponentActivity() {
         phone = intent.getStringExtra("phone") ?: ""
         password = intent.getStringExtra("password") ?: ""
         email = intent.getStringExtra("email") ?: ""
-//        image = intent.getParcelableExtra("image")
 
         if (method == "phone" || method == "newAccount") {
             val options = PhoneAuthOptions.newBuilder(firebaseAuth)
@@ -111,37 +110,36 @@ class Authenticate: ComponentActivity() {
 
     @Composable
     fun AuthPage() {
-        val bungeeFont = FontFamily(Font(R.font.bungee))
         var otpOrPassword by remember { mutableStateOf("")}
         val message = if(method == "email") { "Enter the password for account $email" }
-        else { "Enter the Otp that have been sent to $phone" }
+        else { "OTP have been sent to $phone" }
 
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp)) {
             Text(
                 text = "Complete Your Authentication",
-                fontFamily = bungeeFont,
                 fontSize = 19.sp
             )
-            Text(
-                text = message,
-                fontFamily = bungeeFont
-            )
+            Text(text = message)
             Spacer(modifier = Modifier.height(20.dp))
+            Text(text = "Enter OTP")
             OutlinedTextField(
                 value = otpOrPassword,
                 onValueChange = { otpOrPassword = it },
-                placeholder = { Text(text = "Name")},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Black,
-                    focusedIndicatorColor = Color.Black,
-                    cursorColor = Color.Black,
-                    textColor = Color.Black,
-                    placeholderColor = Color.Black
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Blue,
+                    backgroundColor = Color.LightGray,
+                    cursorColor = Color.Blue),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = if ( method == "email") KeyboardType.Password
+                else KeyboardType.Number
                 )
             )
             Spacer(modifier = Modifier.height(20.dp))
@@ -156,14 +154,11 @@ class Authenticate: ComponentActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                colors = ButtonDefaults.buttonColors( backgroundColor = Color.Black )  ) {
+                colors = ButtonDefaults.buttonColors( backgroundColor = Color.Blue )  ) {
                 Text(
                     text = "verify",
                     color = Color.White,
-                    fontFamily = bungeeFont,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 8.dp),
+                    modifier = Modifier.fillMaxSize(),
                     textAlign = TextAlign.Center
                 )
             }
