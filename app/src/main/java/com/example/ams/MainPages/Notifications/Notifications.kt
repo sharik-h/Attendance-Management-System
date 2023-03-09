@@ -2,7 +2,6 @@ package com.example.ams.MainPages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -76,7 +75,7 @@ fun Notifications(
             LazyColumn {
                 items(items = it) {
                     RequestModel(
-                        data = it,
+                        data = it!!,
                         onAccept = { viewModel.acceptTeacher(it) },
                         onIgnore = { viewModel.ignoreTeacher(phone  = it.teacherPhone!!, courseName = courseName) }
                     )
@@ -163,27 +162,25 @@ fun RequestModel(data: RequestCourseModel, onAccept : () -> Unit, onIgnore : () 
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
 
     Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxWidth()
-            .size(190.dp)
-            .clickable { }
+            .size(140.dp)
     ) {
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = "Request to join the class.",
+            text = "Requesting to join",
             fontFamily = quickSand,
             color = Color.Black,
             modifier = Modifier.padding(start = 20.dp)
         )
         Text(
-            text = "${data.TeacherName} is asking to join the ${data.ClassName}",
+            text = "${data.teacherName} is asking to join the ${data.className}",
             fontFamily = quickSand,
             color = Color.Black,
             modifier = Modifier.padding(start = 20.dp)
         )
         Text(
-            text = "Phone: ${data.TeacherPhone}",
+            text = "Phone: ${data.teacherPhone}",
             fontFamily = quickSand,
             color = Color.Black,
             modifier = Modifier.padding(start = 20.dp)
@@ -198,7 +195,7 @@ fun RequestModel(data: RequestCourseModel, onAccept : () -> Unit, onIgnore : () 
                 modifier = Modifier
                     .weight(0.5f)
                     .clip(RoundedCornerShape(30)),
-                colors =  ButtonDefaults.buttonColors( backgroundColor = Color.Black )
+                colors =  ButtonDefaults.buttonColors( backgroundColor = Color(0xF800CC3A))
             ) {
                 Text(text = "Accept", color = Color.White)
             }
@@ -208,7 +205,7 @@ fun RequestModel(data: RequestCourseModel, onAccept : () -> Unit, onIgnore : () 
                 modifier = Modifier
                     .weight(0.5f)
                     .clip(RoundedCornerShape(30)),
-                colors =  ButtonDefaults.buttonColors( backgroundColor = Color.Black )
+                colors =  ButtonDefaults.buttonColors( backgroundColor = Color(0xFFFF5C5C))
             ) {
                 Text(text = "Ignore", color = Color.White)
             }
