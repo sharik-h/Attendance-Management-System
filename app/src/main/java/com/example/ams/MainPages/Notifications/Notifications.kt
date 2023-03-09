@@ -39,7 +39,7 @@ fun Notifications(
     courseName: String
 ) {
 
-    viewModel.getAllRequests()
+    viewModel.getAllRequests(courseName = courseName)
     viewModel.getAllNotifications(courseName = courseName)
     val allRequests by viewModel.allRequests.observeAsState()
     val allNotifications by viewModel.allNotification.observeAsState()
@@ -78,7 +78,7 @@ fun Notifications(
                     RequestModel(
                         data = it,
                         onAccept = { viewModel.acceptTeacher(it) },
-                        onIgnore = { viewModel.ignoreTeacher(it.requestId) }
+                        onIgnore = { viewModel.ignoreTeacher(phone  = it.teacherPhone!!, courseName = courseName) }
                     )
                     Divider(thickness = 0.5.dp, color = Color.Black)
                 }

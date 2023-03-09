@@ -59,7 +59,7 @@ fun ImportCourse(navHostController: NavHostController  ,viewModel: FirebaseViewM
         ) {
             Text(text = "Name of class", fontFamily = quickSand, fontSize = 17.sp)
             CustomTextFeild(
-                value = requestData.ClassName,
+                value = requestData.className,
                 onValueChange = { viewModel.updateData("importClassName", it) }
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -67,7 +67,7 @@ fun ImportCourse(navHostController: NavHostController  ,viewModel: FirebaseViewM
             Row(Modifier.fillMaxWidth()) {
                 Row(Modifier.weight(0.9f)) {
                     CustomTextFeild(
-                        value = requestData.AdminPhone,
+                        value = requestData.adminId,
                         onValueChange = { viewModel.updateData("creatorPhoneNo", it) }
                     )
                 }

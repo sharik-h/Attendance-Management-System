@@ -23,14 +23,14 @@ interface FirebaseRepository {
     suspend fun updateCourseDetails(name: String, newCourseData: NewCoureModel)
     suspend fun fetchClasses(userId: String):  MutableList<Pair<String, String>>
     suspend fun getCourseDetails(id: String, name: String): NewCoureModel?
-    suspend fun ignoreTeacher(id: String, phone: String)
+    suspend fun ignoreTeacher(id: String, phone: String, courseName: String)
     suspend fun getStudentDetails(courseName: String, adminId: String, registerNo: String): StudentDetail?
     suspend fun getStudentAtdDetails(courseName: String, adminId: String): MutableList<DocumentSnapshot>?
     suspend fun getAllStudents(adminId: String, courseName: String): MutableList<DocumentSnapshot>
     suspend fun fetchAllTeachersDetails(adminId: String, courseName: String):  MutableList<DocumentSnapshot>
     suspend fun requestAdmin(data: RequestCourseModel)
-    suspend fun acceptTeacher(data: RequestCourseModel, userId: String, phone: String, courseData: NewCoureModel, teacherDetails: TeachersList)
-    suspend fun getAllRequests(phone: String): MutableList<DocumentSnapshot>
+    suspend fun acceptTeacher(data: RequestCourseModel, adminId: String, phone: String, courseData: NewCoureModel, teacherDetails: TeachersList)
+    suspend fun getAllRequests(adminId: String, courseName: String): MutableList<DocumentSnapshot>
     suspend fun getAllNotifications(courseName: String, userId: String): MutableList<DocumentSnapshot>
     fun createNewNotification(notificationData: MutableState<NotificationModel>, courseName: String)
     suspend fun deleteNotification(userId: String, courseName: String, notificationId: String)
@@ -140,8 +140,8 @@ class DefaultFirebaseRepository(
         return ref.get().await().toObject(NewCoureModel::class.java)
     }
 
-    override suspend fun ignoreTeacher(id: String, phone: String) {
-        firestore.document("Requests/$phone/RequestToImport/$id")
+    override suspend fun ignoreTeacher(id: String, phone: String, courseName: String) {
+        firestore.document("$id/$courseName/Requests/$phone")
             .delete()
     }
 
@@ -168,28 +168,29 @@ class DefaultFirebaseRepository(
 
     override suspend fun requestAdmin(data: RequestCourseModel) {
         firestore
-            .collection("Requests/${data.AdminPhone}/RequestToImport")
-            .add(data)
+            .document("${data.adminId}/${data.className}/Requests/${data.teacherPhone}")
+            .set(data)
     }
 
     override suspend fun acceptTeacher(
         data: RequestCourseModel,
-        userId: String,
+        adminId: String,
         phone: String,
         courseData: NewCoureModel,
         teacherDetails: TeachersList
     ) {
-        firestore.document("$userId/${data.ClassName}/teacherDetails/${courseData.name}")
+        firestore.document("$adminId/${data.className}/teacherDetails/${teacherDetails.phone}")
             .set(teacherDetails)
-        getCourseDetails(userId, data.ClassName)
+        getCourseDetails(adminId, data.className)
         firestore
-            .document("${data.TeacherUid}/${data.ClassName}")
+            .document("${data.teacherUid}/${data.className}")
             .set(courseData)
-        firestore.document("Requests/$phone/RequestToImport/${data.requestId}").delete()
+        firestore.document("${data.adminId}/${data.className}/Requests/${teacherDetails.phone}")
+            .delete()
     }
 
-    override suspend fun getAllRequests(phone: String): MutableList<DocumentSnapshot> {
-        val ref = firestore.collection("Requests/$phone/RequestToImport")
+    override suspend fun getAllRequests(adminId: String, phone: String): MutableList<DocumentSnapshot> {
+        val ref = firestore.collection("$adminId/$phone/Requests")
         return ref.get().await().documents
     }
 

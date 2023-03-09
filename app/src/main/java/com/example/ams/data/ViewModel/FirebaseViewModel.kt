@@ -23,7 +23,7 @@ class FirebaseViewModel(
 ) : ViewModel() {
 
     val allNotification: MutableLiveData<MutableList<NotificationModel>> = MutableLiveData()
-    val allRequests : MutableLiveData<MutableList<RequestCourseModel>> = MutableLiveData()
+    val allRequests : MutableLiveData<MutableList<RequestCourseModel?>> = MutableLiveData()
     val newStudent = mutableStateOf(StudentDetail())
     val studentImages = MutableLiveData<List<Uri>>()
     val newCourseData = mutableStateOf(NewCoureModel())
@@ -144,8 +144,8 @@ class FirebaseViewModel(
         }
         (requestData).let {
             when(name) {
-                "importClassName" -> it.value = it.value.copy(ClassName = value)
-                "creatorPhoneNo" -> it.value = it.value.copy(AdminPhone = value)
+                "importClassName" -> it.value = it.value.copy(className = value)
+                "creatorPhoneNo" -> it.value = it.value.copy(adminId = value)
             }
         }
         (notificationData).let {
@@ -200,28 +200,29 @@ class FirebaseViewModel(
     }
 
     fun checkRequestDetails(){
-        if (requestData.value.ClassName != "" && requestData.value.AdminPhone != "") {
+        if (requestData.value.className != "" && requestData.value.adminId != "") {
             requestAdmin()
         }
     }
 
     private fun requestAdmin() {
         requestData.value = requestData.value.copy(
-            TeacherName = getuser?.displayName.toString(),
-            TeacherPhone = getuser?.phoneNumber.toString(),
-            TeacherUid = currentUserUid!!
+            teacherName = getuser?.displayName.toString(),
+            teacherPhone = getuser?.phoneNumber.toString(),
+            teacherEmail = getuser?.email.toString(),
+            teacherUid = currentUserUid!!
         )
         viewModelScope.launch {
             firebaseRepository.requestAdmin(data = requestData.value)
         }
     }
 
-    fun getAllRequests() {
-        val requests = mutableListOf<RequestCourseModel>()
+    fun getAllRequests(courseName: String) {
+        val requests = mutableListOf<RequestCourseModel?>()
         viewModelScope.launch {
-            firebaseRepository.getAllRequests(phone = getuser?.phoneNumber!!)
+            firebaseRepository.getAllRequests(adminId = getuser!!.uid, courseName = courseName)
                .forEach { doc ->
-                   doc.toObject(RequestCourseModel::class.java)?.let { requests.add(it) }
+                   requests.add(doc.toObject(RequestCourseModel::class.java))
                }
             allRequests.value = requests
         }
@@ -243,25 +244,26 @@ class FirebaseViewModel(
 
     fun acceptTeacher(data: RequestCourseModel) {
         val teacherDetails = TeachersList(
-            name = data.TeacherName,
-            phone = data.TeacherPhone,
-            email = data.TeacherEmail,
-            uid = data.TeacherUid
+            name = data.teacherName,
+            phone = data.teacherPhone,
+            email = data.teacherEmail,
+            uid = data.teacherUid
         )
+        getCourseDetails(id = data.adminId, name = data.className)
         viewModelScope.launch {
             firebaseRepository.acceptTeacher(
                 data = data,
-                userId = currentUserUid!!,
+                adminId = currentUserUid!!,
                 phone = getuser?.phoneNumber!!,
-                courseData = courseData.value!!,
+                courseData = newCourseData.value!!,
                 teacherDetails = teacherDetails
             )
         }
     }
 
-    fun ignoreTeacher(id: String) {
+    fun ignoreTeacher(phone: String, courseName: String) {
         viewModelScope.launch {
-            firebaseRepository.ignoreTeacher(id = id, phone = getuser?.phoneNumber!!)
+            firebaseRepository.ignoreTeacher(id = getuser!!.uid, phone = phone, courseName = courseName)
         }
     }
 
