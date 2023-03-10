@@ -480,7 +480,7 @@ class FirebaseViewModel(
 
     fun getAdminDetail(adminId: String, courseName: String){
         viewModelScope.launch {
-            val docSnapShot = firebaseRepository.getAdminData(adminId = adminId, courseName = courseName, phone = getuser?.phoneNumber)
+            val docSnapShot = firebaseRepository.getAdminData(adminId = adminId, courseName = courseName, phone = "admin")
             adminInfo.value = docSnapShot.toObject(TeachersList::class.java)
         }
     }
