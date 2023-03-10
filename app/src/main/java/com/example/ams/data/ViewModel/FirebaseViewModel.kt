@@ -228,10 +228,10 @@ class FirebaseViewModel(
         }
     }
 
-    fun getAllNotifications(courseName: String){
+    fun getAllNotifications(courseName: String, adminId: String){
         val notifications = mutableListOf<NotificationModel>()
         viewModelScope.launch {
-            firebaseRepository.getAllNotifications(courseName = courseName, userId = getuser!!.uid)
+            firebaseRepository.getAllNotifications(courseName = courseName, userId = adminId)
                 .forEach { doc ->
                     doc.toObject(NotificationModel::class.java)?.let {
                         it.notificationId = doc.id
@@ -391,7 +391,7 @@ class FirebaseViewModel(
     }
 
     // Calls deleteNotification in firebaseRepository to delete the notification
-    fun deleteNotification(courseName: String, notificationId: String){
+    fun deleteNotification(courseName: String, adminId: String, notificationId: String){
         viewModelScope.launch {
             firebaseRepository.deleteNotification(
                 userId = currentUserUid!!,
@@ -399,7 +399,7 @@ class FirebaseViewModel(
                 notificationId = notificationId
             )
         }
-        getAllNotifications(courseName = courseName)
+        getAllNotifications(courseName = courseName, adminId = adminId)
     }
 
     fun updateNotificatoin(courseName: String) {

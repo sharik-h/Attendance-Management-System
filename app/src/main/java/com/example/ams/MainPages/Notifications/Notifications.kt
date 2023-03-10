@@ -35,11 +35,12 @@ import me.saket.swipe.SwipeableActionsBox
 fun Notifications(
     navHostController: NavHostController,
     viewModel: FirebaseViewModel,
-    courseName: String
+    courseName: String,
+    adminId: String
 ) {
 
     viewModel.getAllRequests(courseName = courseName)
-    viewModel.getAllNotifications(courseName = courseName)
+    viewModel.getAllNotifications(courseName = courseName, adminId = adminId)
     val allRequests by viewModel.allRequests.observeAsState()
     val allNotifications by viewModel.allNotification.observeAsState()
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
@@ -64,7 +65,7 @@ fun Notifications(
                             viewModel.updateData("notificationId", it1.notificationId!!)
                             navHostController.navigate(Screen.NewNotification.passCourseName(courseName = courseName))
                         }else{
-                            viewModel.deleteNotification(courseName = courseName, notificationId = it)
+                            viewModel.deleteNotification(courseName = courseName,adminId = adminId, notificationId = it)
                         }
                     }
                     Divider(thickness = 0.5.dp, color = Color.Black)
