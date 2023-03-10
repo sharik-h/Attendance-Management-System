@@ -32,9 +32,9 @@ interface FirebaseRepository {
     suspend fun acceptTeacher(data: RequestCourseModel, adminId: String, phone: String, courseData: NewCoureModel, teacherDetails: TeachersList)
     suspend fun getAllRequests(adminId: String, courseName: String): MutableList<DocumentSnapshot>
     suspend fun getAllNotifications(courseName: String, userId: String): MutableList<DocumentSnapshot>
-    fun createNewNotification(notificationData: MutableState<NotificationModel>, courseName: String)
-    suspend fun deleteNotification(userId: String, courseName: String, notificationId: String)
-    suspend fun updateNotificatoin(userId: String, courseName: String, data: MutableState<NotificationModel>)
+    fun createNewNotification(notificationData: MutableState<NotificationModel>, courseName: String, adminId: String)
+    suspend fun deleteNotification(adminId: String, courseName: String, notificationId: String)
+    suspend fun updateNotificatoin(adminId: String, courseName: String, data: MutableState<NotificationModel>)
     suspend fun getToatlAtd(courseName: String, adminId: String): Int
     suspend fun getPeriodNo(courseName: String, adminId: String): Int
     suspend fun updatePeriod(adminId: String, courseName: String, periodNo: Int)
@@ -204,29 +204,30 @@ class DefaultFirebaseRepository(
 
     override fun createNewNotification(
         notificationData: MutableState<NotificationModel>,
-        courseName: String
+        courseName: String,
+        adminId: String
     ) {
         firestore
-            .collection("${notificationData.value.id}/$courseName/Notifications")
+            .collection("$adminId/$courseName/Notifications")
             .add(notificationData.value)
     }
 
     override suspend fun deleteNotification(
-        userId: String,
+        adminId: String,
         courseName: String,
         notificationId: String
     ) {
         firestore
-            .document("$userId/$courseName/Notifications/$notificationId")
+            .document("$adminId/$courseName/Notifications/$notificationId")
             .delete()
     }
 
     override suspend fun updateNotificatoin(
-        userId: String,
+        adminId: String,
         courseName: String,
         data: MutableState<NotificationModel>
     ) {
-        firestore.document("$userId/$courseName/Notifications/${data.value.notificationId}")
+        firestore.document("$adminId/$courseName/Notifications/${data.value.notificationId}")
             .update(mapOf(
                 "heading" to data.value.heading,
                 "discription" to data.value.discription,

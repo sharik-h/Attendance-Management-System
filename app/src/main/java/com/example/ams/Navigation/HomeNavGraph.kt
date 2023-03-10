@@ -39,13 +39,15 @@ fun NavGraphBuilder.HomeNavGraph(
         composable(
             route = Screen.NewNotification.route,
             arguments = listOf(
-                navArgument(name = "courseName"){ type = NavType.StringType }
+                navArgument(name = "courseName"){ type = NavType.StringType },
+                navArgument(name = "adminId"){ type = NavType.StringType }
             )
         ){
             NewNotification(
                 navHostController = navHostController,
                 viewModel = viewModel,
                 courseName = it.arguments?.getString("courseName").toString(),
+                adminId = it.arguments?.getString("adminId").toString()
             )
         }
         composable(

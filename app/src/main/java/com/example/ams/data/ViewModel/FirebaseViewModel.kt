@@ -376,11 +376,11 @@ class FirebaseViewModel(
         return resizeBitmap(bitmap, newWidth, newHeight)
     }
 
-    fun createNewNotification(courseName: String) {
+    fun createNewNotification(courseName: String, adminId: String) {
         notificationData.value = notificationData.value.copy(id = currentUserUid!!)
         notificationData.value = notificationData.value.copy(date = LocalDate.now().toString())
         viewModelScope.launch {
-            firebaseRepository.createNewNotification(notificationData,courseName)
+            firebaseRepository.createNewNotification(notificationData,courseName, adminId)
         }
         notificationData.value = notificationData.value.let {
             it.copy(id = "")
@@ -394,7 +394,7 @@ class FirebaseViewModel(
     fun deleteNotification(courseName: String, adminId: String, notificationId: String){
         viewModelScope.launch {
             firebaseRepository.deleteNotification(
-                userId = currentUserUid!!,
+                adminId = adminId,
                 courseName = courseName,
                 notificationId = notificationId
             )
@@ -402,10 +402,10 @@ class FirebaseViewModel(
         getAllNotifications(courseName = courseName, adminId = adminId)
     }
 
-    fun updateNotificatoin(courseName: String) {
+    fun updateNotificatoin(courseName: String, adminId: String) {
         viewModelScope.launch {
             firebaseRepository.updateNotificatoin(
-                userId = currentUserUid!!,
+                adminId = adminId,
                 courseName = courseName,
                 data = notificationData
             )

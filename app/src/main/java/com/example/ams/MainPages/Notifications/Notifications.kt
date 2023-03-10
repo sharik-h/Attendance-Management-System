@@ -63,7 +63,7 @@ fun Notifications(
                             viewModel.updateData("notificationDiscrip", it1.discription)
                             viewModel.updateData("notificationDate", it1.date)
                             viewModel.updateData("notificationId", it1.notificationId!!)
-                            navHostController.navigate(Screen.NewNotification.passCourseName(courseName = courseName))
+                            navHostController.navigate(Screen.NewNotification.passCourseName(courseName = courseName, adminId = adminId))
                         }else{
                             viewModel.deleteNotification(courseName = courseName,adminId = adminId, notificationId = it)
                         }
@@ -96,7 +96,7 @@ fun Notifications(
             backgroundColor = pri,
             onClick = {
                 viewModel.clearData()
-                navHostController.navigate(Screen.NewNotification.passCourseName(courseName = courseName))
+                navHostController.navigate(Screen.NewNotification.passCourseName(courseName = courseName, adminId = adminId))
             }
         ) {
             Image(painter = painterResource(id = R.drawable.add_icon_white), contentDescription = "")

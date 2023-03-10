@@ -27,6 +27,7 @@ import com.example.ams.ui.theme.pri
 fun NewNotification(
     navHostController: NavHostController,
     courseName: String,
+    adminId: String,
     viewModel: FirebaseViewModel
 ){
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
@@ -46,9 +47,9 @@ fun NewNotification(
             Spacer(modifier = Modifier.weight(0.1f))
             TextButton(onClick = {
                 if (notificationData.notificationId == "") {
-                    viewModel.createNewNotification(courseName)
+                    viewModel.createNewNotification(courseName = courseName, adminId = adminId)
                 }else{
-                    viewModel.updateNotificatoin(courseName)
+                    viewModel.updateNotificatoin(courseName = courseName, adminId = adminId)
                 }
                 navHostController.navigateUp()
             }) {
