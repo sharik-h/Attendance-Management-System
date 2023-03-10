@@ -47,6 +47,7 @@ interface FirebaseRepository {
     suspend fun getAllStudentData(adminId: String, courseName: String): MutableList<DocumentSnapshot>
     suspend fun getAllImages(adminId: String, courseName: String, registerNos: List<String>, callback: (MutableList<Pair<String, Bitmap>>) -> Unit)
     suspend fun addStudentImg(courseName: String, adminId: String, regNo: String, name: String, img: Uri)
+    suspend fun addAdminAsTeacher(adminId: String, courseName: String, adminInfo: TeachersList)
 }
 
 class DefaultFirebaseRepository(
@@ -354,6 +355,16 @@ class DefaultFirebaseRepository(
             }.addOnFailureListener{
                 println(it.message)
             }
+    }
+
+    override suspend fun addAdminAsTeacher(
+        adminId: String,
+        courseName: String,
+        adminInfo: TeachersList
+    ) {
+        println(adminInfo)
+        firestore.document("$adminId/$courseName/teacherDetails/admin")
+            .set(adminInfo)
     }
 
 }

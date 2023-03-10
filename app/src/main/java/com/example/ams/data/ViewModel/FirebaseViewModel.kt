@@ -80,6 +80,17 @@ class FirebaseViewModel(
         newCourseData.value.periodNo = "0"
         viewModelScope.launch {
             firebaseRepository.createNewClass(userId = currentUserUid!!, newCourseData = newCourseData.value)
+           val adminInfo = TeachersList(
+               uid = currentUserUid!!,
+               phone = getuser?.phoneNumber ?: "",
+               email = getuser?.email ?: "",
+               name = getuser?.displayName ?: ""
+           )
+            firebaseRepository.addAdminAsTeacher(
+                adminId = currentUserUid!!,
+                courseName = newCourseData.value.name,
+                adminInfo = adminInfo
+            )
         }
         clearData()
     }
