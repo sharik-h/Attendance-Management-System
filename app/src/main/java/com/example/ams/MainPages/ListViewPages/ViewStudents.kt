@@ -81,7 +81,6 @@ fun ViewStudents(
         }
         LazyColumn {
             items(items = stddata) {
-                println(data2?.get(it.name))
                 StudentItem(
                     data = it,
                     images = data2?.get(it.name) ?: emptyList(),
@@ -104,7 +103,6 @@ fun StudentItem(
     isAtdLower : Boolean,
     onClick: (regNo: String, name: String) -> Unit
 ) {
-    var editable by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .padding(top = 5.dp, start = 10.dp, bottom = 5.dp)
