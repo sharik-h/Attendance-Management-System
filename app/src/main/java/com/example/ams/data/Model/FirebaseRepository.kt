@@ -48,6 +48,8 @@ interface FirebaseRepository {
     suspend fun getAllImages(adminId: String, courseName: String, registerNos: List<String>, callback: (MutableList<Pair<String, Bitmap>>) -> Unit)
     suspend fun addStudentImg(courseName: String, adminId: String, regNo: String, name: String, img: Uri)
     suspend fun addAdminAsTeacher(adminId: String, courseName: String, adminInfo: TeachersList)
+    fun updateAStdAttendance(adminId: String, courseName: String, regNo: String, atd: Int)
+    suspend fun getAllStudentAtd(adminId: String, courseName: String): MutableList<DocumentSnapshot>
 }
 
 class DefaultFirebaseRepository(

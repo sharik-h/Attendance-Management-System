@@ -35,6 +35,9 @@ fun ViewCourse(
     viewModel: FirebaseViewModel
 ) {
     viewModel.getStudentAtdDetails(courseName, adminId)
+    viewModel.getTotalNoAtd(adminId = adminId, courseName = courseName)
+    viewModel.getStudentWithLowAtd(courseName, adminId)
+    val stdLow by viewModel.stdWithLowAtd.observeAsState(initial = emptyList())
     val attendanceDetail by viewModel.attendanceDetail.observeAsState(initial = emptyList())
     var selected by remember{ mutableStateOf(false) }
     var size = 0
@@ -106,7 +109,11 @@ fun ViewCourse(
      var even by remember{ mutableStateOf(false)}
      LazyColumn {
          items(items = attendanceDetail){
-             StudentAttendance(attendance = it , even = even)
+             StudentAttendance(
+                 attendance = it,
+                 even = even,
+                 isAtdLower = stdLow.contains(it.registerNo)
+             )
              even = !even
          }
      }
@@ -152,7 +159,7 @@ fun ViewCourse(
 }
 
 @Composable
-fun StudentAttendance(attendance: AttendceDetail , even : Boolean) {
+fun StudentAttendance(attendance: AttendceDetail , even : Boolean, isAtdLower: Boolean) {
     val chekMarkImg = painterResource(id = R.drawable.check_green)
     val closeMarkImg = painterResource(id = R.drawable.cancel_47)
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
@@ -166,14 +173,27 @@ fun StudentAttendance(attendance: AttendceDetail , even : Boolean) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = attendance.registerNo,
-            fontSize = 20.sp,
-            fontFamily = quickSand,
-            modifier = Modifier
-                .weight(0.7f)
-                .fillMaxHeight()
-        )
+        Row(Modifier.weight(0.7f)){
+            Text(
+                text = attendance.registerNo,
+                fontSize = 20.sp,
+                fontFamily = quickSand,
+                modifier = Modifier.fillMaxHeight()
+            )
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+            ){
+                Spacer(modifier = Modifier.width(10.dp))
+                if (isAtdLower){
+                    Image(
+                        painter = painterResource(id = R.drawable.circle_red),
+                        contentDescription = "",
+                        modifier = Modifier.size(10.dp)
+                    )
+                }
+            }
+        }
         attendance.attendance!!.forEach {
             Box(
                 contentAlignment = Alignment.Center,

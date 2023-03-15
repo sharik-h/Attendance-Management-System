@@ -52,6 +52,7 @@ class FirebaseViewModel(
     val adminInfo = MutableLiveData<TeachersList>()
     val allStudentInfo = MutableLiveData<List<StudentDetail>>()
     val allStudentImg = MutableLiveData<MutableList<Pair<String, Bitmap>>>()
+    val stdWithLowAtd = MutableLiveData<MutableList<String>>()
 
     init {
         viewModelScope.launch {
@@ -492,6 +493,7 @@ class FirebaseViewModel(
                 .getAllStudentData(adminId = adminId, courseName = courseName)
                 .forEach {
                     val item = it.toObject(StudentDetail::class.java)
+                    item?.totoalAtd = it.getLong("totalAtd")!!.toInt()
                     allstddata.add(item!!)
                 }
             allStudentInfo.value = allstddata
@@ -523,5 +525,20 @@ class FirebaseViewModel(
         return attendanceDetail
             .value?.map { it.registerNo.replace(" ", "") }
             ?.contains(newStudent.value.registerNo.replace(" ", "")) ?: false
+    }
+
+    fun getStudentWithLowAtd(courseName: String, adminId: String) {
+        viewModelScope.launch {
+            val atdLow = mutableListOf<String>()
+            firebaseRepository.getToatlAtd(adminId = adminId, courseName = courseName)
+            firebaseRepository.getAllStudentData(adminId = adminId, courseName = courseName).forEach { std->
+                val data = std.getLong("totalAtd")
+                val name = std.getString("registerNo")
+                if(data!! < totalAtdSoFar.value!! * 0.75){
+                    atdLow.add(name.toString())
+                }
+            }
+            stdWithLowAtd.value = atdLow
+        }
     }
 }

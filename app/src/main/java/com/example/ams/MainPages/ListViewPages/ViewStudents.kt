@@ -43,6 +43,7 @@ fun ViewStudents(
 ) {
     val stddata by viewModel.allStudentInfo.observeAsState(initial = emptyList())
     val imgs by viewModel.allStudentImg.observeAsState(initial = viewModel.allStudentImg.value)
+    val stdLow by viewModel.stdWithLowAtd.observeAsState(initial = emptyList())
     val pattern = Pattern.compile("([a-zA-Z]+)\\d*_?")
     val data2 = imgs?.groupBy { it ->
         val matcher = pattern.matcher(it.toString())
@@ -83,7 +84,8 @@ fun ViewStudents(
                 println(data2?.get(it.name))
                 StudentItem(
                     data = it,
-                    images = data2?.get(it.name) ?: emptyList()
+                    images = data2?.get(it.name) ?: emptyList(),
+                    isAtdLower = stdLow.contains(it.registerNo)
                 ) { regNo, name ->
                     selectedReg = regNo
                     selectedName = name
@@ -99,6 +101,7 @@ fun ViewStudents(
 fun StudentItem(
     data: StudentDetail,
     images: List<Pair<String, Bitmap>>,
+    isAtdLower : Boolean,
     onClick: (regNo: String, name: String) -> Unit
 ) {
     var editable by remember { mutableStateOf(false) }
@@ -108,9 +111,15 @@ fun StudentItem(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.Center
     ) {
+        if (isAtdLower) {
+                Row(modifier = Modifier.fillMaxWidth().padding(end = 10.dp), horizontalArrangement = Arrangement.End) {
+                    Image(painter = painterResource(id = R.drawable.circle_red), contentDescription = "", Modifier.size(15.dp))
+                }
+        }
         customDataModel1(field = "Name            :", data = data.name)
         customDataModel1(field = "Register no.  :", data = data.registerNo)
         customDataModel1(field = "Phone no.      :", data = data.phone)
+        customDataModel1(field = "Total Attendance :", data = data.totoalAtd.toString())
         Spacer(modifier = Modifier.height(5.dp))
         Spacer(modifier = Modifier.height(5.dp))
         LazyRow{
