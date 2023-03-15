@@ -65,7 +65,7 @@ class MarkDailyAtd: BroadcastReceiver() {
                             }
                         }
                         if (totalAtd == total) atd = 2
-                        else if (totalAtd / 2 < total) atd = 1
+                        else if (totalAtd / 2 <= total) atd = 1
                         else atd = 0
                         atdList.add(Pair(std.registerNo, atd))
                     }
@@ -75,6 +75,14 @@ class MarkDailyAtd: BroadcastReceiver() {
                         atdList = atdList,
                         date = LocalDate.now()
                     )
+                    atdList.forEach {std ->
+                        firebaseRepository.updateAStdAttendance(
+                            adminId = adminId,
+                            courseName = it.first,
+                            regNo = std.first,
+                            atd = std.second
+                        )
+                    }
                     firebaseRepository.updatePeriod(
                         adminId = adminId,
                         courseName = it.first,

@@ -358,4 +358,33 @@ class DefaultFirebaseRepository(
             .set(adminInfo)
     }
 
+    override fun updateAStdAttendance(
+        adminId: String,
+        courseName: String,
+        regNo: String,
+        atd: Int
+    ) {
+        firestore.document("$adminId/$courseName/studentDetails/$regNo")
+            .get()
+            .addOnSuccessListener {
+                val total  = it.toObject(StudentDetail::class.java)?.totoalAtd
+                if (total != null) {
+                    val newAtd = if (atd == 2) { total.plus(1) }
+                        else if(atd == 1){ total.plus(0.5) }
+                        else{ total }
+                    firestore.document("$adminId/$courseName/studentDetails/$regNo")
+                        .update(mapOf("totalAtd" to newAtd))
+                }
+            }
+    }
+
+
+
+    override suspend fun getAllStudentAtd(
+        adminId: String,
+        courseName: String
+    ): MutableList<DocumentSnapshot> {
+        val ref = firestore.collection("$adminId/$courseName/studentDetails")
+        return ref.get().await().documents
+    }
 }
