@@ -319,7 +319,6 @@ class DefaultFirebaseRepository(
                 .listAll()
                 .addOnSuccessListener { result ->
                     for (item in result.items){
-                        println(item.name)
                         if (!imgName.contains(item.name)){
                             imgName.add(item.name)
                         }
@@ -343,18 +342,11 @@ class DefaultFirebaseRepository(
         name: String,
         img: Uri
     ) {
-        println("5: $courseName, $adminId, $regNo, $name, $img")
         val lastSize = Pattern.compile("\\D+").matcher(name).replaceAll("") + 1
         val stdname = Pattern.compile("\\d+").matcher(name).replaceAll("")
-        println("6: $courseName, $adminId, $regNo, $name, $img, $lastSize, $stdname")
         storageRef
             .child("$adminId/$courseName/$regNo/$stdname$lastSize")
             .putFile(img)
-            .addOnSuccessListener {
-                println("sucess")
-            }.addOnFailureListener{
-                println(it.message)
-            }
     }
 
     override suspend fun addAdminAsTeacher(
@@ -362,7 +354,6 @@ class DefaultFirebaseRepository(
         courseName: String,
         adminInfo: TeachersList
     ) {
-        println(adminInfo)
         firestore.document("$adminId/$courseName/teacherDetails/admin")
             .set(adminInfo)
     }
