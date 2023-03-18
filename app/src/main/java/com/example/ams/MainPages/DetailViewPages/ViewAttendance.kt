@@ -1,5 +1,11 @@
 package com.example.ams.MainPages.DetailViewPages
 
+import android.content.Context
+import android.graphics.*
+import android.graphics.pdf.PdfDocument
+import android.os.Environment
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.IconButton
@@ -20,6 +26,8 @@ import com.example.ams.MainPages.CustomComposes.cornerBorder
 import com.example.ams.R
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.ui.theme.pri
+import java.io.*
+import java.time.LocalDate
 
 @Composable
 fun ViewAttendance(
@@ -33,6 +41,7 @@ fun ViewAttendance(
     val studentAtdDates by viewModel.realAtdDates.observeAsState(initial = emptyList())
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
     var scroll = rememberScrollState()
+    val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(backgroundColor = pri) {
@@ -48,6 +57,10 @@ fun ViewAttendance(
                 color = Color.White,
                 fontSize = 20.sp
             )
+            Spacer(modifier = Modifier.weight(0.5f))
+            IconButton(onClick = { generatePDF(context = context, studentAtdDates, studentAtds) }) {
+                Image(painter = painterResource(id = R.drawable.download_white), contentDescription = "")
+            }
         }
         Row(modifier = Modifier.fillMaxSize()) {
             Column {
@@ -100,3 +113,59 @@ fun ViewAttendance(
     }
 }
 
+fun generatePDF(
+    context: Context,
+    studentAtdDates: List<String>,
+    studentAtds: Map<String, List<Int>>
+) {
+    val atdData = studentAtds.toList()
+    val pdfDocument = PdfDocument()
+    val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+    var k = 0
+    studentAtdDates.groupBy { it.substring(0,7) }.forEach { month, dates ->
+
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas = page.canvas
+        val tableLeft = 50F
+        val columnWidth = 150F
+
+        canvas.drawText("${month}", tableLeft + 5F, 10F, Paint())
+        canvas.drawLine(tableLeft, 25F, 520f, 25F, Paint())
+        canvas.drawText("Reg No.", tableLeft + 5F, 40F, Paint())
+        canvas.drawLine(tableLeft, 42f , tableLeft + 20 * 20 + columnWidth - 80, 42f, Paint())
+        canvas.drawLine(tableLeft, 25F, tableLeft, 42f, Paint())
+        for (j in dates.indices) {
+//            canvas.drawLine(((j + 1) * 20) + 100f, 5F, ((j + 1) * 20) + 100f, 22f, Paint())
+            canvas.drawText(dates[j].substring(8), tableLeft + ((j + 1) * 20) + 53f, 40F, Paint())
+        }
+//        canvas.drawLine(520f, 5F, 520f, 22f, Paint())
+
+        var l = 3
+        val temp = k
+        atdData.forEach {
+            canvas.drawText(it.first, 55F, l * 20F, Paint())
+            canvas.drawLine(tableLeft, (l * 20f) + 2,520f , (l * 20f) + 2, Paint())
+            canvas.drawLine(tableLeft, ((l-1) * 20F) + 23F ,  tableLeft,l * 20f, Paint())
+            k = temp
+            for(j in dates.indices){
+                canvas.drawLine( ( (j+1) * 20 )+ 100f, (l-1 * 20F) + 43F , ( (j+1) * 20 ) + 100f, (l * 20f )+2, Paint())
+                canvas.drawText(it.second[k].toString(),((j+1) * 20) + 103f,l * 20F, Paint())
+                k++
+            }
+            canvas.drawLine(520f,(l-1 * 20F) + 43F ,520f,(l * 20f)+2, Paint())
+            l++
+        }
+        pdfDocument.finishPage(page)
+
+    }
+    val localDate = LocalDate.now()
+    val file = File(Environment.getExternalStorageDirectory(), "Attendance($localDate).pdf")
+    try {
+        pdfDocument.writeTo(FileOutputStream(file))
+        Toast.makeText(context, "PDF file generated..", Toast.LENGTH_SHORT).show()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+    }
+    pdfDocument.close()
+}
