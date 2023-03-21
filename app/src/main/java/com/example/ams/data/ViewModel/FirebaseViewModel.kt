@@ -36,7 +36,7 @@ class FirebaseViewModel(
     val newCourseData = mutableStateOf(NewCoureModel())
     val requestData = mutableStateOf(RequestCourseModel())
     val teacherDetailsList: MutableLiveData<List<TeachersList>> = MutableLiveData()
-    val courseNames: MutableLiveData<List<Pair<String, String>>> = MutableLiveData()
+    val courseNames: MutableLiveData<List<NewCoureModel>> = MutableLiveData()
     val courseData: MutableLiveData<NewCoureModel> = MutableLiveData()
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
     val studentList: MutableLiveData<List<String>> = MutableLiveData()
@@ -330,7 +330,7 @@ class FirebaseViewModel(
     }
 
     fun checkIfNameIsUsed(): Boolean {
-        return courseNames.value?.contains(Pair(newCourseData.value.name, currentUserUid)) ?: false
+        return courseNames.value?.any { it.name == newCourseData.value.name } ?: false
     }
 
     fun checkAndCreateClass():Boolean {

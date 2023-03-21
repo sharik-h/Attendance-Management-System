@@ -21,7 +21,7 @@ interface FirebaseRepository {
     suspend fun addNewStudent(courseName: String, adminId: String, newStudentData: MutableState<StudentDetail>, noAttendance: Int, studentImages: List<Uri>)
     suspend fun markAttendance(adminId: String, courseName: String, size: Int, registerNo: String, present: Boolean)
     suspend fun updateCourseDetails(name: String, newCourseData: NewCoureModel)
-    suspend fun fetchClasses(userId: String):  MutableList<Pair<String, String>>
+    suspend fun fetchClasses(userId: String):  MutableList<NewCoureModel>
     suspend fun getCourseDetails(id: String, name: String): NewCoureModel?
     suspend fun ignoreTeacher(id: String, phone: String, courseName: String)
     suspend fun getStudentDetails(courseName: String, adminId: String, registerNo: String): StudentDetail?
@@ -119,16 +119,17 @@ class DefaultFirebaseRepository(
         }
     }
 
-    override suspend fun fetchClasses(userId: String): MutableList<Pair<String, String>> {
-        val listOfClasses = mutableListOf<Pair<String, String>>()
-        val deferred = CompletableDeferred<MutableList<Pair<String, String>>>()
+    override suspend fun fetchClasses(userId: String): MutableList<NewCoureModel> {
+        val listOfClasses = mutableListOf<NewCoureModel>()
+        val deferred = CompletableDeferred<MutableList<NewCoureModel>>()
         withContext(Dispatchers.IO){
         firestore.collection(userId)
             .addSnapshotListener {  result, _ ->
                 result?.let {  it1 ->
                     it1.documents.forEach {
-                        if (!listOfClasses.contains(Pair(it.id, it.data!!["adminId"].toString()))) {
-                            listOfClasses.add(Pair(it.id, it.data!!["adminId"].toString()))
+                        val data = it.toObject(NewCoureModel::class.java)!!
+                        if (!listOfClasses.contains(data)) {
+                            listOfClasses.add(data)
                         }
                     }
                     deferred.complete(listOfClasses)
