@@ -330,7 +330,7 @@ class FirebaseViewModel(
     }
 
     fun checkIfNameIsUsed(): Boolean {
-        return courseNames.value?.contains(Pair(newCourseData.value.name, currentUserUid)) ?: false
+        return courseNames.value?.any { it.name == newCourseData.value.name } ?: false
     }
 
     fun checkAndCreateClass():Boolean {

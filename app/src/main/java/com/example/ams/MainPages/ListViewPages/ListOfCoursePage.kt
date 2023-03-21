@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.Navigation.Screen
 import com.example.ams.R
+import com.example.ams.data.DataClasses.NewCoureModel
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.ui.theme.pri
 import com.example.ams.ui.theme.sec
@@ -120,10 +121,12 @@ fun ListOfCoursePage(
         }
         if (!listOfClasses.isEmpty()) {
             LazyColumn() {
-               items(items = listOfClasses) { name ->
-                   ClassItemModel(name.first, onClick = { navHostController.navigate(Screen.ViewCourse.passCourseName(name.first, name.second))}, icon = painterResource(
-                       id = R.drawable.info_white
-                   ))
+               items(items = listOfClasses) { data ->
+                   ClassItemModel(
+                       data = data ,
+                       onClick = { navHostController.navigate(Screen.ViewCourse.passCourseName(data.name, data.adminId))},
+                       icon = painterResource(id = R.drawable.info_white)
+                   )
                }
             }
         }
@@ -131,7 +134,7 @@ fun ListOfCoursePage(
 }
 
 @Composable
-fun ClassItemModel(name: String, icon: Painter , onClick: () -> Unit) {
+fun ClassItemModel(data: NewCoureModel, icon: Painter , onClick: () -> Unit) {
     val quicksand = FontFamily(Font(R.font.quicksand_medium))
 
     Column(
@@ -150,14 +153,14 @@ fun ClassItemModel(name: String, icon: Painter , onClick: () -> Unit) {
         ) {
             Column {
                 Text(
-                    text = name,
+                    text = data.name,
                     fontFamily = quicksand,
                     fontSize = 28.sp,
                     color = Color.White,
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
                 Text(
-                    text = name,
+                    text = data.courseName,
                     fontFamily = quicksand,
                     fontSize = 15.sp,
                     color = Color.White,
@@ -174,7 +177,7 @@ fun ClassItemModel(name: String, icon: Painter , onClick: () -> Unit) {
         }
         Spacer(modifier = Modifier.weight(0.5f))
         Text(
-            text = name,
+            text = "${data.batchFrom}-${data.batchTo}",
             fontFamily = quicksand,
             fontSize = 15.sp,
             color = Color.White,

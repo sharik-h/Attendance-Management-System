@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import com.example.ams.data.DataClasses.AttendceDetail
+import com.example.ams.data.DataClasses.NewCoureModel
 import com.example.ams.data.Model.DefaultFirebaseRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
@@ -16,7 +17,7 @@ import java.time.LocalDate
 class MarkDailyAtd: BroadcastReceiver() {
 
     val attendanceDetail: MutableLiveData<List<AttendceDetail>> = MutableLiveData()
-    val courseNames: MutableLiveData<List<Pair<String, String>>> = MutableLiveData()
+    val courseNames: MutableLiveData<List<NewCoureModel>> = MutableLiveData()
 
     val firestore = Firebase.firestore
     val storage = Firebase.storage.reference
@@ -37,9 +38,9 @@ class MarkDailyAtd: BroadcastReceiver() {
 
 
             // get all student attendance in a particalar class from firestore
-            if (it.second == adminId) {
+            if (it.adminId == adminId) {
                 val atdDetails = mutableListOf<AttendceDetail>()
-                val data = firebaseRepository.getStudentAtdDetails(courseName = it.first, adminId = adminId)
+                val data = firebaseRepository.getStudentAtdDetails(courseName = it.name, adminId = adminId)
                 data?.forEach {
                     val eachSTd = mutableListOf<Pair<Int, Boolean>>()
                     it.data?.forEach { it2->
@@ -51,8 +52,8 @@ class MarkDailyAtd: BroadcastReceiver() {
                 }
 
 
-                val totalAtd = firebaseRepository.getToatlAtd(adminId = adminId, courseName = it.first)
-                val periodNo = firebaseRepository.getPeriodNo(adminId = adminId, courseName = it.first)
+                val totalAtd = firebaseRepository.getToatlAtd(adminId = adminId, courseName = it.name)
+                val periodNo = firebaseRepository.getPeriodNo(adminId = adminId, courseName = it.name)
                 val atdList = mutableListOf<Pair<String, Int>>()
 
                 if (periodNo == totalAtd) {
@@ -71,21 +72,21 @@ class MarkDailyAtd: BroadcastReceiver() {
                     }
                     firebaseRepository.markRealAtd(
                         adminId = adminId,
-                        courseName = it.first,
+                        courseName = it.name,
                         atdList = atdList,
                         date = LocalDate.now()
                     )
                     atdList.forEach {std ->
                         firebaseRepository.updateAStdAttendance(
                             adminId = adminId,
-                            courseName = it.first,
+                            courseName = it.name,
                             regNo = std.first,
                             atd = std.second
                         )
                     }
                     firebaseRepository.updatePeriod(
                         adminId = adminId,
-                        courseName = it.first,
+                        courseName = it.name,
                         periodNo = periodNo + 1
                     )
                 }
