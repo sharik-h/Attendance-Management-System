@@ -2,19 +2,21 @@ package com.example.ams.SplashScreen
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.ams.Navigation.LOGIN_ROUTE
 import com.example.ams.Navigation.Screen
@@ -49,16 +51,10 @@ fun Splash(floatAsState: Float) {
     Column(modifier = Modifier
         .fillMaxSize()
         .alpha(alpha = floatAsState)
-        .background(Color.White),
+        .background(Color(0xFF024EA0)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "AMS",
-            fontSize = 40.sp,
-            fontFamily = quickStand
-
-        )
+        Image(painter = painterResource(id = R.drawable.app_logo), contentDescription = "", modifier = Modifier.size(180.dp))
     }
-
 }
