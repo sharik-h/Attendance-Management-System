@@ -1,5 +1,6 @@
 package com.example.ams.data.ViewModel
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -12,10 +13,16 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.ams.data.Model.FirebaseRepository
 import com.example.ams.data.DataClasses.*
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
+import org.json.JSONException
+import org.json.JSONObject
 import java.time.LocalDate
 
 class FirebaseViewModel(
@@ -53,6 +60,43 @@ class FirebaseViewModel(
     val allStudentInfo = MutableLiveData<List<StudentDetail>>()
     val allStudentImg = MutableLiveData<MutableList<Pair<String, Bitmap>>>()
     val stdWithLowAtd = MutableLiveData<MutableList<String>>()
+
+    private val FCM_API = "https://fcm.googleapis.com/fcm/send"
+    private val serverKey = "key=" + "AAAAtNSvb_Q:APA91bHj2U19HsnKa-idCv94hu1fIke1zo5vxiueCkZnn82keigQTJ-fb-WDsM6okSv1OsPDM9G7FrpMmFkhQ_g1aMF5mZH1VeBRp5qtCp3-uV3-UU9qxkW3PnknLoYV4R0hS_BVq9Wa"
+    private val contentType = "application/json"
+
+    fun sendPush(courseName: String, title: String,message: String, context: Context) {
+
+        //topic has to match what the receiver subscribed to
+        val topic = "/topics/$courseName"
+        val notification = JSONObject()
+        val notifcationBody = JSONObject()
+
+        try {
+            notifcationBody.put("title", title)
+            notifcationBody.put("message", message)   //Enter your notification message
+            notification.put("to", topic)
+            notification.put("data", notifcationBody)
+        } catch (e: JSONException) {
+        }
+        sendNotification(notification, context)
+    }
+
+    private fun sendNotification(notification: JSONObject, context: Context) {
+        val requestQueue: RequestQueue by lazy { Volley.newRequestQueue(context) }
+        val jsonObjectRequest = object : JsonObjectRequest(FCM_API, notification,
+            Response.Listener<JSONObject> { response -> },
+            Response.ErrorListener {error -> })
+        {
+            override fun getHeaders(): Map<String, String> {
+                val params = HashMap<String, String>()
+                params["Authorization"] = serverKey
+                params["Content-Type"] = contentType
+                return params
+            }
+        }
+        requestQueue.add(jsonObjectRequest)
+    }
 
     init {
         viewModelScope.launch {
@@ -388,12 +432,18 @@ class FirebaseViewModel(
         return resizeBitmap(bitmap, newWidth, newHeight)
     }
 
-    fun createNewNotification(courseName: String, adminId: String) {
+    fun createNewNotification(courseName: String, adminId: String, context: Context) {
         notificationData.value = notificationData.value.copy(id = currentUserUid!!)
         notificationData.value = notificationData.value.copy(date = LocalDate.now().toString())
         viewModelScope.launch {
             firebaseRepository.createNewNotification(notificationData,courseName, adminId)
         }
+        sendPush(
+            courseName = courseName,
+            title = notificationData.value.heading,
+            message = notificationData.value.discription,
+            context = context
+        )
         notificationData.value = notificationData.value.let {
             it.copy(id = "")
             it.copy(heading = "")

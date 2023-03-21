@@ -123,4 +123,10 @@ dependencies {
 
     // firebase barcode scanner
     implementation 'com.google.mlkit:barcode-scanning:17.0.3'
+
+    // firebase cloud messaging
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+
+    // volley
+    implementation 'com.android.volley:volley:1.2.1'
 }

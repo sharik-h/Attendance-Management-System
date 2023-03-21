@@ -10,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -32,6 +33,7 @@ fun NewNotification(
 ){
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
     val notificationData = viewModel.notificationData.value
+    val context = LocalContext.current
 
     Column(Modifier.fillMaxSize()) {
         TopAppBar(backgroundColor = pri) {
@@ -47,7 +49,7 @@ fun NewNotification(
             Spacer(modifier = Modifier.weight(0.1f))
             TextButton(onClick = {
                 if (notificationData.notificationId == "") {
-                    viewModel.createNewNotification(courseName = courseName, adminId = adminId)
+                    viewModel.createNewNotification(courseName = courseName, adminId = adminId, context = context)
                 }else{
                     viewModel.updateNotificatoin(courseName = courseName, adminId = adminId)
                 }
