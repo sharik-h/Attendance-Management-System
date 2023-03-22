@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.R
+import com.example.ams.data.ViewModel.AttendanceViewModel
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.ui.theme.pri
 
@@ -29,7 +30,7 @@ fun MarkAtdManually(
     navHostController: NavHostController,
     courseName: String,
     adminId: String,
-    viewModel: FirebaseViewModel
+    viewModel: AttendanceViewModel
 ) {
     viewModel.getPeriodNo(adminId = adminId, courseName = courseName)
     viewModel.getTotalAtd(adminId = adminId, courseName = courseName)

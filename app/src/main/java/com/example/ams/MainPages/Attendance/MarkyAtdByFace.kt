@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import com.example.ams.R
+import com.example.ams.data.ViewModel.AttendanceViewModel
 import com.example.ams.faceDetection.FaceDetection
 import com.example.ams.ui.theme.pri
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -32,7 +33,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun MarkyAtdByFace(
     context: Activity,
-    viewModel: FirebaseViewModel,
+    viewModel: AttendanceViewModel,
     faceDetection: FaceDetection,
     courseName: String?,
     adminId: String,

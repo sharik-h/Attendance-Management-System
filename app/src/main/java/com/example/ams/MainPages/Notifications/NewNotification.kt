@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.ams.R
 import com.example.ams.data.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.NotificationRequestViewModel
 import java.time.LocalDate
 import com.example.ams.ui.theme.pri
 
@@ -29,7 +30,7 @@ fun NewNotification(
     navHostController: NavHostController,
     courseName: String,
     adminId: String,
-    viewModel: FirebaseViewModel
+    viewModel: NotificationRequestViewModel
 ){
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
     val notificationData = viewModel.notificationData.value

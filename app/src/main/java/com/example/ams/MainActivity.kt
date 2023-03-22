@@ -12,7 +12,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.ams.MainNavigation.MainNavgraph
 import com.example.ams.MainPages.Attendance.MarkDailyAtd
+import com.example.ams.data.ViewModel.AttendanceViewModel
 import com.example.ams.data.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.NewOrImportCourseViewModel
+import com.example.ams.data.ViewModel.NotificationRequestViewModel
 import com.example.ams.ui.theme.AMSTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,10 +23,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         setContent {
-            val viewModel: FirebaseViewModel = viewModel(factory = FirebaseViewModel.Factory)
+            val firebaseViewModel: FirebaseViewModel = viewModel(factory = FirebaseViewModel.Factory)
+            val notificationRequestViewModel: NotificationRequestViewModel = viewModel(factory = NotificationRequestViewModel.Factory)
+            val attendanceViewModel: AttendanceViewModel = viewModel(factory = AttendanceViewModel.Factory)
+            val newOrImportCourseViewModel: NewOrImportCourseViewModel = viewModel(factory = NewOrImportCourseViewModel.Factory)
             val navHostController = rememberNavController()
             AMSTheme {
-               MainNavgraph(navHostController = navHostController, viewModel)
+               MainNavgraph(
+                   navHostController = navHostController,
+                   viewModel = firebaseViewModel,
+                   notificationRequestViewModel = notificationRequestViewModel,
+                   attendanceViewModel = attendanceViewModel,
+                   newOrImportCourseViewModel = newOrImportCourseViewModel
+               )
             }
         }
 

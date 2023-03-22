@@ -22,13 +22,14 @@ import com.example.ams.data.ViewModel.FirebaseViewModel
 import androidx.navigation.NavHostController
 import com.example.ams.MainPages.CustomTextFeild
 import com.example.ams.R
+import com.example.ams.data.ViewModel.NewOrImportCourseViewModel
 import com.example.ams.ui.theme.pri
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 
 @Composable
-fun ImportCourse(navHostController: NavHostController  ,viewModel: FirebaseViewModel) {
+fun ImportCourse(navHostController: NavHostController  ,viewModel: NewOrImportCourseViewModel) {
 
     val requestData = viewModel.requestData.value
     val quickSand = FontFamily(Font(R.font.quicksand_medium))

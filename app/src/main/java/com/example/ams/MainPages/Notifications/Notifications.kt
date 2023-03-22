@@ -25,7 +25,7 @@ import androidx.navigation.NavHostController
 import com.example.ams.Navigation.Screen
 import com.example.ams.R
 import com.example.ams.data.DataClasses.NotificationModel
-import com.example.ams.data.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.NotificationRequestViewModel
 import com.example.ams.data.DataClasses.RequestCourseModel
 import com.example.ams.ui.theme.pri
 import me.saket.swipe.SwipeAction
@@ -34,7 +34,7 @@ import me.saket.swipe.SwipeableActionsBox
 @Composable
 fun Notifications(
     navHostController: NavHostController,
-    viewModel: FirebaseViewModel,
+    viewModel: NotificationRequestViewModel,
     courseName: String,
     adminId: String
 ) {

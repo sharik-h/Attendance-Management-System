@@ -18,12 +18,13 @@ import androidx.navigation.NavHostController
 import com.example.ams.MainPages.CustomComposes.customDropDown
 import com.example.ams.R
 import com.example.ams.data.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.NewOrImportCourseViewModel
 import com.example.ams.ui.theme.pri
 
 @Composable
 fun NewCourse(
     navHostController: NavHostController,
-    viewModel: FirebaseViewModel
+    viewModel: NewOrImportCourseViewModel
 ) {
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
     val newCourseData = viewModel.newCourseData.value

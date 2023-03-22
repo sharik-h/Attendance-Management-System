@@ -6,17 +6,19 @@ import com.example.ams.MainPages.NewCourse
 import com.example.ams.MainPages.NewDataPage.AddNewStudent
 import com.example.ams.MainPages.NewDataPage.ImportCourse
 import com.example.ams.data.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.NewOrImportCourseViewModel
 
 fun NavGraphBuilder.NewCourseNavGraph(
     navHostController: NavHostController,
-    viewModel: FirebaseViewModel
+    viewModel: FirebaseViewModel,
+    newOrImportCourseViewModel: NewOrImportCourseViewModel
 ) {
     navigation(
         startDestination = Screen.NewCourse.route,
         route = NEW_COURSE
     ){
         composable(route = Screen.NewCourse.route) {
-            NewCourse(navHostController = navHostController, viewModel = viewModel)
+            NewCourse(navHostController = navHostController, viewModel = newOrImportCourseViewModel)
         }
         composable(
             route = Screen.NewStudent.route,
@@ -29,11 +31,11 @@ fun NavGraphBuilder.NewCourseNavGraph(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
                 adminId = it.arguments?.getString("adminId").toString(),
-                viewModel = viewModel
+                viewModel = newOrImportCourseViewModel
             )
         }
         composable(route =  Screen.ImportCourse.route){
-            ImportCourse(navHostController = navHostController, viewModel = viewModel)
+            ImportCourse(navHostController = navHostController, viewModel = newOrImportCourseViewModel)
         }
     }
 }

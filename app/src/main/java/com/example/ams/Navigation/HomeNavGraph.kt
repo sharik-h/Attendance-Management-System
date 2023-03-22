@@ -6,11 +6,15 @@ import com.example.ams.MainPages.*
 import com.example.ams.MainPages.DetailViewPages.ViewAttendance
 import com.example.ams.MainPages.Notifications.NewNotification
 import com.example.ams.SplashScreen.SplashScreen
+import com.example.ams.data.ViewModel.AttendanceViewModel
 import com.example.ams.data.ViewModel.FirebaseViewModel
+import com.example.ams.data.ViewModel.NotificationRequestViewModel
 
 fun NavGraphBuilder.HomeNavGraph(
     navHostController: NavHostController,
-    viewModel: FirebaseViewModel
+    viewModel: FirebaseViewModel,
+    notificationRequestViewModel: NotificationRequestViewModel,
+    attendanceViewModel: AttendanceViewModel
 ) {
     navigation(
         startDestination = Screen.Splash.route,
@@ -31,7 +35,7 @@ fun NavGraphBuilder.HomeNavGraph(
         ){
             Notifications(
                 navHostController = navHostController,
-                viewModel = viewModel,
+                viewModel = notificationRequestViewModel,
                 courseName = it.arguments?.getString("courseName").toString(),
                 adminId = it.arguments?.getString("adminId").toString()
             )
@@ -45,7 +49,7 @@ fun NavGraphBuilder.HomeNavGraph(
         ){
             NewNotification(
                 navHostController = navHostController,
-                viewModel = viewModel,
+                viewModel = notificationRequestViewModel,
                 courseName = it.arguments?.getString("courseName").toString(),
                 adminId = it.arguments?.getString("adminId").toString()
             )
@@ -117,7 +121,7 @@ fun NavGraphBuilder.HomeNavGraph(
                 navHostController = navHostController,
                 courseName = it.arguments?.getString("courseName").toString(),
                 adminId = it.arguments?.getString("adminId").toString(),
-                viewModel = viewModel
+                viewModel = attendanceViewModel
             )
         }
         composable(

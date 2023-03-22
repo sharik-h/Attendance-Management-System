@@ -31,6 +31,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.ams.R
 import com.example.ams.data.ViewModel.FirebaseViewModel
 import com.example.ams.MainPages.CustomTextFeild
+import com.example.ams.data.ViewModel.NewOrImportCourseViewModel
 import com.example.ams.ui.theme.pri
 import java.io.ByteArrayOutputStream
 
@@ -39,7 +40,7 @@ fun AddNewStudent(
     navHostController: NavHostController,
     courseName: String,
     adminId: String,
-    viewModel: FirebaseViewModel
+    viewModel: NewOrImportCourseViewModel
 ) {
     var i = 0
     viewModel.getTotalAtd(courseName, adminId)
