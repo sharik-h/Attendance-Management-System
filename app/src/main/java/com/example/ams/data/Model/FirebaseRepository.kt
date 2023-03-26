@@ -50,6 +50,7 @@ interface FirebaseRepository {
     suspend fun addAdminAsTeacher(adminId: String, courseName: String, adminInfo: TeachersList)
     fun updateAStdAttendance(adminId: String, courseName: String, regNo: String, atd: Int)
     suspend fun getAllStudentAtd(adminId: String, courseName: String): MutableList<DocumentSnapshot>
+    suspend fun getStudentRequest(courseName: String, adminId: String): MutableList<DocumentSnapshot>
 }
 
 class DefaultFirebaseRepository(
@@ -388,6 +389,14 @@ class DefaultFirebaseRepository(
         courseName: String
     ): MutableList<DocumentSnapshot> {
         val ref = firestore.collection("$adminId/$courseName/studentDetails")
+        return ref.get().await().documents
+    }
+
+    override suspend fun getStudentRequest(
+        courseName: String,
+        adminId: String
+    ): MutableList<DocumentSnapshot> {
+        val ref = firestore.collection("$adminId/$courseName/studentRequest")
         return ref.get().await().documents
     }
 }

@@ -13,10 +13,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.example.ams.data.DataClasses.NewCoureModel
-import com.example.ams.data.DataClasses.NotificationModel
-import com.example.ams.data.DataClasses.RequestCourseModel
-import com.example.ams.data.DataClasses.TeachersList
+import com.example.ams.data.DataClasses.*
 import com.example.ams.data.Model.FirebaseRepository
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
@@ -39,6 +36,7 @@ class NotificationRequestViewModel(
     val totalStd = MutableLiveData<Int>()
     val totalTchr = MutableLiveData<Int>()
     val adminInfo = MutableLiveData<TeachersList>()
+    val studentRequest = MutableLiveData<List<StudentRequestModel>>()
 
     private val FCM_API = "https://fcm.googleapis.com/fcm/send"
     private val serverKey = "key=" + "AAAAtNSvb_Q:APA91bGJDNa-hrD6NgyIuRqVyWbkDRUwDTabrKVFO8o7GCEsveZCtWyGyN_gPVX3aki1PK7bpvuUb0IVhvxSrNgQ8u3GgrAURCBjbuoGbKaum5nviPJXGJCuBxwOodn8EDQeLnXLREo6"
@@ -267,6 +265,16 @@ class NotificationRequestViewModel(
     fun ignoreTeacher(phone: String, courseName: String) {
         viewModelScope.launch {
             firebaseRepository.ignoreTeacher(id = getuser!!.uid, phone = phone, courseName = courseName)
+        }
+    }
+
+    fun getStudentRequests(courseName: String, adminId: String){
+        val data = mutableListOf<StudentRequestModel>()
+        viewModelScope.launch {
+            firebaseRepository.getStudentRequest(courseName, adminId).forEach {
+                data.add(it.toObject(StudentRequestModel::class.java)!!)
+            }
+            studentRequest.value = data
         }
     }
 }

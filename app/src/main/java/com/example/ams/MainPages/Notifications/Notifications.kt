@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -27,6 +28,7 @@ import com.example.ams.R
 import com.example.ams.data.DataClasses.NotificationModel
 import com.example.ams.data.ViewModel.NotificationRequestViewModel
 import com.example.ams.data.DataClasses.RequestCourseModel
+import com.example.ams.data.DataClasses.StudentRequestModel
 import com.example.ams.ui.theme.pri
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
@@ -41,8 +43,10 @@ fun Notifications(
 
     viewModel.getAllRequests(courseName = courseName)
     viewModel.getAllNotifications(courseName = courseName, adminId = adminId)
+    viewModel.getStudentRequests(courseName = courseName, adminId = adminId)
     val allRequests by viewModel.allRequests.observeAsState()
     val allNotifications by viewModel.allNotification.observeAsState()
+    val allStudentRequest by viewModel.studentRequest.observeAsState()
     val quickSand = FontFamily(Font(R.font.quicksand_medium))
 
     Column(modifier = Modifier.fillMaxSize())
@@ -54,8 +58,8 @@ fun Notifications(
             Text(text = "Notifications", fontFamily = quickSand, color = Color.White, fontSize = 20.sp)
             Spacer(modifier = Modifier.weight(0.5f))
         }
-        allNotifications?.let { it->
-            LazyColumn{
+        LazyColumn{
+            allNotifications?.let { it->
                 items(items = it){ it1->
                     NotificationItem(data = it1){
                         if (it == "edit"){
@@ -71,9 +75,7 @@ fun Notifications(
                     Divider(thickness = 0.5.dp, color = Color.Black)
                 }
             }
-        }
-        allRequests?.let {
-            LazyColumn {
+            allRequests?.let {
                 items(items = it) {
                     RequestModel(
                         data = it!!,
@@ -81,6 +83,11 @@ fun Notifications(
                         onIgnore = { viewModel.ignoreTeacher(phone  = it.teacherPhone!!, courseName = courseName) }
                     )
                     Divider(thickness = 0.5.dp, color = Color.Black)
+                }
+            }
+            allStudentRequest?.let {
+                items(items = it){
+                    StudentRequest(it)
                 }
             }
         }
@@ -211,5 +218,33 @@ fun RequestModel(data: RequestCourseModel, onAccept : () -> Unit, onIgnore : () 
                 Text(text = "Ignore", color = Color.White)
             }
         }
+    }
+}
+
+@Composable
+fun StudentRequest(data: StudentRequestModel) {
+    val quickSand = FontFamily(Font(R.font.quicksand_medium))
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .background(color = Color.White))
+    {
+        Column(modifier = Modifier.padding(15.dp)) {
+            Text(
+                text = "Request From: ${data.name},  ${data.regNo}",
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = quickSand
+            )
+            Text(text = data.matter, modifier = Modifier.fillMaxWidth(), fontFamily = quickSand)
+            Text(
+                text = data.date,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Right,
+                color = Color.Gray,
+                fontFamily = quickSand
+            )
+        }
+        Divider(thickness = 0.5.dp, modifier = Modifier.fillMaxWidth(), color = Black)
     }
 }
