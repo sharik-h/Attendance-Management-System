@@ -1,5 +1,6 @@
 package com.example.ams.Login
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ams.MainActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import java.util.concurrent.TimeUnit
@@ -73,7 +75,7 @@ class Authenticate: ComponentActivity() {
         firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    finishAffinity()
+                    reStart()
                 } else {
                     Toast.makeText(this, "Please check your email or password", LENGTH_SHORT).show()
                 }
@@ -85,7 +87,7 @@ class Authenticate: ComponentActivity() {
         firebaseAuth.signInWithCredential(credentials)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    finish()
+                   reStart()
                 } else {
                     Toast.makeText(applicationContext, "make sure otp is correct", LENGTH_SHORT).show()
                 }
@@ -103,10 +105,17 @@ class Authenticate: ComponentActivity() {
                                  val profileUpdates = UserProfileChangeRequest.Builder()
                                      .setDisplayName(name).build()
                                  currentUser.updateProfile(profileUpdates)
-                                 finishAffinity()
+                                 reStart()
                              }
              }
      }
+
+    private fun reStart(){
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        finish()
+    }
 
     @Composable
     fun AuthPage() {
