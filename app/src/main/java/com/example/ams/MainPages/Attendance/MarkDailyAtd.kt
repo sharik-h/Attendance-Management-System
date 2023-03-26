@@ -26,7 +26,9 @@ class MarkDailyAtd: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         CoroutineScope(Dispatchers.Main).launch {
             val uid = FirebaseAuth.getInstance().currentUser?.uid
-            markTodayAtd(adminId = uid!!)
+            if (uid != null){
+                markTodayAtd(adminId = uid)
+            }
         }
     }
 

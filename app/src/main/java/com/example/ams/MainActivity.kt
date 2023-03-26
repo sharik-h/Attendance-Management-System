@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
         }
 
         // Create a new PendingIntent for the function
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         // Create a new instance of the AlarmManager class
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
