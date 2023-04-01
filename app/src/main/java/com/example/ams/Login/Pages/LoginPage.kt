@@ -37,7 +37,6 @@ fun LoginPage(navHostController: NavHostController) {
     val context = LocalContext.current
     var method = "error"
     var rmbrMe by remember { mutableStateOf(false) }
-    var password by remember { mutableStateOf("") }
 
     Column(Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(30.dp))
@@ -54,7 +53,7 @@ fun LoginPage(navHostController: NavHostController) {
             .fillMaxSize()
             .padding(horizontal = 30.dp))
         {
-            Text(text = "Email", color = Color.Gray)
+            Text(text = "Email or Phone", color = Color.Gray)
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -71,24 +70,7 @@ fun LoginPage(navHostController: NavHostController) {
                     cursorColor = Color.Blue
                 )
             )
-            Spacer(modifier = Modifier.height(30.dp))
-            Text(text = "Password", color = Color.Gray)
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(20)),
-                leadingIcon = {
-                    Image(painter = painterResource(id = R.drawable.lock_white), contentDescription = "")
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Blue,
-                    backgroundColor = Color.LightGray,
-                    cursorColor = Color.Blue
-                )
-            )
+            Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
